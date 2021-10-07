@@ -90,4 +90,6 @@ router.post(
     },
 );
 
+router.get('/test', () => console.log('test'));
+
 module.exports = router;
