@@ -19,7 +19,7 @@ router.post(
         try {
             const errors = validationResult(req);
 
-            if (errors.isEmpty()) {
+            if (!errors.isEmpty()) {
                 return res.status(400).json({
                     errors: errors.array(),
                     message: 'Data uncorrect!',
@@ -53,10 +53,11 @@ router.post(
         check('password', 'Type password').exists(),
     ],
     async (req, res) => {
+        console.log(req.body);
         try {
             const errors = validationResult(req);
 
-            if (errors.isEmpty()) {
+            if (!errors.isEmpty()) {
                 return res.status(400).json({
                     errors: errors.array(),
                     message: 'Data uncorrect!',
@@ -89,7 +90,5 @@ router.post(
         }
     },
 );
-
-router.get('/test', () => console.log('test'));
 
 module.exports = router;

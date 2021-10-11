@@ -1,15 +1,30 @@
 import React, { useState } from 'react';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
+import useHttp from '../../hooks/useHttp';
 
 import Styles from './Login.module.scss';
 
 const Login = () => {
+    const { loading, error, request } = useHttp();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
+    const sendLoginData = async (
+        evt: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+    ) => {
+        evt.preventDefault();
+        try {
+            const data = await request(
+                'http://localhost:5000/api/auth/login',
+                'POST',
+                { email, password },
+            ).then((d) => console.log(d));
+        } catch (e) {}
+    };
+
     return (
-        <div className={Styles.container}>
+        <form className={Styles.container}>
             <h3 className={Styles.title}>Login</h3>
             <TextField
                 id='outlined-basic'
@@ -32,12 +47,13 @@ const Login = () => {
                 variant='contained'
                 color='success'
                 size='large'
-                onClick={() => console.log(email, password)}
-                disabled={email === '' || password === ''}
+                type='submit'
+                onClick={sendLoginData}
+                disabled={email === '' || password === '' || loading}
             >
                 Login
             </Button>
-        </div>
+        </form>
     );
 };
 
