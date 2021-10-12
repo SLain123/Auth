@@ -10,7 +10,7 @@ const router = Router();
 router.post(
     '/register',
     [
-        check('email', 'Wrong email format').isEmail,
+        check('email', 'Wrong email format').isEmail(),
         check('password', 'Uncorrect password, minimum 8 symbols').isLength({
             min: 8,
         }),
@@ -53,7 +53,6 @@ router.post(
         check('password', 'Type password').exists(),
     ],
     async (req, res) => {
-        console.log(req.body);
         try {
             const errors = validationResult(req);
 

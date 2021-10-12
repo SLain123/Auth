@@ -1,16 +1,29 @@
 import React, { useState } from 'react';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
+import useHttp from '../../hooks/useHttp';
 
 import Styles from './Register.module.scss';
 
 const Register = () => {
+    const { loading, error, request } = useHttp();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [repeatePassword, setRepeatePassword] = useState('');
 
+    const sendRgisterData = async (evt: React.FormEvent<HTMLFormElement>) => {
+        evt.preventDefault();
+        try {
+            const data = await request(
+                'http://localhost:5000/api/auth/register',
+                'POST',
+                { email, password },
+            ).then((d) => console.log(d));
+        } catch (e) {}
+    };
+
     return (
-        <div className={Styles.container}>
+        <form className={Styles.container} onSubmit={sendRgisterData}>
             <h3 className={Styles.title}>Registration</h3>
             <TextField
                 id='outlined-basic'
@@ -41,14 +54,17 @@ const Register = () => {
                 variant='contained'
                 color='success'
                 size='large'
-                onClick={() => console.log(email, password)}
+                type='submit'
                 disabled={
-                    email === '' || password === '' || repeatePassword === ''
+                    email === '' ||
+                    password === '' ||
+                    repeatePassword === '' ||
+                    loading
                 }
             >
                 Send register data
             </Button>
-        </div>
+        </form>
     );
 };
 

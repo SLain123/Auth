@@ -10,9 +10,7 @@ const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
-    const sendLoginData = async (
-        evt: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-    ) => {
+    const sendLoginData = async (evt: React.FormEvent<HTMLFormElement>) => {
         evt.preventDefault();
         try {
             const data = await request(
@@ -24,7 +22,7 @@ const Login = () => {
     };
 
     return (
-        <form className={Styles.container}>
+        <form className={Styles.container} onSubmit={sendLoginData}>
             <h3 className={Styles.title}>Login</h3>
             <TextField
                 id='outlined-basic'
@@ -48,7 +46,6 @@ const Login = () => {
                 color='success'
                 size='large'
                 type='submit'
-                onClick={sendLoginData}
                 disabled={email === '' || password === '' || loading}
             >
                 Login
