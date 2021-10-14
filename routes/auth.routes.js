@@ -28,9 +28,18 @@ router.post(
 
             const { email, password } = req.body;
             const candidate = await User.findOne({ email });
+            console.log(candidate);
 
             if (candidate) {
-                res.status(400).json({ message: 'Username already exists!' });
+                res.status(400).json({
+                    errors: [
+                        {
+                            msg: 'Username already exists!',
+                            value: email,
+                            param: 'email',
+                        },
+                    ],
+                });
             }
 
             const hashedPassword = await bcrypt.hash(password, 11);
@@ -49,7 +58,7 @@ router.post(
 router.post(
     '/login',
     [
-        check('email', 'Type correct email').normalizeEmail().isEmail(),
+        check('email', 'Type correct email').isEmail(),
         check('password', 'Type password').exists(),
     ],
     async (req, res) => {
@@ -64,17 +73,35 @@ router.post(
             }
 
             const { email, password } = req.body;
+            console.log(User);
 
             const user = await User.findOne({ email });
+            console.log(user);
 
             if (!user) {
-                return res.status(400).json({ message: "User doesn't exist!" });
+                return res.status(400).json({
+                    errors: [
+                        {
+                            msg: "User doesn't exist!",
+                            value: email,
+                            param: 'email',
+                        },
+                    ],
+                });
             }
 
             const isMatch = await bcrypt.compare(password, user.password);
 
             if (!isMatch) {
-                return res.status(400).json({ message: 'Password incorrect!' });
+                return res.status(400).json({
+                    errors: [
+                        {
+                            msg: 'Password incorrect!',
+                            value: email,
+                            param: 'email',
+                        },
+                    ],
+                });
             }
 
             const token = jwt.sign(
@@ -83,7 +110,7 @@ router.post(
                 { expiresIn: '1h' },
             );
 
-            res.json({ token, userId: user.id });
+            res.json({ token, userId: user.id, message: 'Success!' });
         } catch (e) {
             res.status(500).json({ message: 'Something was wrong...' });
         }
