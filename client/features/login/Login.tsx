@@ -5,6 +5,7 @@ import useHttp from '../../hooks/useHttp';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import BeatLoader from 'react-spinners/BeatLoader';
+import { useCookies } from 'react-cookie';
 
 import Styles from './Login.module.scss';
 
@@ -15,6 +16,7 @@ const Login = () => {
     >([]);
     const [resultMessage, setResultMessage] = useState('');
     const spinner = <BeatLoader color='white' loading size={10} />;
+    const [cookies, setCookie] = useCookies(['user-data']);
 
     const sendLoginData = async (values: {
         email: string;
@@ -30,6 +32,10 @@ const Login = () => {
                     ? setServerErrors(data.errors)
                     : setServerErrors([]);
                 setResultMessage(data.message);
+                if (data.token) {
+                    const { token, userId } = data;
+                    setCookie('user-data', { token, userId });
+                }
             });
         } catch (e) {
             //@ts-ignore
