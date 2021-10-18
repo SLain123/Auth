@@ -16,7 +16,7 @@ const Main = () => {
         } else {
             setLoaded(true);
         }
-    }, []);
+    }, [cookies]);
 
     if (!loaded) {
         return <div className={Styles.container}>{spinner}</div>;

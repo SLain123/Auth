@@ -1,10 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import useHttp from '../../hooks/useHttp';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import BeatLoader from 'react-spinners/BeatLoader';
+import DotLoader from 'react-spinners/DotLoader';
+import { useCookies } from 'react-cookie';
+import Router from 'next/router';
 
 import Styles from './Register.module.scss';
 
@@ -14,7 +17,13 @@ const Register = () => {
         [] | { msg: string; value: string }[]
     >([]);
     const [resultMessage, setResultMessage] = useState('');
-    const spinner = <BeatLoader color='white' loading size={10} />;
+    const [cookies] = useCookies(['user-data']);
+    const [loaded, setLoaded] = useState(false);
+
+    const spinnerWhite = <BeatLoader color='white' loading size={10} />;
+    const spinnerGreen = (
+        <DotLoader color='green' loading size={50} speedMultiplier={3} />
+    );
 
     const sendRegisterData = async (values: {
         email: string;
@@ -59,6 +68,25 @@ const Register = () => {
             sendRegisterData(values);
         },
     });
+
+    useEffect(() => {
+        if (cookies['user-data'] && cookies['user-data']?.token) {
+            Router.push('/');
+        } else {
+            setLoaded(true);
+        }
+    }, [cookies]);
+
+    useEffect(() => {
+        console.log(resultMessage);
+        if (resultMessage === 'User was create!') {
+            Router.push('/login');
+        }
+    }, [resultMessage]);
+
+    if (!loaded) {
+        return <div className={Styles.container}>{spinnerGreen}</div>;
+    }
 
     return (
         <form className={Styles.container} onSubmit={formik.handleSubmit}>
@@ -127,16 +155,13 @@ const Register = () => {
                 size='large'
                 type='submit'
                 disabled={
-                    !formik.touched.email ||
                     Boolean(formik.errors.email) ||
-                    !formik.touched.password ||
                     Boolean(formik.errors.password) ||
-                    !formik.touched.repeatPassword ||
                     Boolean(formik.errors.repeatPassword) ||
                     loading
                 }
             >
-                {loading ? spinner : 'Send register data'}
+                {loading ? spinnerWhite : 'Send register data'}
             </Button>
         </form>
     );

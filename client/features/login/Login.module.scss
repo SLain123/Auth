@@ -45,3 +45,14 @@ $shadow: rgb(214, 205, 205);
     margin: 0;
     margin-top: 15px;
 }
+
+.link_reg {
+    align-self: flex-end;
+    margin: 5px 0;
+    font-size: 12px;
+    color: rgb(87, 87, 243);
+
+    &:hover {
+        opacity: 0.9;
+    }
+}

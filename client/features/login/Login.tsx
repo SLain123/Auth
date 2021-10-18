@@ -1,11 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import useHttp from '../../hooks/useHttp';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import BeatLoader from 'react-spinners/BeatLoader';
+import DotLoader from 'react-spinners/DotLoader';
 import { useCookies } from 'react-cookie';
+import Router from 'next/router';
 
 import Styles from './Login.module.scss';
 
@@ -15,8 +18,32 @@ const Login = () => {
         [] | { msg: string; value: string }[]
     >([]);
     const [resultMessage, setResultMessage] = useState('');
-    const spinner = <BeatLoader color='white' loading size={10} />;
     const [cookies, setCookie] = useCookies(['user-data']);
+    const [loaded, setLoaded] = useState(false);
+
+    const spinnerWhite = <BeatLoader color='white' loading size={10} />;
+    const spinnerGreen = (
+        <DotLoader color='green' loading size={50} speedMultiplier={3} />
+    );
+
+    const formik = useFormik({
+        initialValues: {
+            email: '',
+            password: '',
+        },
+        validationSchema: Yup.object({
+            email: Yup.string()
+                .email('Invalid email address')
+                .required('Required'),
+            password: Yup.string()
+                .min(8, 'Must be 8 characters or more')
+                .max(20, 'Must be 20 characters or less')
+                .required('Required'),
+        }),
+        onSubmit: (values) => {
+            sendLoginData(values);
+        },
+    });
 
     const sendLoginData = async (values: {
         email: string;
@@ -43,24 +70,17 @@ const Login = () => {
         }
     };
 
-    const formik = useFormik({
-        initialValues: {
-            email: '',
-            password: '',
-        },
-        validationSchema: Yup.object({
-            email: Yup.string()
-                .email('Invalid email address')
-                .required('Required'),
-            password: Yup.string()
-                .min(8, 'Must be 8 characters or more')
-                .max(20, 'Must be 20 characters or less')
-                .required('Required'),
-        }),
-        onSubmit: (values) => {
-            sendLoginData(values);
-        },
-    });
+    useEffect(() => {
+        if (cookies['user-data'] && cookies['user-data']?.token) {
+            Router.push('/');
+        } else {
+            setLoaded(true);
+        }
+    }, [cookies]);
+
+    if (!loaded) {
+        return <div className={Styles.container}>{spinnerGreen}</div>;
+    }
 
     return (
         <form className={Styles.container} onSubmit={formik.handleSubmit}>
@@ -101,6 +121,9 @@ const Login = () => {
                 helperText={formik.touched.password && formik.errors.password}
                 disabled={loading}
             />
+            <Link href='/reg'>
+                <a className={Styles.link_reg}>Register now</a>
+            </Link>
             <p className={Styles.status_text}>{resultMessage}</p>
             <Button
                 className={Styles.login_btn}
@@ -109,14 +132,12 @@ const Login = () => {
                 size='large'
                 type='submit'
                 disabled={
-                    !formik.touched.email ||
                     Boolean(formik.errors.email) ||
-                    !formik.touched.password ||
                     Boolean(formik.errors.password) ||
                     loading
                 }
             >
-                {loading ? spinner : 'Login'}
+                {loading ? spinnerWhite : 'Login'}
             </Button>
         </form>
     );
