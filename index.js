@@ -6,8 +6,7 @@ const app = express();
 const PORT = config.get('port') || 5000;
 const MONGOURI = config.get('mongoURI');
 
-app.use('api/auth', require('./routes/auth.routes'));
-app.use('test', () => require('./routes/auth.routes'));
+app.use('/api/auth', require('./routes/auth.routes'));
 
 async function start() {
     try {
