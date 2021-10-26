@@ -6,6 +6,7 @@ const jwt = require('jsonwebtoken');
 const config = require('config');
 const router = Router();
 
+
 // /api/auth/register
 router.post(
     '/register',
