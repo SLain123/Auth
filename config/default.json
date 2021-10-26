@@ -1,5 +1,5 @@
 {
     "port": 5000,
-    "mongoURI": "mongodb+srv://admn:12345s@cluster0.iqkou.mongodb.net/myFirstDatabase?retryWrites=true&w=majority",
+    "mongoURI": "mongodb+srv://Admin:12345s@cluster0.nwqfl.mongodb.net/multiTimer?retryWrites=true&w=majority",
     "jwtSecret": "superSecret"
 }

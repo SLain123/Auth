@@ -78,7 +78,6 @@ const Register = () => {
     }, [cookies]);
 
     useEffect(() => {
-        console.log(resultMessage);
         if (resultMessage === 'User was create!') {
             Router.push('/login');
         }

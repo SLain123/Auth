@@ -14,14 +14,6 @@ router.post(
         check('password', 'Uncorrect password, minimum 8 symbols').isLength({
             min: 8,
         }),
-        check(
-            'firstName',
-            'You need specify your name, minimum 3 symbols',
-        ).isLength({ min: 3 }),
-        check(
-            'lastName',
-            'You need specify your last name, minimum 3 symbols',
-        ).isLength({ min: 3 }),
     ],
     async (req, res) => {
         try {
@@ -34,9 +26,8 @@ router.post(
                 });
             }
 
-            const { email, password, firstName, lastName } = req.body;
+            const { email, password } = req.body;
             const candidate = await User.findOne({ email });
-            console.log(candidate);
 
             if (candidate) {
                 res.status(400).json({
@@ -53,8 +44,6 @@ router.post(
             const hashedPassword = await bcrypt.hash(password, 11);
             const user = new User({
                 email,
-                firstName,
-                lastName,
                 password: hashedPassword,
             });
 
