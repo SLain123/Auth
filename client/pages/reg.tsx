@@ -1,8 +1,10 @@
-import type { NextPage } from 'next';
 import { Register } from '../features/register';
+import { Header } from '../features/header';
 
-const LoginPage: NextPage = () => {
+export default function RegisterPage() {
     return <Register />;
-};
+}
 
-export default LoginPage;
+RegisterPage.getLayout = function getLayout(page: React.ReactElement) {
+    return <Header>{page}</Header>;
+};

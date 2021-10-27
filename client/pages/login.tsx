@@ -1,8 +1,10 @@
-import type { NextPage } from 'next';
 import { Login } from '../features/login';
+import { Header } from '../features/header';
 
-const LoginPage: NextPage = () => {
+export default function LoginPage() {
     return <Login />;
-};
+}
 
-export default LoginPage;
+LoginPage.getLayout = function getLayout(page: React.ReactElement) {
+    return <Header>{page}</Header>;
+};

@@ -28,12 +28,16 @@ const Register = () => {
     const sendRegisterData = async (values: {
         email: string;
         password: string;
+        firstName: string;
+        lastName: string;
     }) => {
-        const { email, password } = values;
+        const { email, password, firstName, lastName } = values;
         try {
             request('http://localhost:5000/api/auth/register', 'POST', {
                 email,
                 password,
+                firstName,
+                lastName,
             }).then((data) => {
                 data.errors
                     ? setServerErrors(data.errors)
@@ -51,6 +55,8 @@ const Register = () => {
             email: '',
             password: '',
             repeatPassword: '',
+            firstName: '',
+            lastName: '',
         },
         validationSchema: Yup.object({
             email: Yup.string()
@@ -62,6 +68,14 @@ const Register = () => {
                 .required('Required'),
             repeatPassword: Yup.string()
                 .oneOf([Yup.ref('password'), null], 'Passwords must match')
+                .required('Required'),
+            firstName: Yup.string()
+                .min(3, 'Must be 3 characters or more')
+                .max(20, 'Must be 20 characters or less')
+                .required('Required'),
+            lastName: Yup.string()
+                .min(3, 'Must be 3 characters or more')
+                .max(20, 'Must be 20 characters or less')
                 .required('Required'),
         }),
         onSubmit: (values) => {
@@ -146,6 +160,36 @@ const Register = () => {
                 }
                 disabled={loading}
             />
+            <TextField
+                name='firstName'
+                id='firstName'
+                label='First name'
+                variant='outlined'
+                fullWidth
+                margin='dense'
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={
+                    formik.touched.firstName && Boolean(formik.errors.firstName)
+                }
+                helperText={formik.touched.firstName && formik.errors.firstName}
+                disabled={loading}
+            />
+            <TextField
+                name='lastName'
+                id='lastName'
+                label='Last name'
+                variant='outlined'
+                fullWidth
+                margin='dense'
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={
+                    formik.touched.lastName && Boolean(formik.errors.lastName)
+                }
+                helperText={formik.touched.lastName && formik.errors.lastName}
+                disabled={loading}
+            />
             <p className={Styles.status_text}>{resultMessage}</p>
             <Button
                 className={Styles.login_btn}
@@ -157,6 +201,8 @@ const Register = () => {
                     Boolean(formik.errors.email) ||
                     Boolean(formik.errors.password) ||
                     Boolean(formik.errors.repeatPassword) ||
+                    Boolean(formik.errors.firstName) ||
+                    Boolean(formik.errors.lastName) ||
                     loading
                 }
             >

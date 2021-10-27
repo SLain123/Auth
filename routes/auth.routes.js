@@ -6,7 +6,6 @@ const jwt = require('jsonwebtoken');
 const config = require('config');
 const router = Router();
 
-
 // /api/auth/register
 router.post(
     '/register',
@@ -15,6 +14,8 @@ router.post(
         check('password', 'Uncorrect password, minimum 8 symbols').isLength({
             min: 8,
         }),
+        check('firstName', 'User name is missing').notEmpty(),
+        check('lastName', 'User surname is missing').notEmpty(),
     ],
     async (req, res) => {
         try {
@@ -27,7 +28,7 @@ router.post(
                 });
             }
 
-            const { email, password } = req.body;
+            const { email, password, firstName, lastName } = req.body;
             const candidate = await User.findOne({ email });
 
             if (candidate) {
@@ -46,6 +47,8 @@ router.post(
             const user = new User({
                 email,
                 password: hashedPassword,
+                firstName,
+                lastName,
             });
 
             await user.save();
