@@ -18,7 +18,7 @@ const Login = () => {
         [] | { msg: string; value: string }[]
     >([]);
     const [resultMessage, setResultMessage] = useState('');
-    const [cookies, setCookie] = useCookies(['user-data']);
+    const [cookies, setCookie] = useCookies(['userId', 'token']);
     const [loaded, setLoaded] = useState(false);
 
     const spinnerWhite = <BeatLoader color='white' loading size={10} />;
@@ -61,7 +61,8 @@ const Login = () => {
                 setResultMessage(data.message);
                 if (data.token) {
                     const { token, userId } = data;
-                    setCookie('user-data', { token, userId });
+                    setCookie('userId', { userId });
+                    setCookie('token', { token });
                 }
             });
         } catch (e) {
@@ -71,7 +72,7 @@ const Login = () => {
     };
 
     useEffect(() => {
-        if (cookies['user-data'] && cookies['user-data']?.token) {
+        if (cookies.token) {
             Router.push('/');
         } else {
             setLoaded(true);

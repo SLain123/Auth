@@ -6,12 +6,14 @@ import DotLoader from 'react-spinners/DotLoader';
 import Styles from './Main.module.scss';
 
 const Main = () => {
-    const [cookies] = useCookies(['user-data']);
+    const [cookies] = useCookies(['token']);
     const [loaded, setLoaded] = useState(false);
-    const spinner = <DotLoader color='green' loading size={50} speedMultiplier={3} />;
+    const spinner = (
+        <DotLoader color='green' loading size={50} speedMultiplier={3} />
+    );
 
     useEffect(() => {
-        if (!cookies['user-data'] || !cookies['user-data'].token) {
+        if (!cookies.token) {
             Router.push('/login');
         } else {
             setLoaded(true);
