@@ -73,7 +73,7 @@ const Login = () => {
 
     useEffect(() => {
         if (cookies.token) {
-            Router.push('/');
+            location.href = '/';
         } else {
             setLoaded(true);
         }

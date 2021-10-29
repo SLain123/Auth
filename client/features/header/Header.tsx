@@ -1,11 +1,12 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useCookies } from 'react-cookie';
 
 import Styles from './Header.module.scss';
 
 const Header: React.FC = ({ children }) => {
-    const [cookies] = useCookies(['token']);
+    const [cookies, setCookie, removeCookie] = useCookies(['userId', 'token']);
+    const [contentLoaded, setContentLoaded] = useState(false);
     const navListAuth = [
         { name: 'Home', link: '/' },
         { name: 'Profile', link: '/profile' },
@@ -16,26 +17,43 @@ const Header: React.FC = ({ children }) => {
         { name: 'Registration', link: '/reg' },
     ];
 
-    const navList = cookies.token
-        ? navListAuth.map(({ name, link }) => (
-              <li key={name}>
-                  <Link href={link}>{name}</Link>
-              </li>
-          ))
-        : navListGuest.map(({ name, link }) => (
-              <li key={name}>
-                  <Link href={link}>{name}</Link>
-              </li>
-          ));
+    const navList =
+        cookies.token && contentLoaded
+            ? navListAuth.map(({ name, link }) => (
+                  <li key={name}>
+                      <Link href={link}>{name}</Link>
+                  </li>
+              ))
+            : navListGuest.map(({ name, link }) => (
+                  <li key={name}>
+                      <Link href={link}>{name}</Link>
+                  </li>
+              ));
+
+    useEffect(() => {
+        if (document.readyState === 'interactive') {
+            setContentLoaded(true);
+        }
+    }, []);
 
     return (
         <>
             <header className={Styles.header}>
                 <ul className={Styles.menu}>
                     {navList}
-                    {cookies.token && (
+                    {cookies.token && contentLoaded && (
                         <li key='logout'>
-                            <button type='button'>Log out</button>
+                            <button
+                                className={Styles.logout_btn}
+                                type='button'
+                                onClick={() => {
+                                    removeCookie('userId');
+                                    removeCookie('token');
+                                    location.href = '/login';
+                                }}
+                            >
+                                Log out
+                            </button>
                         </li>
                     )}
                 </ul>
