@@ -16,7 +16,7 @@ export default function MyApp({ Component, pageProps }: AppPropsWithLayout) {
 
     return getLayout(
         <CookiesProvider>
-            <Component {...pageProps} />,
+            <Component {...pageProps} />
         </CookiesProvider>,
     );
 }

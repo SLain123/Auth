@@ -17,7 +17,7 @@ const Register = () => {
         [] | { msg: string; value: string }[]
     >([]);
     const [resultMessage, setResultMessage] = useState('');
-    const [cookies] = useCookies(['user-data']);
+    const [cookies] = useCookies(['token']);
     const [loaded, setLoaded] = useState(false);
 
     const spinnerWhite = <BeatLoader color='white' loading size={10} />;
@@ -84,8 +84,8 @@ const Register = () => {
     });
 
     useEffect(() => {
-        if (cookies['user-data'] && cookies['user-data']?.token) {
-            Router.push('/');
+        if (cookies.token) {
+            location.href = '/';
         } else {
             setLoaded(true);
         }
