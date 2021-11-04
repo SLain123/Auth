@@ -5,7 +5,7 @@ import { useCookies } from 'react-cookie';
 import Styles from './Header.module.scss';
 
 const Header: React.FC = ({ children }) => {
-    const [cookies, setCookie, removeCookie] = useCookies(['userId', 'token']);
+    const [cookies, setCookie, removeCookie] = useCookies(['authData']);
     const [contentLoaded, setContentLoaded] = useState(false);
     const navListAuth = [
         { name: 'Home', link: '/' },
@@ -18,7 +18,7 @@ const Header: React.FC = ({ children }) => {
     ];
 
     const navList =
-        cookies.token && contentLoaded
+        cookies.authData && contentLoaded
             ? navListAuth.map(({ name, link }) => (
                   <li key={name}>
                       <Link href={link}>{name}</Link>
@@ -41,14 +41,13 @@ const Header: React.FC = ({ children }) => {
             <header className={Styles.header}>
                 <ul className={Styles.menu}>
                     {navList}
-                    {cookies.token && contentLoaded && (
+                    {cookies.authData && contentLoaded && (
                         <li key='logout'>
                             <button
                                 className={Styles.logout_btn}
                                 type='button'
                                 onClick={() => {
-                                    removeCookie('userId');
-                                    removeCookie('token');
+                                    removeCookie('authData');
                                     location.href = '/login';
                                 }}
                             >

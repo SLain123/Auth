@@ -26,8 +26,29 @@ $shadow: rgb(214, 205, 205);
     justify-content: center;
     align-items: center;
     width: 100%;
+    margin-top: 24px;
 }
 
 .btn {
     margin-top: 10px;
+}
+
+.error {
+    &_list {
+        padding: 0;
+        margin: 0;
+    }
+
+    &_text {
+        color: rgb(172, 41, 41);
+        margin-bottom: 5px;
+        align-self: flex-start;
+        list-style-type: none;
+    }
+}
+
+.status_text {
+    color: #2e7d32;
+    margin: 0;
+    margin-top: 15px;
 }

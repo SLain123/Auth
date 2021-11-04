@@ -44,18 +44,43 @@ function stringAvatar(name: string) {
 }
 
 const Profile: React.FC = () => {
+    const [userData, setUserData] = useState({ firstName: '', lastName: '' });
     const { loading, request } = useHttp();
     const [serverErrrors, setServerErrors] = useState<
         [] | { msg: string; value: string }[]
     >([]);
-    const [resultMessage, setResultMessage] = useState('');
-    const [cookies] = useCookies(['token']);
+    const [cookies] = useCookies(['authData']);
     const [loaded, setLoaded] = useState(false);
 
     const spinnerWhite = <BeatLoader color='white' loading size={10} />;
     const spinnerGreen = (
         <DotLoader color='green' loading size={50} speedMultiplier={3} />
     );
+ 
+    const getUserData = async () => {
+        try {
+            request('http://localhost:5000/api/auth/profile', 'GET', null, {
+                authorization: cookies.authData.token,
+            }).then(({ firstName, lastName, errors }) => {
+                if (errors) {
+                    setServerErrors(errors);
+                } else {
+                    setServerErrors([]);
+                    setUserData({
+                        firstName,
+                        lastName,
+                    });
+                    formik.setValues({
+                        firstName,
+                        lastName,
+                    });
+                }
+            });
+        } catch (e) {
+            //@ts-ignore
+            setServerErrors([e.message]);
+        }
+    };
 
     const sendUserData = async (values: {
         firstName: string;
@@ -70,7 +95,6 @@ const Profile: React.FC = () => {
                 data.errors
                     ? setServerErrors(data.errors)
                     : setServerErrors([]);
-                setResultMessage(data.message);
             });
         } catch (e) {
             //@ts-ignore
@@ -99,7 +123,7 @@ const Profile: React.FC = () => {
     });
 
     useEffect(() => {
-        if (!cookies.token) {
+        if (!cookies.authData) {
             location.href = '/login';
         } else {
             setLoaded(true);
@@ -107,10 +131,8 @@ const Profile: React.FC = () => {
     }, [cookies]);
 
     useEffect(() => {
-        if (resultMessage === 'User was create!') {
-            Router.push('/login');
-        }
-    }, [resultMessage]);
+        getUserData();
+    }, []);
 
     if (!loaded) {
         return <div className={Styles.container}>{spinnerGreen}</div>;
@@ -137,7 +159,13 @@ const Profile: React.FC = () => {
                     variant='outlined'
                     fullWidth
                     margin='dense'
-                    onChange={formik.handleChange}
+                    onChange={(evt) => {
+                        formik.handleChange(evt);
+                        setUserData({
+                            ...userData,
+                            firstName: evt.target.value,
+                        });
+                    }}
                     onBlur={formik.handleBlur}
                     error={
                         formik.touched.firstName &&
@@ -147,6 +175,7 @@ const Profile: React.FC = () => {
                         formik.touched.firstName && formik.errors.firstName
                     }
                     disabled={loading}
+                    value={userData.firstName}
                 />
                 <TextField
                     name='lastName'
@@ -155,7 +184,13 @@ const Profile: React.FC = () => {
                     variant='outlined'
                     fullWidth
                     margin='dense'
-                    onChange={formik.handleChange}
+                    onChange={(evt) => {
+                        formik.handleChange(evt);
+                        setUserData({
+                            ...userData,
+                            lastName: evt.target.value,
+                        });
+                    }}
                     onBlur={formik.handleBlur}
                     error={
                         formik.touched.lastName &&
@@ -165,8 +200,9 @@ const Profile: React.FC = () => {
                         formik.touched.lastName && formik.errors.lastName
                     }
                     disabled={loading}
+                    value={userData.lastName}
                 />
-                <p className={Styles.status_text}>{resultMessage}</p>
+               
                 <Button
                     className={Styles.btn}
                     variant='contained'
@@ -176,7 +212,8 @@ const Profile: React.FC = () => {
                     disabled={
                         Boolean(formik.errors.firstName) ||
                         Boolean(formik.errors.lastName) ||
-                        loading
+                        loading ||
+                        Boolean(serverErrrors.length > 0)
                     }
                 >
                     {loading ? spinnerWhite : 'Send register data'}
