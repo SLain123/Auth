@@ -17,7 +17,17 @@ $shadow: rgb(214, 205, 205);
 }
 
 .avatar {
-    margin-bottom: 24px;
+    &_text {
+        margin-bottom: 24px;
+    }
+
+    &_photo {
+        width: 94px;
+        height: 94px;
+        overflow: hidden;
+        border-radius: 100%;
+        
+    }
 }
 
 .form {
@@ -30,7 +40,7 @@ $shadow: rgb(214, 205, 205);
 }
 
 .btn {
-    margin-top: 10px;
+    margin-top: 25px;
 }
 
 .error {

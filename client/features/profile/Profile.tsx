@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import Image from 'next/image';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import useHttp from '../../hooks/useHttp';
@@ -36,32 +37,38 @@ function stringAvatar(name: string) {
     return {
         sx: {
             bgcolor: stringToColor(name),
-            width: 64,
-            height: 64,
+            width: 94,
+            height: 94,
         },
-        children: `${name.split(' ')[0][0]}${name.split(' ')[1][0]}`,
+        children: `${name.split(' ')[0][0]} ${name.split(' ')[1][0]}`,
     };
 }
 
 const Profile: React.FC = () => {
     const [userData, setUserData] = useState({ firstName: '', lastName: '' });
+    const { firstName, lastName } = userData;
+    const [userAvatar, setUserAvatar] =
+        useState<SetStateAction<FileList | null>>(null);
     const { loading, request } = useHttp();
     const [serverErrrors, setServerErrors] = useState<
         [] | { msg: string; value: string }[]
     >([]);
+    const [resultMessage, setResultMessage] = useState('');
     const [cookies] = useCookies(['authData']);
-    const [loaded, setLoaded] = useState(false);
+    const [loadedBeforeRedirect, setLoadedBeforeRedirect] = useState(false);
+    const [userDataLoading, setUserDataLoading] = useState(true);
 
     const spinnerWhite = <BeatLoader color='white' loading size={10} />;
     const spinnerGreen = (
         <DotLoader color='green' loading size={50} speedMultiplier={3} />
     );
- 
+
     const getUserData = async () => {
         try {
             request('http://localhost:5000/api/auth/profile', 'GET', null, {
                 authorization: cookies.authData.token,
             }).then(({ firstName, lastName, errors }) => {
+                setUserDataLoading(false);
                 if (errors) {
                     setServerErrors(errors);
                 } else {
@@ -79,6 +86,7 @@ const Profile: React.FC = () => {
         } catch (e) {
             //@ts-ignore
             setServerErrors([e.message]);
+            setUserDataLoading(false);
         }
     };
 
@@ -86,15 +94,23 @@ const Profile: React.FC = () => {
         firstName: string;
         lastName: string;
     }) => {
-        const { firstName, lastName } = values; //TODO: сделать загрузку данных пользователя и отправку данных в другой функции;
+        const { firstName, lastName } = values;
         try {
-            request('http://localhost:5000/api/auth/register', 'POST', {
-                firstName,
-                lastName,
-            }).then((data) => {
+            request(
+                'http://localhost:5000/api/auth/profile/change',
+                'POST',
+                {
+                    firstName,
+                    lastName,
+                },
+                {
+                    authorization: cookies.authData.token,
+                },
+            ).then((data) => {
                 data.errors
                     ? setServerErrors(data.errors)
                     : setServerErrors([]);
+                setResultMessage(data.message);
             });
         } catch (e) {
             //@ts-ignore
@@ -126,7 +142,7 @@ const Profile: React.FC = () => {
         if (!cookies.authData) {
             location.href = '/login';
         } else {
-            setLoaded(true);
+            setLoadedBeforeRedirect(true);
         }
     }, [cookies]);
 
@@ -134,15 +150,60 @@ const Profile: React.FC = () => {
         getUserData();
     }, []);
 
-    if (!loaded) {
+    if (!loadedBeforeRedirect || userDataLoading) {
         return <div className={Styles.container}>{spinnerGreen}</div>;
     }
 
     return (
         <div className={Styles.container}>
             <h3 className={Styles.title}>Change user profile:</h3>
-            <Avatar {...stringAvatar('Kent Dodds')} className={Styles.avatar} />
-            <input type='file' />
+            {userAvatar ? (
+                <div className={Styles.avatar_photo}>
+                    <Image
+                        src={userAvatar.preview}
+                        alt='user_photo'
+                        width={94}
+                        height={94}
+                    />
+                </div>
+            ) : (
+                <Avatar
+                    {...stringAvatar(
+                        !firstName || !lastName
+                            ? 'No Avatar'
+                            : `${firstName[0].toUpperCase()} ${lastName[0].toUpperCase()}`,
+                    )}
+                    className={Styles.avatar_text}
+                />
+            )}
+
+            <input
+                accept='image/*'
+                className={Styles.uploader}
+                style={{ display: 'none' }}
+                id='raised-button-file'
+                type='file'
+                onChange={(evt: React.ChangeEvent<HTMLInputElement>) => {
+                    if (evt.target.files && evt.target.files[0]) {
+                        const photo = evt.target.files[0];
+                        const reader = new FileReader();
+                        
+                        reader.readAsDataURL(photo);
+                        reader.onload = function () {
+                            setUserAvatar(
+                                Object.assign(photo, {
+                                    preview: URL.createObjectURL(photo),
+                                }),
+                            );
+                        };
+                    }
+                }}
+            />
+            <label htmlFor='raised-button-file'>
+                <Button component='span' className={Styles.uplpad_btn}>
+                    Upload Avatar
+                </Button>
+            </label>
 
             <form className={Styles.form} onSubmit={formik.handleSubmit}>
                 <ul className={Styles.error_list}>
@@ -175,7 +236,7 @@ const Profile: React.FC = () => {
                         formik.touched.firstName && formik.errors.firstName
                     }
                     disabled={loading}
-                    value={userData.firstName}
+                    value={firstName}
                 />
                 <TextField
                     name='lastName'
@@ -200,9 +261,9 @@ const Profile: React.FC = () => {
                         formik.touched.lastName && formik.errors.lastName
                     }
                     disabled={loading}
-                    value={userData.lastName}
+                    value={lastName}
                 />
-               
+                <p className={Styles.status_text}>{resultMessage}</p>
                 <Button
                     className={Styles.btn}
                     variant='contained'
