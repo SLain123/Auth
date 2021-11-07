@@ -26,7 +26,7 @@ $shadow: rgb(214, 205, 205);
         height: 94px;
         overflow: hidden;
         border-radius: 100%;
-        
+        margin-bottom: 24px;
     }
 }
 
@@ -61,4 +61,8 @@ $shadow: rgb(214, 205, 205);
     color: #2e7d32;
     margin: 0;
     margin-top: 15px;
+}
+
+.upload_btn {
+    padding: 12px 16px;
 }

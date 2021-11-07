@@ -13,6 +13,10 @@ import DotLoader from 'react-spinners/DotLoader';
 
 import Styles from './Profile.module.scss';
 
+interface FileWithPreviewI extends File {
+    preview: string;
+}
+
 function stringToColor(string: string) {
     let hash = 0;
     let i;
@@ -47,8 +51,8 @@ function stringAvatar(name: string) {
 const Profile: React.FC = () => {
     const [userData, setUserData] = useState({ firstName: '', lastName: '' });
     const { firstName, lastName } = userData;
-    const [userAvatar, setUserAvatar] =
-        useState<SetStateAction<FileList | null>>(null);
+    const [userAvatar, setUserAvatar] = useState<any | null>(null);
+    const [avatarPreview, setAvatarPreview] = useState<any>(null);
     const { loading, request } = useHttp();
     const [serverErrrors, setServerErrors] = useState<
         [] | { msg: string; value: string }[]
@@ -118,6 +122,32 @@ const Profile: React.FC = () => {
         }
     };
 
+    const sendUserAvatar = async () => {
+        try {
+            const reader = new FileReader();
+            reader.readAsDataURL(userAvatar);
+            reader.onload = () => {
+                const { result } = reader;
+
+                request(
+                    'http://localhost:5000/api/auth/upload',
+                    'POST',
+                    {
+                        result,
+                    },
+                    {
+                        authorization: cookies.authData.token,
+                    },
+                ).then((data) => {
+                    console.log(data);
+                });
+            };
+        } catch (e) {
+            //@ts-ignore
+            setServerErrors([e.message]);
+        }
+    };
+
     const formik = useFormik({
         initialValues: {
             firstName: '',
@@ -157,10 +187,10 @@ const Profile: React.FC = () => {
     return (
         <div className={Styles.container}>
             <h3 className={Styles.title}>Change user profile:</h3>
-            {userAvatar ? (
+            {avatarPreview ? (
                 <div className={Styles.avatar_photo}>
                     <Image
-                        src={userAvatar.preview}
+                        src={avatarPreview}
                         alt='user_photo'
                         width={94}
                         height={94}
@@ -186,21 +216,18 @@ const Profile: React.FC = () => {
                 onChange={(evt: React.ChangeEvent<HTMLInputElement>) => {
                     if (evt.target.files && evt.target.files[0]) {
                         const photo = evt.target.files[0];
+                        setUserAvatar(photo);
+
                         const reader = new FileReader();
-                        
                         reader.readAsDataURL(photo);
-                        reader.onload = function () {
-                            setUserAvatar(
-                                Object.assign(photo, {
-                                    preview: URL.createObjectURL(photo),
-                                }),
-                            );
+                        reader.onload = () => {
+                            setAvatarPreview(URL.createObjectURL(photo));
                         };
                     }
                 }}
             />
             <label htmlFor='raised-button-file'>
-                <Button component='span' className={Styles.uplpad_btn}>
+                <Button component='span' className={Styles.upload_btn}>
                     Upload Avatar
                 </Button>
             </label>
@@ -279,6 +306,9 @@ const Profile: React.FC = () => {
                 >
                     {loading ? spinnerWhite : 'Send register data'}
                 </Button>
+                <button type='button' onClick={sendUserAvatar}>
+                    Avatar
+                </button>
             </form>
         </div>
     );

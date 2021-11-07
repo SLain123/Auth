@@ -209,7 +209,7 @@ router.post(
 
                 const { userId } = decoded;
                 const { firstName, lastName } = req.body;
-            
+
                 await User.findOneAndUpdate(
                     { userId },
                     { firstName, lastName },
@@ -235,5 +235,12 @@ router.post(
         }
     },
 );
+
+// /api/auth/upload
+router.post('/upload', async (req, res) => {
+    console.log(req.body);
+
+    res.send(req.body);
+});
 
 module.exports = router;
