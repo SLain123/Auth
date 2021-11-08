@@ -49,6 +49,7 @@ router.post(
                 password: hashedPassword,
                 firstName,
                 lastName,
+                avatar: null,
             });
 
             await user.save();
@@ -159,8 +160,13 @@ router.get('/profile', async (req, res) => {
                 });
             }
 
-            const { firstName, lastName } = user;
-            return res.json({ message: 'User found', firstName, lastName });
+            const { firstName, lastName, avatar } = user;
+            return res.json({
+                message: 'User found',
+                firstName,
+                lastName,
+                avatar,
+            });
         });
     } catch (e) {
         res.status(500).json({ message: 'Something was wrong...' });
@@ -236,11 +242,66 @@ router.post(
     },
 );
 
-// /api/auth/upload
-router.post('/upload', async (req, res) => {
-    console.log(req.body);
+// /api/auth/profile/avatar
+router.post(
+    '/profile/avatar',
+    [check('avatar', 'Avatar must be base64 format').notEmpty()],
+    async (req, res) => {
+        try {
+            const errors = validationResult(req);
 
-    res.send(req.body);
-});
+            if (!errors.isEmpty()) {
+                return res.status(400).json({
+                    errors: errors.array(),
+                    message: 'Data uncorrect!',
+                });
+            }
+
+            if (!req.headers.authorization) {
+                return res.status(401).json({
+                    errors: [
+                        {
+                            msg: 'Unauthorized! Token missing in the request',
+                        },
+                    ],
+                });
+            }
+
+            const token = req.headers.authorization;
+            jwt.verify(token, config.get('jwtSecret'), async (err, decoded) => {
+                if (err) {
+                    return res.status(400).json({
+                        errors: [
+                            {
+                                msg: 'Token uncorrect',
+                            },
+                        ],
+                    });
+                }
+
+                const { userId } = decoded;
+                const { avatar } = req.body;
+
+                await User.findOneAndUpdate({ userId }, { avatar }, (err) => {
+                    if (err) {
+                        return res.status(400).json({
+                            errors: [
+                                {
+                                    msg: 'User not found',
+                                },
+                            ],
+                        });
+                    } else {
+                        return res.json({
+                            message: 'User data has been changed',
+                        });
+                    }
+                });
+            });
+        } catch (e) {
+            res.status(500).json({ message: 'Something was wrong...' });
+        }
+    },
+);
 
 module.exports = router;

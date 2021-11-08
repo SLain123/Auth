@@ -7,15 +7,10 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import Avatar from '@mui/material/Avatar';
 import { useCookies } from 'react-cookie';
-import Router from 'next/router';
 import BeatLoader from 'react-spinners/BeatLoader';
 import DotLoader from 'react-spinners/DotLoader';
 
 import Styles from './Profile.module.scss';
-
-interface FileWithPreviewI extends File {
-    preview: string;
-}
 
 function stringToColor(string: string) {
     let hash = 0;
@@ -51,8 +46,8 @@ function stringAvatar(name: string) {
 const Profile: React.FC = () => {
     const [userData, setUserData] = useState({ firstName: '', lastName: '' });
     const { firstName, lastName } = userData;
-    const [userAvatar, setUserAvatar] = useState<any | null>(null);
-    const [avatarPreview, setAvatarPreview] = useState<any>(null);
+    const [userAvatar, setUserAvatar] = useState<File | null>(null);
+    const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
     const { loading, request } = useHttp();
     const [serverErrrors, setServerErrors] = useState<
         [] | { msg: string; value: string }[]
@@ -71,7 +66,7 @@ const Profile: React.FC = () => {
         try {
             request('http://localhost:5000/api/auth/profile', 'GET', null, {
                 authorization: cookies.authData.token,
-            }).then(({ firstName, lastName, errors }) => {
+            }).then(({ firstName, lastName, avatar, errors }) => {
                 setUserDataLoading(false);
                 if (errors) {
                     setServerErrors(errors);
@@ -81,6 +76,8 @@ const Profile: React.FC = () => {
                         firstName,
                         lastName,
                     });
+                    setAvatarPreview(avatar);
+
                     formik.setValues({
                         firstName,
                         lastName,
@@ -122,25 +119,23 @@ const Profile: React.FC = () => {
         }
     };
 
-    const sendUserAvatar = async () => {
+    const sendUserAvatar = async (avatar: File) => {
         try {
             const reader = new FileReader();
-            reader.readAsDataURL(userAvatar);
+            reader.readAsDataURL(avatar);
             reader.onload = () => {
-                const { result } = reader;
+                const { result: avatar } = reader;
 
                 request(
-                    'http://localhost:5000/api/auth/upload',
+                    'http://localhost:5000/api/auth/profile/avatar',
                     'POST',
                     {
-                        result,
+                        avatar,
                     },
                     {
                         authorization: cookies.authData.token,
                     },
-                ).then((data) => {
-                    console.log(data);
-                });
+                );
             };
         } catch (e) {
             //@ts-ignore
@@ -165,6 +160,7 @@ const Profile: React.FC = () => {
         }),
         onSubmit: (values) => {
             sendUserData(values);
+            userAvatar && sendUserAvatar(userAvatar);
         },
     });
 
@@ -304,11 +300,8 @@ const Profile: React.FC = () => {
                         Boolean(serverErrrors.length > 0)
                     }
                 >
-                    {loading ? spinnerWhite : 'Send register data'}
+                    {loading ? spinnerWhite : 'Change profile'}
                 </Button>
-                <button type='button' onClick={sendUserAvatar}>
-                    Avatar
-                </button>
             </form>
         </div>
     );
