@@ -46,8 +46,10 @@ function stringAvatar(name: string) {
 const Profile: React.FC = () => {
     const [userData, setUserData] = useState({ firstName: '', lastName: '' });
     const { firstName, lastName } = userData;
+    const avatarSize = 200;
     const [userAvatar, setUserAvatar] = useState<File | null>(null);
     const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
+    const [uploadError, setUploadError] = useState(false);
     const { loading, request } = useHttp();
     const [serverErrrors, setServerErrors] = useState<
         [] | { msg: string; value: string }[]
@@ -212,13 +214,18 @@ const Profile: React.FC = () => {
                 onChange={(evt: React.ChangeEvent<HTMLInputElement>) => {
                     if (evt.target.files && evt.target.files[0]) {
                         const photo = evt.target.files[0];
-                        setUserAvatar(photo);
+                        if (Math.ceil(photo.size / 1024) > avatarSize) {
+                            setUploadError(true);
+                        } else {
+                            setUserAvatar(photo);
+                            setUploadError(false);
 
-                        const reader = new FileReader();
-                        reader.readAsDataURL(photo);
-                        reader.onload = () => {
-                            setAvatarPreview(URL.createObjectURL(photo));
-                        };
+                            const reader = new FileReader();
+                            reader.readAsDataURL(photo);
+                            reader.onload = () => {
+                                setAvatarPreview(URL.createObjectURL(photo));
+                            };
+                        }
                     }
                 }}
             />
@@ -227,6 +234,11 @@ const Profile: React.FC = () => {
                     Upload Avatar
                 </Button>
             </label>
+            {uploadError && (
+                <span className={Styles.upload_error}>
+                    {`Max file size was exceeded (${avatarSize} kb)`}
+                </span>
+            )}
 
             <form className={Styles.form} onSubmit={formik.handleSubmit}>
                 <ul className={Styles.error_list}>

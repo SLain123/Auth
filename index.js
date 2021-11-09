@@ -7,9 +7,14 @@ const app = express();
 const PORT = config.get('port') || 5000;
 const MONGOURI = config.get('mongoURI');
 
-
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: '1mb', extended: true }));
+app.use(
+    express.urlencoded({
+        extended: true,
+        limit: '1mb',
+        parameterLimit: 1000,
+    }),
+);
 app.use(formData.parse());
 app.use('/api/auth', require('./routes/auth.routes'));
 
