@@ -66,7 +66,7 @@ const Profile: React.FC = () => {
 
     const getUserData = async () => {
         try {
-            request('http://localhost:5000/api/auth/profile', 'GET', null, {
+            request('http://localhost:5000/api/profile', 'GET', null, {
                 authorization: cookies.authData.token,
             }).then(({ firstName, lastName, avatar, errors }) => {
                 setUserDataLoading(false);
@@ -100,7 +100,7 @@ const Profile: React.FC = () => {
         const { firstName, lastName } = values;
         try {
             request(
-                'http://localhost:5000/api/auth/profile/change',
+                'http://localhost:5000/api/profile',
                 'POST',
                 {
                     firstName,
@@ -129,7 +129,7 @@ const Profile: React.FC = () => {
                 const { result: avatar } = reader;
 
                 request(
-                    'http://localhost:5000/api/auth/profile/avatar',
+                    'http://localhost:5000/api/profile/avatar',
                     'POST',
                     {
                         avatar,
