@@ -1,33 +1,31 @@
 import { useState } from 'react';
 import useHttp from '../hooks/useHttp';
-import { useCookies } from 'react-cookie';
 
-const useLoginService = () => {
+const useRegisterService = () => {
     const { loading, request } = useHttp();
     const [serverErrrors, setServerErrors] = useState<
         [] | { msg: string; value: string }[]
     >([]);
     const [resultMessage, setResultMessage] = useState('');
-    const [cookies, setCookie] = useCookies(['authData']);
 
-    const sendLoginData = async (values: {
+    const sendRegisterData = async (values: {
         email: string;
         password: string;
+        firstName: string;
+        lastName: string;
     }) => {
-        const { email, password } = values;
+        const { email, password, firstName, lastName } = values;
         try {
-            request('http://localhost:5000/api/auth/login', 'POST', {
+            request('http://localhost:5000/api/auth/register', 'POST', {
                 email,
                 password,
+                firstName,
+                lastName,
             }).then((data) => {
                 data.errors
                     ? setServerErrors(data.errors)
                     : setServerErrors([]);
                 setResultMessage(data.message);
-                if (data.token) {
-                    const { token, userId } = data;
-                    setCookie('authData', { userId, token });
-                }
             });
         } catch (e) {
             //@ts-ignore
@@ -35,7 +33,7 @@ const useLoginService = () => {
         }
     };
 
-    return { sendLoginData, loading, serverErrrors, resultMessage };
+    return { sendRegisterData, loading, serverErrrors, resultMessage };
 };
 
-export default useLoginService;
+export default useRegisterService;

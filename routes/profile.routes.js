@@ -31,7 +31,7 @@ router.get('/', async (req, res) => {
             }
 
             const { userId } = decoded;
-            const user = await User.findOne({ userId });
+            const user = await User.findOne({ _id: userId });
 
             if (!user) {
                 return res.status(400).json({
@@ -100,7 +100,7 @@ router.post(
                 const { firstName, lastName } = req.body;
 
                 await User.findOneAndUpdate(
-                    { userId },
+                    { _id: userId },
                     { firstName, lastName },
                     (err) => {
                         if (err) {
@@ -165,21 +165,25 @@ router.post(
                 const { userId } = decoded;
                 const { avatar } = req.body;
 
-                await User.findOneAndUpdate({ userId }, { avatar }, (err) => {
-                    if (err) {
-                        return res.status(400).json({
-                            errors: [
-                                {
-                                    msg: 'User not found',
-                                },
-                            ],
-                        });
-                    } else {
-                        return res.json({
-                            message: 'User data has been changed',
-                        });
-                    }
-                });
+                await User.findOneAndUpdate(
+                    { _id: userId },
+                    { avatar },
+                    (err) => {
+                        if (err) {
+                            return res.status(400).json({
+                                errors: [
+                                    {
+                                        msg: 'User not found',
+                                    },
+                                ],
+                            });
+                        } else {
+                            return res.json({
+                                message: 'User data has been changed',
+                            });
+                        }
+                    },
+                );
             });
         } catch (e) {
             res.status(500).json({ message: 'Something was wrong...' });

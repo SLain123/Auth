@@ -1,54 +1,27 @@
 import React, { useState, useEffect } from 'react';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
-import useHttp from '../../hooks/useHttp';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import BeatLoader from 'react-spinners/BeatLoader';
 import DotLoader from 'react-spinners/DotLoader';
 import { useCookies } from 'react-cookie';
 import Router from 'next/router';
+import useRegisterService from '../../service/RegisterService';
 
 import Styles from './Register.module.scss';
 
 const Register = () => {
-    const { loading, request } = useHttp();
-    const [serverErrrors, setServerErrors] = useState<
-        [] | { msg: string; value: string }[]
-    >([]);
-    const [resultMessage, setResultMessage] = useState('');
     const [cookies] = useCookies(['authData']);
     const [loaded, setLoaded] = useState(false);
+    const registerService = useRegisterService();
+    const { sendRegisterData, loading, serverErrrors, resultMessage } =
+        registerService;
 
     const spinnerWhite = <BeatLoader color='white' loading size={10} />;
     const spinnerGreen = (
         <DotLoader color='green' loading size={50} speedMultiplier={3} />
     );
-
-    const sendRegisterData = async (values: {
-        email: string;
-        password: string;
-        firstName: string;
-        lastName: string;
-    }) => {
-        const { email, password, firstName, lastName } = values;
-        try {
-            request('http://localhost:5000/api/auth/register', 'POST', {
-                email,
-                password,
-                firstName,
-                lastName,
-            }).then((data) => {
-                data.errors
-                    ? setServerErrors(data.errors)
-                    : setServerErrors([]);
-                setResultMessage(data.message);
-            });
-        } catch (e) {
-            //@ts-ignore
-            setServerErrors([e.message]);
-        }
-    };
 
     const formik = useFormik({
         initialValues: {
