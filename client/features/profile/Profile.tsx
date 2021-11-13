@@ -2,148 +2,43 @@ import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
-import useHttp from '../../hooks/useHttp';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import Avatar from '@mui/material/Avatar';
 import { useCookies } from 'react-cookie';
 import BeatLoader from 'react-spinners/BeatLoader';
 import DotLoader from 'react-spinners/DotLoader';
+import useProfileService from '../../service/ProfileService';
+import stringAvatar from './subFuncs';
 
 import Styles from './Profile.module.scss';
 
-function stringToColor(string: string) {
-    let hash = 0;
-    let i;
-
-    /* eslint-disable no-bitwise */
-    for (i = 0; i < string.length; i += 1) {
-        hash = string.charCodeAt(i) + ((hash << 5) - hash);
-    }
-
-    let color = '#';
-
-    for (i = 0; i < 3; i += 1) {
-        const value = (hash >> (i * 8)) & 0xff;
-        color += `00${value.toString(16)}`.substr(-2);
-    }
-    /* eslint-enable no-bitwise */
-
-    return color;
-}
-
-function stringAvatar(name: string) {
-    return {
-        sx: {
-            bgcolor: stringToColor(name),
-            width: 94,
-            height: 94,
-        },
-        children: `${name.split(' ')[0][0]} ${name.split(' ')[1][0]}`,
-    };
-}
-
 const Profile: React.FC = () => {
+    const avatarSize = 200;
     const [userData, setUserData] = useState({ firstName: '', lastName: '' });
     const { firstName, lastName } = userData;
-    const avatarSize = 200;
     const [userAvatar, setUserAvatar] = useState<File | null>(null);
     const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
-    const [uploadError, setUploadError] = useState(false);
-    const { loading, request } = useHttp();
-    const [serverErrrors, setServerErrors] = useState<
-        [] | { msg: string; value: string }[]
-    >([]);
-    const [resultMessage, setResultMessage] = useState('');
     const [cookies] = useCookies(['authData']);
     const [loadedBeforeRedirect, setLoadedBeforeRedirect] = useState(false);
+    const [uploadError, setUploadError] = useState(false);
     const [userDataLoading, setUserDataLoading] = useState(true);
+
+    const profileService = useProfileService();
+    const {
+        getUserData,
+        sendUserData,
+        sendUserAvatar,
+        serverErrrors,
+        setServerErrors,
+        loading,
+        resultMessage,
+    } = profileService;
 
     const spinnerWhite = <BeatLoader color='white' loading size={10} />;
     const spinnerGreen = (
         <DotLoader color='green' loading size={50} speedMultiplier={3} />
     );
-
-    const getUserData = async () => {
-        try {
-            request('http://localhost:5000/api/profile', 'GET', null, {
-                authorization: cookies.authData.token,
-            }).then(({ firstName, lastName, avatar, errors }) => {
-                setUserDataLoading(false);
-                if (errors) {
-                    setServerErrors(errors);
-                } else {
-                    setServerErrors([]);
-                    setUserData({
-                        firstName,
-                        lastName,
-                    });
-                    setAvatarPreview(avatar);
-
-                    formik.setValues({
-                        firstName,
-                        lastName,
-                    });
-                }
-            });
-        } catch (e) {
-            //@ts-ignore
-            setServerErrors([e.message]);
-            setUserDataLoading(false);
-        }
-    };
-
-    const sendUserData = async (values: {
-        firstName: string;
-        lastName: string;
-    }) => {
-        const { firstName, lastName } = values;
-        try {
-            request(
-                'http://localhost:5000/api/profile',
-                'POST',
-                {
-                    firstName,
-                    lastName,
-                },
-                {
-                    authorization: cookies.authData.token,
-                },
-            ).then((data) => {
-                data.errors
-                    ? setServerErrors(data.errors)
-                    : setServerErrors([]);
-                setResultMessage(data.message);
-            });
-        } catch (e) {
-            //@ts-ignore
-            setServerErrors([e.message]);
-        }
-    };
-
-    const sendUserAvatar = async (avatar: File) => {
-        try {
-            const reader = new FileReader();
-            reader.readAsDataURL(avatar);
-            reader.onload = () => {
-                const { result: avatar } = reader;
-
-                request(
-                    'http://localhost:5000/api/profile/avatar',
-                    'POST',
-                    {
-                        avatar,
-                    },
-                    {
-                        authorization: cookies.authData.token,
-                    },
-                );
-            };
-        } catch (e) {
-            //@ts-ignore
-            setServerErrors([e.message]);
-        }
-    };
 
     const formik = useFormik({
         initialValues: {
@@ -175,7 +70,26 @@ const Profile: React.FC = () => {
     }, [cookies]);
 
     useEffect(() => {
-        getUserData();
+        getUserData()
+            .then(({ firstName, lastName, avatar, errors }) => {
+                setUserDataLoading(false);
+                if (errors) {
+                    setServerErrors(errors);
+                } else {
+                    setServerErrors([]);
+                    setUserData({
+                        firstName,
+                        lastName,
+                    });
+                    setAvatarPreview(avatar);
+
+                    formik.setValues({
+                        firstName,
+                        lastName,
+                    });
+                }
+            })
+            .catch(() => setUserDataLoading(false));
     }, []);
 
     if (!loadedBeforeRedirect || userDataLoading) {
