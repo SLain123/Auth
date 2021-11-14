@@ -122,4 +122,38 @@ router.post(
     },
 );
 
+// /api/auth/check
+router.get('/check', async (req, res) => {
+    try {
+        if (!req.headers.authorization) {
+            return res.status(401).json({
+                errors: [
+                    {
+                        msg: 'Unauthorized! Token missing in the request',
+                        validate: false,
+                    },
+                ],
+            });
+        }
+
+        const token = req.headers.authorization;
+        jwt.verify(token, config.get('jwtSecret'), async (err) => {
+            if (err) {
+                return res.status(400).json({
+                    errors: [
+                        {
+                            msg: 'Token uncorrect',
+                            validate: false,
+                        },
+                    ],
+                });
+            }
+
+            return res.json({ message: 'Token correct', validate: true });
+        });
+    } catch (e) {
+        res.status(500).json({ message: 'Something was wrong...' });
+    }
+});
+
 module.exports = router;

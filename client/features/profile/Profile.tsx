@@ -5,11 +5,12 @@ import Button from '@mui/material/Button';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import Avatar from '@mui/material/Avatar';
-import { useCookies } from 'react-cookie';
 import BeatLoader from 'react-spinners/BeatLoader';
 import DotLoader from 'react-spinners/DotLoader';
 import useProfileService from '../../service/ProfileService';
 import stringAvatar from './subFuncs';
+import { useAppSelector } from '../../hooks/useAppSelector';
+import { getAuthSelector } from '../auth/authSlice';
 
 import Styles from './Profile.module.scss';
 
@@ -19,10 +20,11 @@ const Profile: React.FC = () => {
     const { firstName, lastName } = userData;
     const [userAvatar, setUserAvatar] = useState<File | null>(null);
     const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
-    const [cookies] = useCookies(['authData']);
-    const [loadedBeforeRedirect, setLoadedBeforeRedirect] = useState(false);
     const [uploadError, setUploadError] = useState(false);
     const [userDataLoading, setUserDataLoading] = useState(true);
+
+    const authStatus = useAppSelector(getAuthSelector);
+    const { isLoading, isUserAuth } = authStatus;
 
     const profileService = useProfileService();
     const {
@@ -62,12 +64,10 @@ const Profile: React.FC = () => {
     });
 
     useEffect(() => {
-        if (!cookies.authData) {
+        if (!isUserAuth && !isLoading) {
             location.href = '/login';
-        } else {
-            setLoadedBeforeRedirect(true);
         }
-    }, [cookies]);
+    }, [isUserAuth, isLoading]);
 
     useEffect(() => {
         getUserData()
@@ -92,7 +92,7 @@ const Profile: React.FC = () => {
             .catch(() => setUserDataLoading(false));
     }, []);
 
-    if (!loadedBeforeRedirect || userDataLoading) {
+    if (isLoading || userDataLoading) {
         return <div className={Styles.container}>{spinnerGreen}</div>;
     }
 

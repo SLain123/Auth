@@ -1,12 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useCookies } from 'react-cookie';
+import useCheckTokenService from '../../service/TokenCheckService';
+import { useAppSelector } from '../../hooks/useAppSelector';
+import { getAuthSelector } from '../auth/authSlice';
 
 import Styles from './Header.module.scss';
 
 const Header: React.FC = ({ children }) => {
-    const [cookies, setCookie, removeCookie] = useCookies(['authData']);
+    const [cookies, _setCookie, removeCookie] = useCookies(['authData']);
     const [contentLoaded, setContentLoaded] = useState(false);
+    const checkTokenService = useCheckTokenService(
+        cookies.authData ? cookies.authData.token : null,
+    );
     const navListAuth = [
         { name: 'Home', link: '/' },
         { name: 'Profile', link: '/profile' },
@@ -16,9 +22,11 @@ const Header: React.FC = ({ children }) => {
         { name: 'Login', link: '/login' },
         { name: 'Registration', link: '/reg' },
     ];
+    const authStatus = useAppSelector(getAuthSelector);
+    const { isUserAuth } = authStatus;
 
     const navList =
-        cookies.authData && contentLoaded
+        isUserAuth && contentLoaded
             ? navListAuth.map(({ name, link }) => (
                   <li key={name}>
                       <Link href={link}>{name}</Link>
@@ -33,7 +41,12 @@ const Header: React.FC = ({ children }) => {
     useEffect(() => {
         if (document.readyState === 'interactive') {
             setContentLoaded(true);
-        }
+        } 
+    }, []);
+
+    useEffect(() => {
+        const { checkToken } = checkTokenService;
+        checkToken();
     }, []);
 
     return (
@@ -41,7 +54,7 @@ const Header: React.FC = ({ children }) => {
             <header className={Styles.header}>
                 <ul className={Styles.menu}>
                     {navList}
-                    {cookies.authData && contentLoaded && (
+                    {isUserAuth && contentLoaded && (
                         <li key='logout'>
                             <button
                                 className={Styles.logout_btn}

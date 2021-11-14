@@ -1,19 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import BeatLoader from 'react-spinners/BeatLoader';
 import DotLoader from 'react-spinners/DotLoader';
-import { useCookies } from 'react-cookie';
 import Router from 'next/router';
 import useRegisterService from '../../service/RegisterService';
+import { useAppSelector } from '../../hooks/useAppSelector';
+import { getAuthSelector } from '../auth/authSlice';
 
 import Styles from './Register.module.scss';
 
 const Register = () => {
-    const [cookies] = useCookies(['authData']);
-    const [loaded, setLoaded] = useState(false);
     const registerService = useRegisterService();
     const { sendRegisterData, loading, serverErrrors, resultMessage } =
         registerService;
@@ -22,6 +21,9 @@ const Register = () => {
     const spinnerGreen = (
         <DotLoader color='green' loading size={50} speedMultiplier={3} />
     );
+
+    const authStatus = useAppSelector(getAuthSelector);
+    const { isLoading, isUserAuth } = authStatus;
 
     const formik = useFormik({
         initialValues: {
@@ -57,12 +59,10 @@ const Register = () => {
     });
 
     useEffect(() => {
-        if (cookies.authData) {
+        if (isUserAuth) {
             location.href = '/';
-        } else {
-            setLoaded(true);
         }
-    }, [cookies]);
+    }, [isUserAuth]);
 
     useEffect(() => {
         if (resultMessage === 'User was create!') {
@@ -70,7 +70,7 @@ const Register = () => {
         }
     }, [resultMessage]);
 
-    if (!loaded) {
+    if (isLoading) {
         return <div className={Styles.container}>{spinnerGreen}</div>;
     }
 

@@ -7,16 +7,24 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import BeatLoader from 'react-spinners/BeatLoader';
 import DotLoader from 'react-spinners/DotLoader';
+import { useAppSelector } from '../../hooks/useAppSelector';
+import { getAuthSelector } from '../auth/authSlice';
 import { useCookies } from 'react-cookie';
+import useCheckTokenService from '../../service/TokenCheckService';
 
 import Styles from './Login.module.scss';
 
 const Login = () => {
-    const [cookies] = useCookies(['authData']);
-    const [loaded, setLoaded] = useState(false);
     const loginService = useLoginService();
     const { sendLoginData, loading, serverErrrors, resultMessage } =
         loginService;
+    const [cookies] = useCookies(['authData']);
+
+    const authStatus = useAppSelector(getAuthSelector);
+    const { isLoading, isUserAuth } = authStatus;
+    const checkTokenService = useCheckTokenService(
+        cookies.authData ? cookies.authData.token : null,
+    );
 
     const spinnerWhite = <BeatLoader color='white' loading size={10} />;
     const spinnerGreen = (
@@ -43,14 +51,19 @@ const Login = () => {
     });
 
     useEffect(() => {
-        if (cookies.authData) {
+        if (isUserAuth) {
             location.href = '/';
-        } else {
-            setLoaded(true);
+        }
+    }, [isUserAuth]);
+
+    useEffect(() => {
+        if (cookies.authData) {
+            const { checkToken } = checkTokenService;
+            checkToken();
         }
     }, [cookies]);
 
-    if (!loaded) {
+    if (isLoading) {
         return <div className={Styles.container}>{spinnerGreen}</div>;
     }
 
