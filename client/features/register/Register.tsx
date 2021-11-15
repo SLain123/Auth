@@ -30,27 +30,22 @@ const Register = () => {
             email: '',
             password: '',
             repeatPassword: '',
-            firstName: '',
-            lastName: '',
+            nickName: '',
         },
         validationSchema: Yup.object({
             email: Yup.string()
                 .email('Invalid email address')
                 .required('Required'),
             password: Yup.string()
-                .min(8, 'Must be 8 characters or more')
+                .min(6, 'Must be 6 characters or more')
                 .max(20, 'Must be 20 characters or less')
                 .required('Required'),
             repeatPassword: Yup.string()
                 .oneOf([Yup.ref('password'), null], 'Passwords must match')
                 .required('Required'),
-            firstName: Yup.string()
+            nickName: Yup.string()
                 .min(3, 'Must be 3 characters or more')
-                .max(20, 'Must be 20 characters or less')
-                .required('Required'),
-            lastName: Yup.string()
-                .min(3, 'Must be 3 characters or more')
-                .max(20, 'Must be 20 characters or less')
+                .max(40, 'Must be 40 characters or less')
                 .required('Required'),
         }),
         onSubmit: (values) => {
@@ -134,33 +129,18 @@ const Register = () => {
                 disabled={loading}
             />
             <TextField
-                name='firstName'
-                id='firstName'
-                label='First name'
+                name='nickName'
+                id='nickName'
+                label='nick name'
                 variant='outlined'
                 fullWidth
                 margin='dense'
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 error={
-                    formik.touched.firstName && Boolean(formik.errors.firstName)
+                    formik.touched.nickName && Boolean(formik.errors.nickName)
                 }
-                helperText={formik.touched.firstName && formik.errors.firstName}
-                disabled={loading}
-            />
-            <TextField
-                name='lastName'
-                id='lastName'
-                label='Last name'
-                variant='outlined'
-                fullWidth
-                margin='dense'
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                error={
-                    formik.touched.lastName && Boolean(formik.errors.lastName)
-                }
-                helperText={formik.touched.lastName && formik.errors.lastName}
+                helperText={formik.touched.nickName && formik.errors.nickName}
                 disabled={loading}
             />
             <p className={Styles.status_text}>{resultMessage}</p>
@@ -174,8 +154,7 @@ const Register = () => {
                     Boolean(formik.errors.email) ||
                     Boolean(formik.errors.password) ||
                     Boolean(formik.errors.repeatPassword) ||
-                    Boolean(formik.errors.firstName) ||
-                    Boolean(formik.errors.lastName) ||
+                    Boolean(formik.errors.nickName) ||
                     loading
                 }
             >

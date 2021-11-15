@@ -11,11 +11,10 @@ router.post(
     '/register',
     [
         check('email', 'Wrong email format').isEmail(),
-        check('password', 'Uncorrect password, minimum 8 symbols').isLength({
-            min: 8,
+        check('password', 'Uncorrect password, minimum 6 symbols').isLength({
+            min: 6,
         }),
-        check('firstName', 'User name is missing').notEmpty(),
-        check('lastName', 'User surname is missing').notEmpty(),
+        check('nickName', 'User nick name is missing').notEmpty(),
     ],
     async (req, res) => {
         try {
@@ -28,27 +27,39 @@ router.post(
                 });
             }
 
-            const { email, password, firstName, lastName } = req.body;
-            const candidate = await User.findOne({ email });
+            const { email, password, nickName } = req.body;
+            const candidateByMail = await User.findOne({ email });
+            const candidateByNick = await User.findOne({ nickName });
 
-            if (candidate) {
-                res.status(400).json({
-                    errors: [
-                        {
-                            msg: 'Username already exists!',
-                            value: email,
-                            param: 'email',
-                        },
-                    ],
-                });
+            if (candidateByMail || candidateByNick) {
+                candidateByMail &&
+                    res.status(400).json({
+                        errors: [
+                            {
+                                msg: 'User email already exists!',
+                                value: email,
+                                param: 'email',
+                            },
+                        ],
+                    });
+
+                candidateByNick &&
+                    res.status(400).json({
+                        errors: [
+                            {
+                                msg: 'User nick already exists!',
+                                value: nickName,
+                                param: 'nickName',
+                            },
+                        ],
+                    });
             }
 
             const hashedPassword = await bcrypt.hash(password, 11);
             const user = new User({
                 email,
                 password: hashedPassword,
-                firstName,
-                lastName,
+                nickName,
                 avatar: null,
             });
 

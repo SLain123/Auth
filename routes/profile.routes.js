@@ -43,11 +43,10 @@ router.get('/', async (req, res) => {
                 });
             }
 
-            const { firstName, lastName, avatar } = user;
+            const { nickName, avatar } = user;
             return res.json({
                 message: 'User found',
-                firstName,
-                lastName,
+                nickName,
                 avatar,
             });
         });
@@ -59,10 +58,7 @@ router.get('/', async (req, res) => {
 // /api/profile
 router.post(
     '/',
-    [
-        check('firstName', 'User name is missing').notEmpty(),
-        check('lastName', 'User surname is missing').notEmpty(),
-    ],
+    [check('nickName', 'User nick name is missing').notEmpty()],
     async (req, res) => {
         try {
             const errors = validationResult(req);
@@ -97,11 +93,11 @@ router.post(
                 }
 
                 const { userId } = decoded;
-                const { firstName, lastName } = req.body;
+                const { nickName } = req.body;
 
                 await User.findOneAndUpdate(
                     { _id: userId },
-                    { firstName, lastName },
+                    { nickName },
                     (err) => {
                         if (err) {
                             return res.status(400).json({

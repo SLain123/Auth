@@ -22,18 +22,14 @@ const useProfileService = () => {
         }
     };
 
-    const sendUserData = async (values: {
-        firstName: string;
-        lastName: string;
-    }) => {
-        const { firstName, lastName } = values;
+    const sendUserData = async (values: { nickName: string }) => {
+        const { nickName } = values;
         try {
             request(
                 'http://localhost:5000/api/profile',
                 'POST',
                 {
-                    firstName,
-                    lastName,
+                    nickName,
                 },
                 {
                     authorization: cookies.authData.token,

@@ -16,8 +16,7 @@ import Styles from './Profile.module.scss';
 
 const Profile: React.FC = () => {
     const avatarSize = 200;
-    const [userData, setUserData] = useState({ firstName: '', lastName: '' });
-    const { firstName, lastName } = userData;
+    const [nickName, setNickName] = useState('');
     const [userAvatar, setUserAvatar] = useState<File | null>(null);
     const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
     const [uploadError, setUploadError] = useState(false);
@@ -44,17 +43,12 @@ const Profile: React.FC = () => {
 
     const formik = useFormik({
         initialValues: {
-            firstName: '',
-            lastName: '',
+            nickName: '',
         },
         validationSchema: Yup.object({
-            firstName: Yup.string()
+            nickName: Yup.string()
                 .min(3, 'Must be 3 characters or more')
-                .max(20, 'Must be 20 characters or less')
-                .required('Required'),
-            lastName: Yup.string()
-                .min(3, 'Must be 3 characters or more')
-                .max(20, 'Must be 20 characters or less')
+                .max(40, 'Must be 40 characters or less')
                 .required('Required'),
         }),
         onSubmit: (values) => {
@@ -71,22 +65,16 @@ const Profile: React.FC = () => {
 
     useEffect(() => {
         getUserData()
-            .then(({ firstName, lastName, avatar, errors }) => {
+            .then(({ nickName, avatar, errors }) => {
                 setUserDataLoading(false);
                 if (errors) {
                     setServerErrors(errors);
                 } else {
                     setServerErrors([]);
-                    setUserData({
-                        firstName,
-                        lastName,
-                    });
+                    setNickName(nickName);
                     setAvatarPreview(avatar);
 
-                    formik.setValues({
-                        firstName,
-                        lastName,
-                    });
+                    formik.setValues({ nickName });
                 }
             })
             .catch(() => setUserDataLoading(false));
@@ -111,9 +99,9 @@ const Profile: React.FC = () => {
             ) : (
                 <Avatar
                     {...stringAvatar(
-                        !firstName || !lastName
+                        !nickName
                             ? 'No Avatar'
-                            : `${firstName[0].toUpperCase()} ${lastName[0].toUpperCase()}`,
+                            : `${nickName[0].toUpperCase()}}`,
                     )}
                     className={Styles.avatar_text}
                 />
@@ -163,54 +151,27 @@ const Profile: React.FC = () => {
                     ))}
                 </ul>
                 <TextField
-                    name='firstName'
-                    id='firstName'
-                    label='First name'
+                    name='nickName'
+                    id='nickName'
+                    label='Nick name'
                     variant='outlined'
                     fullWidth
                     margin='dense'
                     onChange={(evt) => {
                         formik.handleChange(evt);
-                        setUserData({
-                            ...userData,
-                            firstName: evt.target.value,
-                        });
+                        setNickName(evt.target.value);
+                        console.log(formik.values);
                     }}
                     onBlur={formik.handleBlur}
                     error={
-                        formik.touched.firstName &&
-                        Boolean(formik.errors.firstName)
+                        formik.touched.nickName &&
+                        Boolean(formik.errors.nickName)
                     }
                     helperText={
-                        formik.touched.firstName && formik.errors.firstName
+                        formik.touched.nickName && formik.errors.nickName
                     }
                     disabled={loading}
-                    value={firstName}
-                />
-                <TextField
-                    name='lastName'
-                    id='lastName'
-                    label='Last name'
-                    variant='outlined'
-                    fullWidth
-                    margin='dense'
-                    onChange={(evt) => {
-                        formik.handleChange(evt);
-                        setUserData({
-                            ...userData,
-                            lastName: evt.target.value,
-                        });
-                    }}
-                    onBlur={formik.handleBlur}
-                    error={
-                        formik.touched.lastName &&
-                        Boolean(formik.errors.lastName)
-                    }
-                    helperText={
-                        formik.touched.lastName && formik.errors.lastName
-                    }
-                    disabled={loading}
-                    value={lastName}
+                    value={nickName}
                 />
                 <p className={Styles.status_text}>{resultMessage}</p>
                 <Button
@@ -220,8 +181,7 @@ const Profile: React.FC = () => {
                     size='large'
                     type='submit'
                     disabled={
-                        Boolean(formik.errors.firstName) ||
-                        Boolean(formik.errors.lastName) ||
+                        Boolean(formik.errors.nickName) ||
                         loading ||
                         Boolean(serverErrrors.length > 0)
                     }

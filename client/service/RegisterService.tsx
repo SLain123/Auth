@@ -11,16 +11,14 @@ const useRegisterService = () => {
     const sendRegisterData = async (values: {
         email: string;
         password: string;
-        firstName: string;
-        lastName: string;
+        nickName: string;
     }) => {
-        const { email, password, firstName, lastName } = values;
+        const { email, password, nickName } = values;
         try {
             request('http://localhost:5000/api/auth/register', 'POST', {
                 email,
                 password,
-                firstName,
-                lastName,
+                nickName,
             }).then((data) => {
                 data.errors
                     ? setServerErrors(data.errors)
