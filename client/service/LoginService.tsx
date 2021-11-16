@@ -20,14 +20,14 @@ const useLoginService = () => {
                 email,
                 password,
             }).then((data) => {
-                data.errors
+                data && data.errors
                     ? setServerErrors(data.errors)
                     : setServerErrors([]);
-                setResultMessage(data.message);
-                if (data.token) {
+                data && setResultMessage(data.message);
+                if (data && data.token) {
                     const { token, userId } = data;
                     setCookie('authData', { userId, token });
-                }
+                } else setResultMessage('Something was wrong...');
             });
         } catch (e) {
             //@ts-ignore

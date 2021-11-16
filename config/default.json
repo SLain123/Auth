@@ -1,5 +1,6 @@
 {
     "port": 5000,
     "mongoURI": "mongodb+srv://Admin:12345s@cluster0.nwqfl.mongodb.net/multiTimer?retryWrites=true&w=majority",
-    "jwtSecret": "superSecret"
+    "jwtSecret": "superSecret",
+    "baseUrl": "http://localhost:5000"
 }

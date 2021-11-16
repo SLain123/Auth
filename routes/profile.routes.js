@@ -1,54 +1,29 @@
 const { Router } = require('express');
 const User = require('../models/User');
 const { check, validationResult } = require('express-validator');
-const jwt = require('jsonwebtoken');
-const config = require('config');
 const router = Router();
+const auth = require('../middleware/auth.middleware');
 
 // /api/profile
-router.get('/', async (req, res) => {
+router.get('/', auth, async (req, res) => {
     try {
-        if (!req.headers.authorization) {
-            return res.status(401).json({
+        const user = await User.findOne({ _id: req.user.userId });
+
+        if (!user) {
+            return res.status(400).json({
                 errors: [
                     {
-                        msg: 'Unauthorized! Token missing in the request',
+                        msg: 'User not found',
                     },
                 ],
             });
         }
 
-        const token = req.headers.authorization;
-        jwt.verify(token, config.get('jwtSecret'), async (err, decoded) => {
-            if (err) {
-                return res.status(400).json({
-                    errors: [
-                        {
-                            msg: 'Token uncorrect',
-                        },
-                    ],
-                });
-            }
-
-            const { userId } = decoded;
-            const user = await User.findOne({ _id: userId });
-
-            if (!user) {
-                return res.status(400).json({
-                    errors: [
-                        {
-                            msg: 'User not found',
-                        },
-                    ],
-                });
-            }
-
-            const { nickName, avatar } = user;
-            return res.json({
-                message: 'User found',
-                nickName,
-                avatar,
-            });
+        const { nickName, avatar } = user;
+        return res.json({
+            message: 'User found',
+            nickName,
+            avatar,
         });
     } catch (e) {
         res.status(500).json({ message: 'Something was wrong...' });
@@ -59,6 +34,7 @@ router.get('/', async (req, res) => {
 router.post(
     '/',
     [check('nickName', 'User nick name is missing').notEmpty()],
+    auth,
     async (req, res) => {
         try {
             const errors = validationResult(req);
@@ -70,51 +46,23 @@ router.post(
                 });
             }
 
-            if (!req.headers.authorization) {
-                return res.status(401).json({
+            const { nickName } = req.body;
+            const result = await User.findOneAndUpdate(
+                { _id: req.user.userId },
+                { nickName },
+            );
+
+            if (!result) {
+                return res.status(400).json({
                     errors: [
                         {
-                            msg: 'Unauthorized! Token missing in the request',
+                            msg: 'User not found',
                         },
                     ],
                 });
             }
 
-            const token = req.headers.authorization;
-            jwt.verify(token, config.get('jwtSecret'), async (err, decoded) => {
-                if (err) {
-                    return res.status(400).json({
-                        errors: [
-                            {
-                                msg: 'Token uncorrect',
-                            },
-                        ],
-                    });
-                }
-
-                const { userId } = decoded;
-                const { nickName } = req.body;
-
-                await User.findOneAndUpdate(
-                    { _id: userId },
-                    { nickName },
-                    (err) => {
-                        if (err) {
-                            return res.status(400).json({
-                                errors: [
-                                    {
-                                        msg: 'User not found',
-                                    },
-                                ],
-                            });
-                        } else {
-                            return res.json({
-                                message: 'User data has been changed',
-                            });
-                        }
-                    },
-                );
-            });
+            return res.json({ message: 'User data has been changed' });
         } catch (e) {
             res.status(500).json({ message: 'Something was wrong...' });
         }
@@ -125,6 +73,7 @@ router.post(
 router.post(
     '/avatar',
     [check('avatar', 'Avatar must be base64 format').notEmpty()],
+    auth,
     async (req, res) => {
         try {
             const errors = validationResult(req);
@@ -136,51 +85,23 @@ router.post(
                 });
             }
 
-            if (!req.headers.authorization) {
-                return res.status(401).json({
+            const { avatar } = req.body;
+            const result = await User.findOneAndUpdate(
+                { _id: req.user.userId },
+                { avatar },
+            );
+
+            if (!result) {
+                return res.status(400).json({
                     errors: [
                         {
-                            msg: 'Unauthorized! Token missing in the request',
+                            msg: 'User not found',
                         },
                     ],
                 });
             }
 
-            const token = req.headers.authorization;
-            jwt.verify(token, config.get('jwtSecret'), async (err, decoded) => {
-                if (err) {
-                    return res.status(400).json({
-                        errors: [
-                            {
-                                msg: 'Token uncorrect',
-                            },
-                        ],
-                    });
-                }
-
-                const { userId } = decoded;
-                const { avatar } = req.body;
-
-                await User.findOneAndUpdate(
-                    { _id: userId },
-                    { avatar },
-                    (err) => {
-                        if (err) {
-                            return res.status(400).json({
-                                errors: [
-                                    {
-                                        msg: 'User not found',
-                                    },
-                                ],
-                            });
-                        } else {
-                            return res.json({
-                                message: 'User data has been changed',
-                            });
-                        }
-                    },
-                );
-            });
+            return res.json({ message: 'User data has been changed' });
         } catch (e) {
             res.status(500).json({ message: 'Something was wrong...' });
         }

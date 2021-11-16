@@ -160,7 +160,6 @@ const Profile: React.FC = () => {
                     onChange={(evt) => {
                         formik.handleChange(evt);
                         setNickName(evt.target.value);
-                        console.log(formik.values);
                     }}
                     onBlur={formik.handleBlur}
                     error={
