@@ -1,8 +1,56 @@
+$shadow: rgb(214, 205, 205);
+
 .container {
-    color: green;
-    font-size: 60px;
+}
+
+.title {
+    font-size: 18px;
+    font-weight: 700;
+    text-align: center;
+    margin-top: 0;
+}
+
+.subtitle {
+    font-size: 14px;
+    text-align: center;
+    font-weight: 500;
+    margin: 24px 0 8px 0;
+}
+
+.form {
+    width: 30%;
+    border-radius: 8px;
+    box-shadow: 1px 1px 10px $shadow, -1px 1px 10px $shadow,
+        1px -1px 10px $shadow, -1px -1px 10px $shadow;
+    position: absolute;
+    top: 50%;
+    left: 10px;
+    transform: translate(0, -50%);
+    min-width: 300px;
+    padding: 24px;
     display: flex;
-    justify-content: center;
+    flex-flow: column;
     align-items: center;
-    height: calc(100vh - 50px);
+}
+
+.create_btn {
+    margin-top: 20px;
+}
+
+.time {
+    &_container {
+        display: flex;
+        justify-content: space-evenly;
+        align-items: center;
+        width: 100%;
+    }
+
+    &_input {
+        max-width: 66px;
+    }
+
+    &_dotted {
+        font-size: 24px;
+        font-weight: 700;
+    }
 }

@@ -1,9 +1,10 @@
 import React from 'react';
+import CreateTimerForm from './components/CreateTimerForm';
 
 import Styles from './Main.module.scss';
 
 const Main = () => {
-    return <div className={Styles.container}>Success!</div>;
+    return <CreateTimerForm />;
 };
 
 export default Main;
