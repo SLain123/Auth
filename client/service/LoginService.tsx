@@ -4,7 +4,7 @@ import { useCookies } from 'react-cookie';
 
 const useLoginService = () => {
     const { loading, request } = useHttp();
-    const [serverErrrors, setServerErrors] = useState<
+    const [serverErrors, setServerErrors] = useState<
         [] | { msg: string; value: string }[]
     >([]);
     const [resultMessage, setResultMessage] = useState('');
@@ -35,7 +35,7 @@ const useLoginService = () => {
         }
     };
 
-    return { sendLoginData, loading, serverErrrors, resultMessage };
+    return { sendLoginData, loading, serverErrors, resultMessage };
 };
 
 export default useLoginService;

@@ -3,7 +3,7 @@ import useHttp from '../hooks/useHttp';
 
 const useRegisterService = () => {
     const { loading, request } = useHttp();
-    const [serverErrrors, setServerErrors] = useState<
+    const [serverErrors, setServerErrors] = useState<
         [] | { msg: string; value: string }[]
     >([]);
     const [resultMessage, setResultMessage] = useState('');
@@ -31,7 +31,7 @@ const useRegisterService = () => {
         }
     };
 
-    return { sendRegisterData, loading, serverErrrors, resultMessage };
+    return { sendRegisterData, loading, serverErrors, resultMessage };
 };
 
 export default useRegisterService;

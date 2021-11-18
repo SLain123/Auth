@@ -14,7 +14,7 @@ import Styles from './Register.module.scss';
 
 const Register = () => {
     const registerService = useRegisterService();
-    const { sendRegisterData, loading, serverErrrors, resultMessage } =
+    const { sendRegisterData, loading, serverErrors, resultMessage } =
         registerService;
 
     const spinnerWhite = <BeatLoader color='white' loading size={10} />;
@@ -73,7 +73,7 @@ const Register = () => {
         <form className={Styles.container} onSubmit={formik.handleSubmit}>
             <h3 className={Styles.title}>Registration</h3>
             <ul className={Styles.error_list}>
-                {serverErrrors.map((err) => (
+                {serverErrors.map((err) => (
                     <li key={err.msg} className={Styles.error_text}>
                         {err.msg}
                     </li>

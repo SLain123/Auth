@@ -1,5 +1,5 @@
 import React from 'react';
-import CreateTimerForm from './components/CreateTimerForm';
+import CreateTimerForm from './forms/CreateTimerForm';
 
 import Styles from './Main.module.scss';
 

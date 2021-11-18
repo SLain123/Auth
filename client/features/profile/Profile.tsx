@@ -30,7 +30,7 @@ const Profile: React.FC = () => {
         getUserData,
         sendUserData,
         sendUserAvatar,
-        serverErrrors,
+        serverErrors,
         setServerErrors,
         loading,
         resultMessage,
@@ -144,7 +144,7 @@ const Profile: React.FC = () => {
 
             <form className={Styles.form} onSubmit={formik.handleSubmit}>
                 <ul className={Styles.error_list}>
-                    {serverErrrors.map((err) => (
+                    {serverErrors.map((err) => (
                         <li key={err.msg} className={Styles.error_text}>
                             {err.msg}
                         </li>
@@ -182,7 +182,7 @@ const Profile: React.FC = () => {
                     disabled={
                         Boolean(formik.errors.nickName) ||
                         loading ||
-                        Boolean(serverErrrors.length > 0)
+                        Boolean(serverErrors.length > 0)
                     }
                 >
                     {loading ? spinnerWhite : 'Change profile'}

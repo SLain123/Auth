@@ -11,17 +11,6 @@ const useProfileService = () => {
     const [resultMessage, setResultMessage] = useState('');
     const [cookies] = useCookies(['authData']);
 
-    const getUserData = async () => {
-        try {
-            return request('http://localhost:5000/api/profile', 'GET', null, {
-                authorization: cookies.authData.token,
-            });
-        } catch (e) {
-            //@ts-ignore
-            setServerErrors([e.message]);
-        }
-    };
-
     const sendUserData = async (values: { nickName: string }) => {
         const { nickName } = values;
         try {
@@ -46,34 +35,9 @@ const useProfileService = () => {
         }
     };
 
-    const sendUserAvatar = async (avatar: File) => {
-        try {
-            const reader = new FileReader();
-            reader.readAsDataURL(avatar);
-            reader.onload = () => {
-                const { result: avatar } = reader;
-
-                request(
-                    'http://localhost:5000/api/profile/avatar',
-                    'POST',
-                    {
-                        avatar,
-                    },
-                    {
-                        authorization: cookies.authData.token,
-                    },
-                );
-            };
-        } catch (e) {
-            //@ts-ignore
-            setServerErrors([e.message]);
-        }
-    };
 
     return {
-        getUserData,
         sendUserData,
-        sendUserAvatar,
         loading,
         serverErrors,
         setServerErrors,

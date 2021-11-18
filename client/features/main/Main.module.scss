@@ -14,7 +14,7 @@ $shadow: rgb(214, 205, 205);
     font-size: 14px;
     text-align: center;
     font-weight: 500;
-    margin: 24px 0 8px 0;
+    margin: 24px 0 16px 0;
 }
 
 .form {
@@ -53,4 +53,10 @@ $shadow: rgb(214, 205, 205);
         font-size: 24px;
         font-weight: 700;
     }
+}
+
+.error_message {
+    color: rgb(172, 41, 41);
+    margin-bottom: 5px;
+    text-align: center;
 }

@@ -16,7 +16,7 @@ import Styles from './Login.module.scss';
 
 const Login = () => {
     const loginService = useLoginService();
-    const { sendLoginData, loading, serverErrrors, resultMessage } =
+    const { sendLoginData, loading, serverErrors, resultMessage } =
         loginService;
     const [cookies] = useCookies(['authData']);
 
@@ -71,7 +71,7 @@ const Login = () => {
         <form className={Styles.container} onSubmit={formik.handleSubmit}>
             <h3 className={Styles.title}>Login</h3>
             <ul className={Styles.error_list}>
-                {serverErrrors.map((err) => (
+                {serverErrors.map((err) => (
                     <li key={err.msg} className={Styles.error_text}>
                         {err.msg}
                     </li>

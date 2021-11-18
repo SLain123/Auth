@@ -18,14 +18,15 @@ const CreateTimerForm: React.FC = () => {
     const formik = useFormik({
         initialValues: {
             label: '',
-            hour: '',
-            minute: '',
-            second: '',
+            hour: 0,
+            minute: 0,
+            second: 0,
         },
         validationSchema: Yup.object({
             label: Yup.string()
                 .max(40, 'Must be 40 characters or less')
                 .required('Required'),
+            hour: Yup.number(),
         }),
         onSubmit: (values) => {
             console.log(values);
@@ -57,22 +58,25 @@ const CreateTimerForm: React.FC = () => {
                         className={Styles.time_input}
                         name='hour'
                         id='hour'
-                        label=''
+                        label='Hours'
                         variant='outlined'
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
                         error={
                             formik.touched.hour && Boolean(formik.errors.hour)
                         }
-                        helperText={formik.touched.hour && formik.errors.hour}
                         disabled={isLoading || !isUserAuth}
+                        defaultValue={0}
                     />
+                    {formik.touched.hour && formik.errors.hour ? (
+                        <div>{formik.errors.hour}</div>
+                    ) : null}
                     <span className={Styles.time_dotted}>:</span>
                     <TextField
                         className={Styles.time_input}
                         name='minute'
                         id='minute'
-                        label=''
+                        label='Minutes'
                         variant='outlined'
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
@@ -84,13 +88,14 @@ const CreateTimerForm: React.FC = () => {
                             formik.touched.minute && formik.errors.minute
                         }
                         disabled={isLoading || !isUserAuth}
+                        defaultValue={0}
                     />
                     <span className={Styles.time_dotted}>:</span>
                     <TextField
                         className={Styles.time_input}
                         name='second'
                         id='second'
-                        label=''
+                        label='Seconds'
                         variant='outlined'
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
@@ -102,8 +107,27 @@ const CreateTimerForm: React.FC = () => {
                             formik.touched.second && formik.errors.second
                         }
                         disabled={isLoading || !isUserAuth}
+                        defaultValue={0}
                     />
                 </div>
+                {!formik.values.hour &&
+                    !formik.values.minute &&
+                    !formik.values.second &&
+                    (formik.touched.hour ||
+                        formik.touched.minute ||
+                        formik.touched.second) && (
+                        <p className={Styles.error_message}>
+                            You need to specify at least 1 second or more
+                        </p>
+                    )}
+                {(formik.values.hour > 99 ||
+                    formik.values.minute > 59 ||
+                    formik.values.second > 59) && (
+                    <p className={Styles.error_message}>
+                        {`You can't type more than 59 secs, 59 mins or 99
+                            hours`}
+                    </p>
+                )}
 
                 <Button
                     className={Styles.create_btn}
