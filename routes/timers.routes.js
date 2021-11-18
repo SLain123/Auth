@@ -45,8 +45,6 @@ router.post(
                 ownerNick: user.nickName,
             });
 
-            console.log(timer);
-
             await timer.save();
 
             res.status(201).json({ message: 'Timer was create' });
@@ -55,5 +53,26 @@ router.post(
         }
     },
 );
+
+// /api/timer
+router.get('/', auth, async (req, res) => {
+    try {
+        const timerList = await Timer.find({ ownerId: req.user.userId });
+
+        if (!timerList || !timerList.length) {
+            return res.status(400).json({
+                errors: [
+                    {
+                        msg: 'Timers were not found or do not exist',
+                    },
+                ],
+            });
+        }
+
+        res.status(201).json({ message: 'Timers was found', timerList });
+    } catch (e) {
+        res.status(500).json({ message: 'Something was wrong...' });
+    }
+});
 
 module.exports = router;
