@@ -6,12 +6,21 @@ import TextField from '@mui/material/TextField';
 import BeatLoader from 'react-spinners/BeatLoader';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
+import { useCreateTimer } from '../../../service/TimerService';
+import {
+    convertToMilliSeconds,
+    convertFromMilliSeconds,
+} from '../../../utils/timeConverter';
 
 import Styles from '../Main.module.scss';
 
 const CreateTimerForm: React.FC = () => {
     const authStatus = useAppSelector(getAuthSelector);
     const { isLoading, isUserAuth } = authStatus;
+
+    const createTimerService = useCreateTimer();
+    const { sendUserData, loading, serverErrors, resultMessage } =
+        createTimerService;
 
     const spinnerWhite = <BeatLoader color='white' loading size={10} />;
 
@@ -29,7 +38,8 @@ const CreateTimerForm: React.FC = () => {
             hour: Yup.number(),
         }),
         onSubmit: (values) => {
-            console.log(values);
+            const { label, hour, minute, second } = values;
+            sendUserData(label, convertToMilliSeconds(hour, minute, second));
         },
     });
 

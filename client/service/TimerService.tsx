@@ -2,7 +2,7 @@ import { useState } from 'react';
 import useHttp from '../hooks/useHttp';
 import { useCookies } from 'react-cookie';
 
-const useProfileService = () => {
+export const useCreateTimer = () => {
     const { loading, request } = useHttp();
 
     const [serverErrors, setServerErrors] = useState<
@@ -11,19 +11,20 @@ const useProfileService = () => {
     const [resultMessage, setResultMessage] = useState('');
     const [cookies] = useCookies(['authData']);
 
-    const sendUserData = async (values: { nickName: string }) => {
-        const { nickName } = values;
+    const sendUserData = async (label: string, total: number) => {
         try {
             request(
-                'http://localhost:5000/api/profile',
+                'http://localhost:5000/api/timer',
                 'POST',
                 {
-                    nickName,
+                    label,
+                    total,
                 },
                 {
                     authorization: cookies.authData.token,
                 },
             ).then((data) => {
+                console.log(data, 'answer');
                 data.errors
                     ? setServerErrors(data.errors)
                     : setServerErrors([]);
@@ -35,14 +36,10 @@ const useProfileService = () => {
         }
     };
 
-
     return {
         sendUserData,
         loading,
         serverErrors,
-        setServerErrors,
         resultMessage,
     };
 };
-
-export default useProfileService;
