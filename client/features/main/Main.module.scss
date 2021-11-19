@@ -1,8 +1,5 @@
 $shadow: rgb(214, 205, 205);
 
-.container {
-}
-
 .title {
     font-size: 18px;
     font-weight: 700;
@@ -31,6 +28,8 @@ $shadow: rgb(214, 205, 205);
     display: flex;
     flex-flow: column;
     align-items: center;
+    min-height: 400px;
+    justify-content: center;
 }
 
 .create_btn {
@@ -43,6 +42,7 @@ $shadow: rgb(214, 205, 205);
         justify-content: space-evenly;
         align-items: center;
         width: 100%;
+        margin-bottom: 24px;
     }
 
     &_input {
@@ -55,8 +55,44 @@ $shadow: rgb(214, 205, 205);
     }
 }
 
-.error_message {
-    color: rgb(172, 41, 41);
-    margin-bottom: 5px;
-    text-align: center;
+.error {
+    &_message {
+        color: #d63e3e;
+        margin-bottom: 5px;
+        text-align: center;
+        list-style: none;
+    }
+
+    &_list {
+        padding: 0;
+        margin: 0;
+    }
+}
+
+.info_message {
+    text-align: justify;
+    font-size: 16px;
+    letter-spacing: 0.7px;
+    line-height: 28px;
+    margin-bottom: 24px;
+}
+
+.login_btn {
+    padding: 12px 36px;
+    border-radius: 4px;
+    background-color: #2e7d32;
+    color: white;
+    font-weight: 700;
+    text-decoration: uppercase;
+    opacity: 0.9;
+
+    &:hover {
+        opacity: 1;
+    }
+}
+
+.status_text {
+    color: #2e7d32;
+    margin: 0;
+    margin-top: 15px;
 }

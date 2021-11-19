@@ -131,7 +131,7 @@ const Register = () => {
             <TextField
                 name='nickName'
                 id='nickName'
-                label='nick name'
+                label='Nick name'
                 variant='outlined'
                 fullWidth
                 margin='dense'
