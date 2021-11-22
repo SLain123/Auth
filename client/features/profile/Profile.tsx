@@ -5,12 +5,11 @@ import Button from '@mui/material/Button';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import Avatar from '@mui/material/Avatar';
-import BeatLoader from 'react-spinners/BeatLoader';
-import DotLoader from 'react-spinners/DotLoader';
 import useProfileService from '../../service/ProfileService';
 import stringAvatar from './subFuncs';
 import { useAppSelector } from '../../hooks/useAppSelector';
 import { getAuthSelector } from '../auth/authSlice';
+import { Spinner } from '../../components/spinner';
 
 import Styles from './Profile.module.scss';
 
@@ -36,10 +35,7 @@ const Profile: React.FC = () => {
         resultMessage,
     } = profileService;
 
-    const spinnerWhite = <BeatLoader color='white' loading size={10} />;
-    const spinnerGreen = (
-        <DotLoader color='green' loading size={50} speedMultiplier={3} />
-    );
+    const { WhiteSpin, GreenSpin } = Spinner();
 
     const formik = useFormik({
         initialValues: {
@@ -81,7 +77,7 @@ const Profile: React.FC = () => {
     }, []);
 
     if (isLoading || userDataLoading) {
-        return <div className={Styles.container}>{spinnerGreen}</div>;
+        return <div className={Styles.container}>{GreenSpin}</div>;
     }
 
     return (
@@ -185,7 +181,7 @@ const Profile: React.FC = () => {
                         Boolean(serverErrors.length > 0)
                     }
                 >
-                    {loading ? spinnerWhite : 'Change profile'}
+                    {loading ? WhiteSpin : 'Change profile'}
                 </Button>
             </form>
         </div>

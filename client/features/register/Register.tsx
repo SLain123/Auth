@@ -3,12 +3,11 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import BeatLoader from 'react-spinners/BeatLoader';
-import DotLoader from 'react-spinners/DotLoader';
 import Router from 'next/router';
 import useRegisterService from '../../service/RegisterService';
 import { useAppSelector } from '../../hooks/useAppSelector';
 import { getAuthSelector } from '../auth/authSlice';
+import { Spinner } from '../../components/spinner';
 
 import Styles from './Register.module.scss';
 
@@ -17,10 +16,7 @@ const Register = () => {
     const { sendRegisterData, loading, serverErrors, resultMessage } =
         registerService;
 
-    const spinnerWhite = <BeatLoader color='white' loading size={10} />;
-    const spinnerGreen = (
-        <DotLoader color='green' loading size={50} speedMultiplier={3} />
-    );
+    const { WhiteSpin, GreenSpin } = Spinner();
 
     const authStatus = useAppSelector(getAuthSelector);
     const { isLoading, isUserAuth } = authStatus;
@@ -66,7 +62,7 @@ const Register = () => {
     }, [resultMessage]);
 
     if (isLoading) {
-        return <div className={Styles.container}>{spinnerGreen}</div>;
+        return <div className={Styles.container}>{GreenSpin}</div>;
     }
 
     return (
@@ -158,7 +154,7 @@ const Register = () => {
                     loading
                 }
             >
-                {loading ? spinnerWhite : 'Send register data'}
+                {loading ? WhiteSpin : 'Send register data'}
             </Button>
         </form>
     );

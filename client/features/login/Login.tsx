@@ -5,8 +5,7 @@ import Button from '@mui/material/Button';
 import useLoginService from '../../service/LoginService';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import BeatLoader from 'react-spinners/BeatLoader';
-import DotLoader from 'react-spinners/DotLoader';
+import { Spinner } from '../../components/spinner';
 import { useAppSelector } from '../../hooks/useAppSelector';
 import { getAuthSelector } from '../auth/authSlice';
 import { useCookies } from 'react-cookie';
@@ -25,11 +24,7 @@ const Login = () => {
     const checkTokenService = useCheckTokenService(
         cookies.authData ? cookies.authData.token : null,
     );
-
-    const spinnerWhite = <BeatLoader color='white' loading size={10} />;
-    const spinnerGreen = (
-        <DotLoader color='green' loading size={50} speedMultiplier={3} />
-    );
+    const { WhiteSpin, GreenSpin } = Spinner();
 
     const formik = useFormik({
         initialValues: {
@@ -64,7 +59,7 @@ const Login = () => {
     }, [cookies]);
 
     if (isLoading) {
-        return <div className={Styles.container}>{spinnerGreen}</div>;
+        return <div className={Styles.container}>{GreenSpin}</div>;
     }
 
     return (
@@ -122,7 +117,7 @@ const Login = () => {
                     loading
                 }
             >
-                {loading ? spinnerWhite : 'Login'}
+                {loading ? WhiteSpin : 'Login'}
             </Button>
         </form>
     );

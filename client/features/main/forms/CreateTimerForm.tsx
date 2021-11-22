@@ -3,13 +3,12 @@ import { useAppSelector } from '../../../hooks/useAppSelector';
 import { getAuthSelector } from '../../auth/authSlice';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
-import BeatLoader from 'react-spinners/BeatLoader';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useCreateTimer } from '../../../service/TimerService';
 import { convertToMilliSeconds } from '../../../utils/timeConverter';
 import Link from 'next/link';
-import DotLoader from 'react-spinners/DotLoader';
+import { Spinner } from '../../../components/spinner';
 
 import Styles from '../Main.module.scss';
 
@@ -21,10 +20,7 @@ const CreateTimerForm: React.FC = () => {
     const { sendUserData, loading, serverErrors, resultMessage } =
         createTimerService;
 
-    const spinnerWhite = <BeatLoader color='white' loading size={10} />;
-    const spinnerGreen = (
-        <DotLoader color='green' loading size={50} speedMultiplier={3} />
-    );
+    const { WhiteSpin, GreenSpin } = Spinner();
 
     const formik = useFormik({
         initialValues: {
@@ -47,7 +43,7 @@ const CreateTimerForm: React.FC = () => {
     });
 
     if (isLoading) {
-        return <div className={Styles.form}>{spinnerGreen}</div>;
+        return <div className={Styles.form}>{GreenSpin}</div>;
     }
 
     if (!isUserAuth) {
@@ -185,7 +181,7 @@ const CreateTimerForm: React.FC = () => {
                     Boolean(serverErrors.length > 0)
                 }
             >
-                {loading ? spinnerWhite : 'Create timer'}
+                {loading ? WhiteSpin : 'Create timer'}
             </Button>
         </form>
     );
