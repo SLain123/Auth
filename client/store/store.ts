@@ -2,11 +2,13 @@ import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
 import { createWrapper } from 'next-redux-wrapper';
 
 import authState from '../features/auth/authSlice';
+import timersState from '../features/timers/timersSlice';
 
 const makeStore = () =>
     configureStore({
         reducer: {
             authState: authState.reducer,
+            timersState: timersState.reducer,
         },
         devTools: process.env.NODE_ENV === 'development',
     });

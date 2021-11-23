@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useCookies } from 'react-cookie';
 import useCheckTokenService from '../../service/TokenCheckService';
+import { useGetUserTimers } from '../../service/TimerService';
 import { useAppSelector } from '../../hooks/useAppSelector';
 import { getAuthSelector } from '../auth/authSlice';
 
@@ -13,6 +14,9 @@ const Header: React.FC = ({ children }) => {
     const checkTokenService = useCheckTokenService(
         cookies.authData ? cookies.authData.token : null,
     );
+    const getUserTimersService = useGetUserTimers();
+    const { getTimers } = getUserTimersService;
+
     const navListAuth = [
         { name: 'Home', link: '/' },
         { name: 'Profile', link: '/profile' },
@@ -41,13 +45,17 @@ const Header: React.FC = ({ children }) => {
     useEffect(() => {
         if (document.readyState === 'interactive') {
             setContentLoaded(true);
-        } 
+        }
     }, []);
 
     useEffect(() => {
         const { checkToken } = checkTokenService;
         checkToken();
     }, []);
+
+    useEffect(() => {
+        isUserAuth && getTimers();
+    }, [isUserAuth]);
 
     return (
         <>

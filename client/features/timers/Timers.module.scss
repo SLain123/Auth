@@ -96,3 +96,21 @@ $shadow: rgb(214, 205, 205);
     margin: 0;
     margin-top: 15px;
 }
+
+.link {
+    &_block {
+        display: flex;
+        flex-flow: column;
+        margin-top: 16px;
+    }
+
+    &_text {
+        font-size: 14px;
+    }
+
+    &_link {
+        text-align: end;
+        font-size: 14px;
+        color: #5757f3;
+    }
+}

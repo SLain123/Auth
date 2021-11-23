@@ -10,14 +10,14 @@ import { convertToMilliSeconds } from '../../../utils/timeConverter';
 import Link from 'next/link';
 import { Spinner } from '../../../components/spinner';
 
-import Styles from '../Main.module.scss';
+import Styles from '../Timers.module.scss';
 
 const CreateTimerForm: React.FC = () => {
     const authStatus = useAppSelector(getAuthSelector);
     const { isLoading, isUserAuth } = authStatus;
 
     const createTimerService = useCreateTimer();
-    const { sendUserData, loading, serverErrors, resultMessage } =
+    const { createTimer, loading, serverErrors, resultMessage } =
         createTimerService;
 
     const { WhiteSpin, GreenSpin } = Spinner();
@@ -38,7 +38,7 @@ const CreateTimerForm: React.FC = () => {
         onSubmit: (values) => {
             const { label, hour, minute, second } = values;
             const total = convertToMilliSeconds(hour, minute, second);
-            total && sendUserData(label, total);
+            total && createTimer(label, total);
         },
     });
 

@@ -1,6 +1,12 @@
 import { useState } from 'react';
 import useHttp from '../hooks/useHttp';
 import { useCookies } from 'react-cookie';
+import { useAppDispatch } from '../hooks/useAppDispatch';
+import {
+    setLoadingStatus,
+    setErrorStatus,
+    saveTimerList,
+} from '../features/timers/timersSlice';
 
 export const useCreateTimer = () => {
     const { loading, request } = useHttp();
@@ -11,7 +17,7 @@ export const useCreateTimer = () => {
     const [resultMessage, setResultMessage] = useState('');
     const [cookies] = useCookies(['authData']);
 
-    const sendUserData = async (label: string, total: number) => {
+    const createTimer = async (label: string, total: number) => {
         try {
             request(
                 'http://localhost:5000/api/timer',
@@ -24,7 +30,6 @@ export const useCreateTimer = () => {
                     authorization: cookies.authData.token,
                 },
             ).then((data) => {
-                console.log(data, 'answer');
                 data.errors
                     ? setServerErrors(data.errors)
                     : setServerErrors([]);
@@ -37,9 +42,38 @@ export const useCreateTimer = () => {
     };
 
     return {
-        sendUserData,
+        createTimer,
         loading,
         serverErrors,
         resultMessage,
+    };
+};
+
+export const useGetUserTimers = () => {
+    const { loading, request } = useHttp();
+    const [cookies] = useCookies(['authData']);
+    const dispatch = useAppDispatch();
+
+    const getTimers = async () => {
+        try {
+            request('http://localhost:5000/api/timer', 'GET', null, {
+                authorization: cookies.authData.token,
+            }).then((data) => {
+                if (!data) {
+                    dispatch(setErrorStatus(true));
+                } else {
+                    dispatch(saveTimerList(data.timerList));
+                }
+                dispatch(setLoadingStatus(loading));
+            });
+        } catch (e) {
+            //@ts-ignore
+            dispatch(setErrorStatus(true));
+            dispatch(setLoadingStatus(loading));
+        }
+    };
+
+    return {
+        getTimers,
     };
 };

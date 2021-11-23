@@ -1,8 +1,8 @@
-import { Main } from '../features/main';
+import { TimersContainer } from '../features/timers';
 import { Header } from '../features/header';
 
 export default function MainPage() {
-    return <Main />;
+    return <TimersContainer />;
 }
 
 MainPage.getLayout = function getLayout(page: React.ReactElement) {
