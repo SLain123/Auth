@@ -4,6 +4,7 @@ import { useAppSelector } from '../../../hooks/useAppSelector';
 import { getAuthSelector } from '../../auth/authSlice';
 import { getTimerListSelector } from '../../timers/timersSlice';
 import Link from 'next/link';
+import Button from '@mui/material/Button';
 
 import Styles from '../Timers.module.scss';
 
@@ -29,18 +30,48 @@ const DisplayTimersPanel: React.FC = () => {
         </div>
     );
 
+    if (!isUserAuth || isLoadingAuth || isLoadingTimers) {
+        return null;
+    }
+
+    if (isErrorTimers) {
+        return (
+            <div className={`${Styles.form} ${Styles.form_with_error}`}>
+                <p>{`Timers wasn't dowload`}</p>
+                <p>Something was wrong</p>
+
+                <Button
+                    className={Styles.create_btn}
+                    variant='contained'
+                    color='success'
+                    size='large'
+                    type='button'
+                    onClick={() => location.reload()}
+                >
+                    Refresh page
+                </Button>
+            </div>
+        );
+    }
+
+    if (!timerList.length) {
+        return (
+            <div
+                className={`${Styles.form} ${Styles.form_success_right} ${Styles.no_timers}`}
+            >
+                <p> {`You don't have any timers.`}</p>
+                <p>Create a new timer using the left panel.</p>
+            </div>
+        );
+    }
+
     return (
-        <div>
-            {isUserAuth &&
-                !isLoadingAuth &&
-                !isErrorTimers &&
-                timerList.length !== 0 && (
-                    <Timer
-                        {...timerList[timerList.length - 7]}
-                        formTitle='Your last active timer:'
-                        extraChildren={linkBlock}
-                    />
-                )}
+        <div className={`${Styles.form} ${Styles.form_success_right}`}>
+            <Timer
+                {...timerList[timerList.length - 1]}
+                formTitle='Your last active timer:'
+                extraChildren={linkBlock}
+            />
         </div>
     );
 };

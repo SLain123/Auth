@@ -21,15 +21,47 @@ $shadow: rgb(214, 205, 205);
         1px -1px 10px $shadow, -1px -1px 10px $shadow;
     position: absolute;
     top: 50%;
-    left: 10px;
-    transform: translate(0, -50%);
     min-width: 300px;
     padding: 24px;
     display: flex;
     flex-flow: column;
     align-items: center;
-    min-height: 400px;
-    justify-content: center;
+
+    &_success_left {
+        left: 10px;
+        transform: translate(0, -50%);
+        min-height: 400px;
+        justify-content: center;
+    }
+
+    &_success_right {
+        position: absolute;
+        top: 50%;
+        right: 10px;
+        min-height: 400px;
+        transform: translate(0, -50%);
+        min-height: 400px;
+        justify-content: center;
+    }
+
+    &_not_auth {
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    &_with_error {
+        right: 10px;
+        transform: translate(0, -50%);
+        color: red;
+        font-size: 18px;
+        min-height: 400px;
+        justify-content: center;
+
+        & button {
+            margin-top: auto;
+            margin-bottom: 12px;
+        }
+    }
 }
 
 .create_btn {
@@ -113,4 +145,9 @@ $shadow: rgb(214, 205, 205);
         font-size: 14px;
         color: #5757f3;
     }
+}
+
+.no_timers {
+    font-size: 18px;
+    text-align: center;
 }

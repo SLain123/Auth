@@ -43,12 +43,16 @@ const CreateTimerForm: React.FC = () => {
     });
 
     if (isLoading) {
-        return <div className={Styles.form}>{GreenSpin}</div>;
+        return (
+            <div className={`${Styles.form} ${Styles.form_not_auth}`}>
+                {GreenSpin}
+            </div>
+        );
     }
 
     if (!isUserAuth) {
         return (
-            <div className={Styles.form}>
+            <div className={`${Styles.form} ${Styles.form_not_auth}`}>
                 <span className={Styles.info_message}>
                     If you want to create a new personal timer, you need to
                     register or log in.
@@ -61,7 +65,10 @@ const CreateTimerForm: React.FC = () => {
     }
 
     return (
-        <form className={Styles.form} onSubmit={formik.handleSubmit}>
+        <form
+            className={`${Styles.form} ${Styles.form_success_left}`}
+            onSubmit={formik.handleSubmit}
+        >
             <h3 className={Styles.title}>Create new timer:</h3>
             <TextField
                 name='label'

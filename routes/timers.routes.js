@@ -66,6 +66,7 @@ router.get('/', auth, async (req, res) => {
                         msg: 'Timers were not found or do not exist',
                     },
                 ],
+                timerList: [],
             });
         }
 

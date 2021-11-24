@@ -3,21 +3,6 @@ $blue: #34495e;
 $light_blue: #628ab2;
 
 .timer {
-    &_container {
-        width: 30%;
-        border-radius: 8px;
-        box-shadow: 1px 1px 10px $shadow, -1px 1px 10px $shadow,
-            1px -1px 10px $shadow, -1px -1px 10px $shadow;
-        position: absolute;
-        top: 50%;
-        right: 10px;
-        transform: translate(0, -50%);
-        min-width: 300px;
-        padding: 24px;
-        display: flex;
-        flex-flow: column;
-    }
-
     &_title {
         font-size: 18px;
         font-weight: 700;

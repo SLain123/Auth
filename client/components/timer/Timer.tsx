@@ -26,7 +26,7 @@ const Timer: React.FC<TimerPropsI> = ({
     const { hour, minute, second } = convertFromMilliSeconds(total);
 
     return (
-        <div className={Styles.timer_container}>
+        <div>
             <h3 className={Styles.timer_title}>{formTitle}</h3>
             <p className={Styles.timer_label}>{label}</p>
             <div className={Styles.timer_time_container}>
