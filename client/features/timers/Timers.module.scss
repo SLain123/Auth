@@ -151,3 +151,14 @@ $shadow: rgb(214, 205, 205);
     font-size: 18px;
     text-align: center;
 }
+
+.all_container {
+    margin: 10px;
+}
+
+.center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}

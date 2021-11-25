@@ -20,6 +20,7 @@ const Header: React.FC = ({ children }) => {
     const navListAuth = [
         { name: 'Home', link: '/' },
         { name: 'Profile', link: '/profile' },
+        { name: 'All Timers', link: '/all-timers' },
     ];
     const navListGuest = [
         { name: 'Home', link: '/' },

@@ -18,7 +18,6 @@ export const useGetUserTimers = () => {
             request('http://localhost:5000/api/timer', 'GET', null, {
                 authorization: cookies.authData.token,
             }).then((data) => {
-                console.log(data);
                 if (!data) {
                     dispatch(setErrorStatus(true));
                 } else {

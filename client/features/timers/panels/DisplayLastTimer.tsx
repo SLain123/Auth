@@ -8,7 +8,7 @@ import Button from '@mui/material/Button';
 
 import Styles from '../Timers.module.scss';
 
-const DisplayLastTimerPanel: React.FC = () => {
+const DisplayLastTimer: React.FC = () => {
     const authStatus = useAppSelector(getAuthSelector);
     const { isLoading: isLoadingAuth, isUserAuth } = authStatus;
 
@@ -76,4 +76,4 @@ const DisplayLastTimerPanel: React.FC = () => {
     );
 };
 
-export default DisplayLastTimerPanel;
+export default DisplayLastTimer;

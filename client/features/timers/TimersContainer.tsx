@@ -1,14 +1,14 @@
 import React from 'react';
-import CreateTimerForm from './panels/CreateTimerPanel';
-import DisplayLastTimerPanel from './panels/DisplayLastPanel';
+import CreateTimer from './panels/CreateTimer';
+import DisplayLastTimer from './panels/DisplayLastTimer';
 
 import Styles from './Timers.module.scss';
 
 const TimersContainer: React.FC = () => {
     return (
         <>
-            <CreateTimerForm />
-            <DisplayLastTimerPanel />
+            <CreateTimer />
+            <DisplayLastTimer />
         </>
     );
 };

@@ -12,7 +12,7 @@ import { Spinner } from '../../../components/spinner';
 
 import Styles from '../Timers.module.scss';
 
-const CreateTimerForm: React.FC = () => {
+const CreateTimer: React.FC = () => {
     const authStatus = useAppSelector(getAuthSelector);
     const { isLoading, isUserAuth } = authStatus;
 
@@ -194,4 +194,4 @@ const CreateTimerForm: React.FC = () => {
     );
 };
 
-export default CreateTimerForm;
+export default CreateTimer;
