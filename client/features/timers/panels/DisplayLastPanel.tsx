@@ -2,13 +2,13 @@ import React from 'react';
 import { Timer } from '../../../components/timer';
 import { useAppSelector } from '../../../hooks/useAppSelector';
 import { getAuthSelector } from '../../auth/authSlice';
-import { getTimerListSelector } from '../../timers/timersSlice';
+import { getTimerListSelector } from '../timersSlice';
 import Link from 'next/link';
 import Button from '@mui/material/Button';
 
 import Styles from '../Timers.module.scss';
 
-const DisplayTimersPanel: React.FC = () => {
+const DisplayLastTimerPanel: React.FC = () => {
     const authStatus = useAppSelector(getAuthSelector);
     const { isLoading: isLoadingAuth, isUserAuth } = authStatus;
 
@@ -76,4 +76,4 @@ const DisplayTimersPanel: React.FC = () => {
     );
 };
 
-export default DisplayTimersPanel;
+export default DisplayLastTimerPanel;
