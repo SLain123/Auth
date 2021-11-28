@@ -15,6 +15,12 @@ const useCheckTokenService = (token: string | null) => {
                 ? request('http://localhost:5000/api/auth/check', 'GET', null, {
                       authorization: token,
                   }).then((data) => {
+                      if (!data) {
+                          dispatch(setUserAuthStatus(false));
+                          dispatch(setLoadingStatus(false));
+                          return;
+                      }
+
                       if (data.errors) {
                           dispatch(setUserAuthStatus(false));
                       } else {

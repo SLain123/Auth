@@ -40,7 +40,9 @@ router.post(
             const timer = new Timer({
                 label,
                 total,
-                startTime: new Date(),
+                createDate: new Date(),
+                timeToEnd: null,
+                restTime: 0,
                 ownerId: user._id,
                 ownerNick: user.nickName,
             });
@@ -75,5 +77,79 @@ router.get('/', auth, async (req, res) => {
         res.status(500).json({ message: 'Something was wrong...' });
     }
 });
+
+// /api/timer/control
+router.post(
+    '/control',
+    [
+        check('timerId', 'You need specify timer id').notEmpty(),
+        check(
+            'actOption',
+            'You need specify which action need to do',
+        ).notEmpty(),
+    ],
+
+    auth,
+    async (req, res) => {
+        try {
+            const errors = validationResult(req);
+
+            if (!errors.isEmpty()) {
+                return res.status(400).json({
+                    errors: errors.array(),
+                    message: 'Data uncorrect!',
+                });
+            }
+
+            const { timerId, actOption } = req.body;
+            const timer = await Timer.findOne({ _id: timerId });
+
+            if (!timer) {
+                return res.status(400).json({
+                    errors: [
+                        {
+                            msg: 'Timer doesn not exist',
+                        },
+                    ],
+                });
+            }
+
+            const result = await Timer.findOneAndUpdate(
+                { _id: timerId },
+                {
+                    timeToEnd:
+                        actOption === 'play'
+                            ? new Date(
+                                  new Date().getTime() +
+                                      (timer.restTime
+                                          ? timer.restTime
+                                          : timer.total),
+                              )
+                            : null,
+                    restTime:
+                        actOption === 'pause' && timer.timeToEnd
+                            ? timer.timeToEnd.getTime() - new Date().getTime()
+                            : 0,
+                },
+            );
+
+            if (!result) {
+                return res.status(400).json({
+                    errors: [
+                        {
+                            msg: `The timer has not been changed. Something went wrong with action ${actOption}`,
+                        },
+                    ],
+                });
+            }
+
+            return res.json({
+                message: `Action ${actOption} has been completed `,
+            });
+        } catch (e) {
+            res.status(500).json({ message: 'Something was wrong...' });
+        }
+    },
+);
 
 module.exports = router;
