@@ -88,7 +88,6 @@ router.post(
             'You need specify which action need to do',
         ).notEmpty(),
     ],
-
     auth,
     async (req, res) => {
         try {
@@ -109,6 +108,16 @@ router.post(
                     errors: [
                         {
                             msg: 'Timer doesn not exist',
+                        },
+                    ],
+                });
+            }
+
+            if (timer.ownerId !== req.user.userId) {
+                return res.status(404).json({
+                    errors: [
+                        {
+                            msg: `The timer has not match this user`,
                         },
                     ],
                 });
@@ -146,6 +155,130 @@ router.post(
             return res.json({
                 message: `Action ${actOption} has been completed `,
             });
+        } catch (e) {
+            res.status(500).json({ message: 'Something was wrong...' });
+        }
+    },
+);
+
+// /api/timer
+router.delete(
+    '/',
+    [check('timerId', 'You need specify timer id').notEmpty()],
+    auth,
+    async (req, res) => {
+        try {
+            const errors = validationResult(req);
+
+            if (!errors.isEmpty()) {
+                return res.status(400).json({
+                    errors: errors.array(),
+                    message: 'Data uncorrect!',
+                });
+            }
+
+            const timer = await Timer.findOne({ _id: req.body.timerId });
+
+            if (!timer) {
+                return res.status(400).json({
+                    errors: [
+                        {
+                            msg: 'Timer doesn not exist',
+                        },
+                    ],
+                });
+            }
+
+            if (timer.ownerId !== req.user.userId) {
+                return res.status(404).json({
+                    errors: [
+                        {
+                            msg: `The timer has not match this user`,
+                        },
+                    ],
+                });
+            }
+
+            const timerAfterDeleted = await Timer.deleteOne({
+                _id: req.body.timerId,
+            });
+
+            if (!timerAfterDeleted.deletedCount) {
+                return res.status(400).json({
+                    errors: [
+                        {
+                            msg: 'Timer was not found or do not exist',
+                        },
+                    ],
+                });
+            }
+
+            res.status(201).json({ message: 'Timer was remove' });
+        } catch (e) {
+            res.status(500).json({ message: 'Something was wrong...' });
+        }
+    },
+);
+
+// /api/timer/change
+router.post(
+    '/change',
+    [
+        check('timerId', 'You need specify timer id').notEmpty(),
+        check('label', 'You need specify timer name').notEmpty(),
+        check('total', 'You need send total timer time').notEmpty(),
+    ],
+    auth,
+    async (req, res) => {
+        try {
+            const errors = validationResult(req);
+
+            if (!errors.isEmpty()) {
+                return res.status(400).json({
+                    errors: errors.array(),
+                    message: 'Data uncorrect!',
+                });
+            }
+
+            const { timerId, label, total } = req.body;
+            const timer = await Timer.findOne({ _id: timerId });
+
+            if (!timer) {
+                return res.status(400).json({
+                    errors: [
+                        {
+                            msg: 'Timer doesn not exist',
+                        },
+                    ],
+                });
+            }
+
+            if (timer.ownerId !== req.user.userId) {
+                return res.status(404).json({
+                    errors: [
+                        {
+                            msg: `The timer has not match this user`,
+                        },
+                    ],
+                });
+            }
+
+            const result = await Timer.findOneAndUpdate(
+                { _id: timerId },
+                { label, total },
+            );
+
+            if (!result) {
+                return res.status(400).json({
+                    errors: [
+                        {
+                            msg: `The timer has not been changed. Something went wrong, check timerId`,
+                        },
+                    ],
+                });
+            }
+
+            res.status(201).json({ message: 'Timer was change' });
         } catch (e) {
             res.status(500).json({ message: 'Something was wrong...' });
         }
