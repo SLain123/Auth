@@ -1,9 +1,10 @@
 export interface TimerI {
-    _id: number | string;
+    _id: string;
     label: string;
     total: number;
-    startTime: Date;
-    endTime?: Date;
+    createDate: Date;
+    timeToEnd: Date | null;
     ownerNick: string;
+    restTime: number;
+    ownerId: string;
 }
-

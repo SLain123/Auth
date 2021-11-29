@@ -1,13 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { convertFromMilliSeconds } from '../../utils/timeConverter';
 import Image from 'next/image';
+import { useControlTimer } from '../../service/TimerService';
+import { TimerI } from '../../types/timer';
+import Spinner from '../spinner/Spinner';
 
 import Styles from './Timer.module.scss';
 import playIcon from '../../public/icons/play.svg';
 import pauseIcon from '../../public/icons/pause.svg';
 import stopIcon from '../../public/icons/stop.svg';
 import editIcon from '../../public/icons/edit.svg';
-import { TimerI } from '../../types/timer';
 
 export interface TimerPropsI extends TimerI {
     formTitle?: string;
@@ -15,15 +17,21 @@ export interface TimerPropsI extends TimerI {
 }
 
 const Timer: React.FC<TimerPropsI> = ({
+    _id,
     label,
     total,
-    startTime,
-    ownerNick,
-    endTime,
+    timeToEnd,
+    restTime,
     formTitle,
     extraChildren,
 }) => {
+    const [isActive, setActive] = useState(Boolean(timeToEnd));
     const { hour, minute, second } = convertFromMilliSeconds(total);
+
+    const controlTimerService = useControlTimer();
+    const { detailLoading, controlTimer } = controlTimerService;
+
+    const { curcleSpin } = Spinner();
 
     return (
         <div>
@@ -35,17 +43,48 @@ const Timer: React.FC<TimerPropsI> = ({
                 <span className={Styles.timer_time_count}>{second}</span>
             </div>
             <div className={Styles.timer_control_panel}>
-                <button type='button' className={Styles.timer_control_btn}>
-                    <Image width={36} src={playIcon} alt='play' />
+                <button
+                    type='button'
+                    className={Styles.timer_control_btn}
+                    disabled={detailLoading.playPause}
+                    onClick={() => {
+                        controlTimer(_id, isActive ? 'pause' : 'play');
+                        setActive(!isActive);
+                    }}
+                >
+                    {detailLoading.playPause || detailLoading.reset ? (
+                        curcleSpin(21, 'white')
+                    ) : (
+                        <Image
+                            width={isActive ? 16 : 26}
+                            height={26}
+                            src={isActive ? pauseIcon : playIcon}
+                            alt='play'
+                        />
+                    )}
+                </button>
+                <button
+                    type='button'
+                    className={Styles.timer_control_btn}
+                    disabled={detailLoading.reset}
+                    onClick={() => {
+                        controlTimer(_id, 'reset');
+                        setActive(false);
+                    }}
+                >
+                    {detailLoading.reset ? (
+                        curcleSpin(21, 'white')
+                    ) : (
+                        <Image
+                            width={30}
+                            height={30}
+                            src={stopIcon}
+                            alt='stop'
+                        />
+                    )}
                 </button>
                 <button type='button' className={Styles.timer_control_btn}>
-                    <Image width={22} src={pauseIcon} alt='pause' />
-                </button>
-                <button type='button' className={Styles.timer_control_btn}>
-                    <Image width={40} src={stopIcon} alt='stop' />
-                </button>
-                <button type='button' className={Styles.timer_control_btn}>
-                    <Image width={22} src={editIcon} alt='edit' />
+                    <Image width={16} height={16} src={editIcon} alt='edit' />
                 </button>
             </div>
             {extraChildren}

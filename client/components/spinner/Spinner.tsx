@@ -8,9 +8,11 @@ const Spinner = () => {
     const GreenSpin = (
         <DotLoader color='green' loading size={50} speedMultiplier={3} />
     );
-    const curcleGreenSpin = <ClipLoader color='green' loading size={70} />;
+    const curcleSpin = (size: number, color: string) => (
+        <ClipLoader color={color} loading size={size} />
+    );
 
-    return { WhiteSpin, GreenSpin, curcleGreenSpin };
+    return { WhiteSpin, GreenSpin, curcleSpin };
 };
 
 export default Spinner;

@@ -80,3 +80,52 @@ export const useCreateTimer = () => {
         resultMessage,
     };
 };
+
+export const useControlTimer = () => {
+    const { loading, request } = useHttp();
+    const [detailLoading, setDetailLoading] = useState({
+        playPause: false,
+        reset: false,
+    });
+    const [cookies] = useCookies(['authData']);
+
+    const controlTimer = async (
+        timerId: string,
+        actOption: 'play' | 'pause' | 'reset',
+    ) => {
+        try {
+            setDetailLoading({
+                playPause: actOption === 'reset' ? false : true,
+                reset: actOption === 'reset' ? true : false,
+            });
+            request(
+                'http://localhost:5000/api/timer/control',
+                'POST',
+                {
+                    timerId,
+                    actOption,
+                },
+                {
+                    authorization: cookies.authData.token,
+                },
+            ).then((data) => {
+                setDetailLoading({
+                    playPause: actOption === 'reset' ? false : loading,
+                    reset: actOption === 'reset' ? loading : false,
+                });
+                console.log(data, actOption);
+            });
+        } catch (e) {
+            setDetailLoading({
+                playPause: actOption === 'reset' ? false : loading,
+                reset: actOption === 'reset' ? loading : false,
+            });
+            console.log(e);
+        }
+    };
+
+    return {
+        controlTimer,
+        detailLoading,
+    };
+};
