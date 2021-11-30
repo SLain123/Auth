@@ -98,7 +98,7 @@ export const useControlTimer = () => {
                 playPause: actOption === 'reset' ? false : true,
                 reset: actOption === 'reset' ? true : false,
             });
-            request(
+            return request(
                 'http://localhost:5000/api/timer/control',
                 'POST',
                 {
@@ -113,7 +113,7 @@ export const useControlTimer = () => {
                     playPause: actOption === 'reset' ? false : loading,
                     reset: actOption === 'reset' ? loading : false,
                 });
-                console.log(data, actOption);
+                return data;
             });
         } catch (e) {
             setDetailLoading({

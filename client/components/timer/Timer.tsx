@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { convertFromMilliSeconds } from '../../utils/timeConverter';
 import Image from 'next/image';
 import { useControlTimer } from '../../service/TimerService';
@@ -26,12 +26,25 @@ const Timer: React.FC<TimerPropsI> = ({
     extraChildren,
 }) => {
     const [isActive, setActive] = useState(Boolean(timeToEnd));
-    const { hour, minute, second } = convertFromMilliSeconds(total);
+    const [time, setTime] = useState(
+        restTime
+            ? restTime
+            : timeToEnd
+            ? new Date(timeToEnd).getTime() - new Date().getTime()
+            : total,
+    );
+    const { hour, minute, second } = convertFromMilliSeconds(time);
 
     const controlTimerService = useControlTimer();
     const { detailLoading, controlTimer } = controlTimerService;
 
     const { curcleSpin } = Spinner();
+
+    useEffect(() => {
+        const timer = setInterval(() => isActive && setTime(time - 1000), 1000);
+
+        return () => clearInterval(timer);
+    }, [time, isActive]);
 
     return (
         <div>
@@ -48,8 +61,11 @@ const Timer: React.FC<TimerPropsI> = ({
                     className={Styles.timer_control_btn}
                     disabled={detailLoading.playPause}
                     onClick={() => {
-                        controlTimer(_id, isActive ? 'pause' : 'play');
-                        setActive(!isActive);
+                        controlTimer(_id, isActive ? 'pause' : 'play').then(
+                            (data) => {
+                                if (data) data && setActive(!isActive);
+                            },
+                        );
                     }}
                 >
                     {detailLoading.playPause || detailLoading.reset ? (
@@ -68,8 +84,12 @@ const Timer: React.FC<TimerPropsI> = ({
                     className={Styles.timer_control_btn}
                     disabled={detailLoading.reset}
                     onClick={() => {
-                        controlTimer(_id, 'reset');
-                        setActive(false);
+                        controlTimer(_id, 'reset').then((data) => {
+                            if (data) {
+                                setActive(false);
+                                setTime(total);
+                            }
+                        });
                     }}
                 >
                     {detailLoading.reset ? (
