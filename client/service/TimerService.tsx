@@ -129,3 +129,85 @@ export const useControlTimer = () => {
         detailLoading,
     };
 };
+
+export const useChangeTimer = () => {
+    const { loading, request } = useHttp();
+    const [serverErrors, setServerErrors] = useState<
+        [] | { msg: string; value: string }[]
+    >([]);
+    const [resultMessage, setResultMessage] = useState('');
+
+    const [cookies] = useCookies(['authData']);
+
+    const changeTimer = async (
+        timerId: string,
+        label: string,
+        total: number,
+    ) => {
+        try {
+            request(
+                'http://localhost:5000/api/timer/change',
+                'POST',
+                {
+                    timerId,
+                    label,
+                    total,
+                },
+                {
+                    authorization: cookies.authData.token,
+                },
+            ).then((data) => {
+                data && data.errors && setServerErrors(data.errors);
+                data && data.message && setResultMessage(data.message);
+            });
+        } catch (e) {
+            //@ts-ignore
+            setServerErrors([e.message]);
+        }
+    };
+
+    return {
+        changeTimer,
+        loading,
+        serverErrors,
+        resultMessage,
+    };
+};
+
+export const useRemoveTimer = () => {
+    const { loading, request } = useHttp();
+    const [serverErrors, setServerErrors] = useState<
+        [] | { msg: string; value: string }[]
+    >([]);
+    const [resultMessage, setResultMessage] = useState('');
+
+    const [cookies] = useCookies(['authData']);
+
+    const removeTimer = async (timerId: string) => {
+        try {
+            request(
+                'http://localhost:5000/api/timer',
+                'DELETE',
+                {
+                    timerId,
+                },
+                {
+                    authorization: cookies.authData.token,
+                },
+            ).then((data) => {
+                data && data.errors && setServerErrors(data.errors);
+                data && data.message && setResultMessage(data.message);
+            });
+        } catch (e) {
+            //@ts-ignore
+            setServerErrors([e.message]);
+        }
+    };
+
+    return {
+        removeTimer,
+        loading,
+        serverErrors,
+        resultMessage,
+    };
+};
