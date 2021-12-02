@@ -265,7 +265,7 @@ router.post(
 
             const result = await Timer.findOneAndUpdate(
                 { _id: timerId },
-                { label, total },
+                { label, total, restTime: 0, timeToEnd: null },
             );
 
             if (!result) {

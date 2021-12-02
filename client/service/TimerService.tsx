@@ -60,10 +60,18 @@ export const useCreateTimer = () => {
                     authorization: cookies.authData.token,
                 },
             ).then((data) => {
-                data.errors
+                data && data.errors
                     ? setServerErrors(data.errors)
                     : setServerErrors([]);
                 setResultMessage(data.message);
+
+                !data &&
+                    setServerErrors([
+                        {
+                            msg: 'Something was wrong',
+                            value: 'Something was wrong',
+                        },
+                    ]);
 
                 getTimers();
             });
@@ -136,8 +144,9 @@ export const useChangeTimer = () => {
         [] | { msg: string; value: string }[]
     >([]);
     const [resultMessage, setResultMessage] = useState('');
-
     const [cookies] = useCookies(['authData']);
+
+    const { getTimers } = useGetUserTimers();
 
     const changeTimer = async (
         timerId: string,
@@ -158,7 +167,19 @@ export const useChangeTimer = () => {
                 },
             ).then((data) => {
                 data && data.errors && setServerErrors(data.errors);
-                data && data.message && setResultMessage(data.message);
+                if (data && data.message) {
+                    setResultMessage(data.message);
+                    getTimers();
+
+                    setTimeout(() => setResultMessage(''), 3000);
+                }
+                !data &&
+                    setServerErrors([
+                        {
+                            msg: 'Something was wrong',
+                            value: 'Something was wrong',
+                        },
+                    ]);
             });
         } catch (e) {
             //@ts-ignore
@@ -180,8 +201,9 @@ export const useRemoveTimer = () => {
         [] | { msg: string; value: string }[]
     >([]);
     const [resultMessage, setResultMessage] = useState('');
-
     const [cookies] = useCookies(['authData']);
+
+    const { getTimers } = useGetUserTimers();
 
     const removeTimer = async (timerId: string) => {
         try {
@@ -196,7 +218,18 @@ export const useRemoveTimer = () => {
                 },
             ).then((data) => {
                 data && data.errors && setServerErrors(data.errors);
-                data && data.message && setResultMessage(data.message);
+                if (data && data.message) {
+                    setResultMessage(data.message);
+                    getTimers();
+                }
+
+                !data &&
+                    setServerErrors([
+                        {
+                            msg: 'Something was wrong',
+                            value: 'Something was wrong',
+                        },
+                    ]);
             });
         } catch (e) {
             //@ts-ignore

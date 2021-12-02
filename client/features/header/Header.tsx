@@ -10,7 +10,6 @@ import Styles from './Header.module.scss';
 
 const Header: React.FC = ({ children }) => {
     const [cookies, _setCookie, removeCookie] = useCookies(['authData']);
-    const [contentLoaded, setContentLoaded] = useState(false);
     const checkTokenService = useCheckTokenService(
         cookies.authData ? cookies.authData.token : null,
     );
@@ -30,24 +29,17 @@ const Header: React.FC = ({ children }) => {
     const authStatus = useAppSelector(getAuthSelector);
     const { isUserAuth } = authStatus;
 
-    const navList =
-        isUserAuth && contentLoaded
-            ? navListAuth.map(({ name, link }) => (
-                  <li key={name}>
-                      <Link href={link}>{name}</Link>
-                  </li>
-              ))
-            : navListGuest.map(({ name, link }) => (
-                  <li key={name}>
-                      <Link href={link}>{name}</Link>
-                  </li>
-              ));
-
-    useEffect(() => {
-        if (document.readyState === 'interactive') {
-            setContentLoaded(true);
-        }
-    }, []);
+    const navList = isUserAuth
+        ? navListAuth.map(({ name, link }) => (
+              <li key={name}>
+                  <Link href={link}>{name}</Link>
+              </li>
+          ))
+        : navListGuest.map(({ name, link }) => (
+              <li key={name}>
+                  <Link href={link}>{name}</Link>
+              </li>
+          ));
 
     useEffect(() => {
         const { checkToken } = checkTokenService;
@@ -63,7 +55,7 @@ const Header: React.FC = ({ children }) => {
             <header className={Styles.header}>
                 <ul className={Styles.menu}>
                     {navList}
-                    {isUserAuth && contentLoaded && (
+                    {isUserAuth && (
                         <li key='logout'>
                             <button
                                 className={Styles.logout_btn}

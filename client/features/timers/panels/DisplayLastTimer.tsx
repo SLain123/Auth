@@ -24,7 +24,7 @@ const DisplayLastTimer: React.FC = () => {
             <p className={Styles.link_text}>
                 You can find all your timers by link below:
             </p>
-            <Link href='/timers'>
+            <Link href='/all-timers'>
                 <a className={Styles.link_link}>All timers</a>
             </Link>
         </div>
