@@ -5,9 +5,9 @@ const { check, validationResult } = require('express-validator');
 const router = Router();
 const auth = require('../middleware/auth.middleware');
 
-// /api/timer
+// /api/timer/create
 router.post(
-    '/',
+    '/create',
     [
         check('label', 'You need specify timer name').notEmpty(),
         check('total', 'You need send total timer time').notEmpty(),
@@ -56,8 +56,8 @@ router.post(
     },
 );
 
-// /api/timer
-router.get('/', auth, async (req, res) => {
+// /api/timer/all
+router.get('/all', auth, async (req, res) => {
     try {
         const timerList = await Timer.find({ ownerId: req.user.userId });
 
@@ -77,6 +77,40 @@ router.get('/', auth, async (req, res) => {
         res.status(500).json({ message: 'Something was wrong...' });
     }
 });
+
+// /api/timer
+router.post(
+    '/',
+    [check('timerId', 'You need specify timer id')],
+    async (req, res) => {
+        try {
+            const errors = validationResult(req);
+
+            if (!errors.isEmpty()) {
+                return res.status(400).json({
+                    errors: errors.array(),
+                    message: 'Data uncorrect!',
+                });
+            }
+
+            const timer = await Timer.findOne({ _id: req.body.timerId });
+
+            if (!timer) {
+                return res.status(400).json({
+                    errors: [
+                        {
+                            msg: 'Timer was not found or do not exist',
+                        },
+                    ],
+                });
+            }
+
+            res.status(201).json({ message: 'Timers was found', timer });
+        } catch (e) {
+            res.status(500).json({ message: 'Something was wrong...' });
+        }
+    },
+);
 
 // /api/timer/control
 router.post(

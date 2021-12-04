@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import Link from 'next/link';
 import { useCookies } from 'react-cookie';
 import useCheckTokenService from '../../service/TokenCheckService';
@@ -14,7 +14,7 @@ const Header: React.FC = ({ children }) => {
         cookies.authData ? cookies.authData.token : null,
     );
     const getUserTimersService = useGetUserTimers();
-    const { getTimers } = getUserTimersService;
+    const { getUserTimers } = getUserTimersService;
 
     const navListAuth = [
         { name: 'Home', link: '/' },
@@ -47,7 +47,7 @@ const Header: React.FC = ({ children }) => {
     }, []);
 
     useEffect(() => {
-        isUserAuth && getTimers();
+        isUserAuth && getUserTimers();
     }, [isUserAuth]);
 
     return (

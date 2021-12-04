@@ -1,4 +1,4 @@
-import { TimersContainer } from '../features/timers';
+import { TimersContainer } from '../features/user_timers';
 import { Header } from '../features/header';
 
 export default function MainPage() {

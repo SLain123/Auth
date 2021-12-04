@@ -14,8 +14,8 @@ const initialState: InitialStateI = {
     isError: false,
 };
 
-export const authSlice = createSlice({
-    name: 'timersState',
+export const userTimersSlice = createSlice({
+    name: 'userTimers',
     initialState: initialState,
     reducers: {
         setLoadingStatus: (state, action: PayloadAction<boolean>) => {
@@ -24,15 +24,15 @@ export const authSlice = createSlice({
         setErrorStatus: (state, action: PayloadAction<boolean>) => {
             state.isError = action.payload;
         },
-        saveTimerList: (state, action: PayloadAction<TimerI[]>) => {
+        saveUserTimerList: (state, action: PayloadAction<TimerI[]>) => {
             state.timerList = action.payload;
         },
     },
 });
 
-export const { setLoadingStatus, setErrorStatus, saveTimerList } =
-    authSlice.actions;
+export const { setLoadingStatus, setErrorStatus, saveUserTimerList } =
+    userTimersSlice.actions;
 
-export const getTimerListSelector = (state: AppState) => state.timersState;
+export const getTimerListSelector = (state: AppState) => state.userTimers;
 
-export default authSlice;
+export default userTimersSlice;

@@ -12,7 +12,7 @@ const initialState: InitialStateI = {
 };
 
 export const authSlice = createSlice({
-    name: 'authState',
+    name: 'auth',
     initialState: initialState,
     reducers: {
         setLoadingStatus: (state, action: PayloadAction<boolean>) => {
@@ -26,6 +26,6 @@ export const authSlice = createSlice({
 
 export const { setLoadingStatus, setUserAuthStatus } = authSlice.actions;
 
-export const getAuthSelector = (state: AppState) => state.authState;
+export const getAuthSelector = (state: AppState) => state.auth;
 
 export default authSlice;

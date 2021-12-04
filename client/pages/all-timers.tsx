@@ -1,10 +1,10 @@
-import DisplayAllTimers from '../features/timers/panels/DisplayAllTimers';
+import DisplayAllTimers from '../features/user_timers/panels/DisplayAllTimers';
 import { Header } from '../features/header';
 
-export default function MainPage() {
+export default function AllTimerPage() {
     return <DisplayAllTimers />;
 }
 
-MainPage.getLayout = function getLayout(page: React.ReactElement) {
+AllTimerPage.getLayout = function getLayout(page: React.ReactElement) {
     return <Header>{page}</Header>;
 };

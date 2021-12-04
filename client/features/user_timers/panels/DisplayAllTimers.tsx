@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useAppSelector } from '../../../hooks/useAppSelector';
 import { getAuthSelector } from '../../auth/authSlice';
-import { getTimerListSelector } from '../timersSlice';
+import { getTimerListSelector } from '../userTimersSlice';
 import { convertFromMilliSeconds } from '../../../utils/timeConverter';
 import Link from 'next/link';
 import { Spinner } from '../../../components/spinner';
@@ -31,7 +31,7 @@ const DisplayAllTimers: React.FC = () => {
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
-    const { curcleGreenSpin } = Spinner();
+    const { curcleSpin } = Spinner();
 
     const handleChangePage = (_event: unknown, newPage: number) => {
         setPage(newPage);
@@ -51,7 +51,7 @@ const DisplayAllTimers: React.FC = () => {
     }, [isUserAuth, isLoadingAuth]);
 
     if (isLoadingAuth || isLoadingTimers) {
-        return <div className={Styles.center}>{curcleGreenSpin}</div>;
+        return <div className={Styles.center}>{curcleSpin(100, 'green')}</div>;
     }
 
     if (isErrorTimers || !timerList) {
@@ -121,7 +121,7 @@ const DisplayAllTimers: React.FC = () => {
                                             {true ? 'active' : 'unactive'}
                                         </TableCell>
                                         <TableCell align='center'>
-                                            <Link href='#'>
+                                            <Link href={`/timer/${_id}`}>
                                                 <a>Open</a>
                                             </Link>
                                         </TableCell>

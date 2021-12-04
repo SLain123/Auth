@@ -2,7 +2,7 @@ import React from 'react';
 import { Timer } from '../../../components/timer';
 import { useAppSelector } from '../../../hooks/useAppSelector';
 import { getAuthSelector } from '../../auth/authSlice';
-import { getTimerListSelector } from '../timersSlice';
+import { getTimerListSelector } from '../userTimersSlice';
 import Link from 'next/link';
 import Button from '@mui/material/Button';
 
