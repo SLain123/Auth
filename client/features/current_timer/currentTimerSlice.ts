@@ -3,19 +3,19 @@ import type { AppState } from '../../store/store';
 import { TimerI } from '../../types/timer';
 
 interface InitialStateI {
-    timerList: TimerI[] | [];
+    timer: TimerI | null;
     isLoading: boolean;
     isError: boolean;
 }
 
 const initialState: InitialStateI = {
-    timerList: [],
+    timer: null,
     isLoading: false,
     isError: false,
 };
 
-export const allTimerSlice = createSlice({
-    name: 'allTimers',
+export const currentTimerSlice = createSlice({
+    name: 'currentTimer',
     initialState: initialState,
     reducers: {
         setLoadingStatus: (state, action: PayloadAction<boolean>) => {
@@ -25,14 +25,14 @@ export const allTimerSlice = createSlice({
             state.isError = action.payload;
         },
         saveSingleTimer: (state, action: PayloadAction<TimerI>) => {
-            state.timerList = [...state.timerList, action.payload];
+            state.timer = action.payload;
         },
     },
 });
 
 export const { setLoadingStatus, setErrorStatus, saveSingleTimer } =
-    allTimerSlice.actions;
+    currentTimerSlice.actions;
 
-export const getTimerListSelector = (state: AppState) => state.allTimers;
+export const getCurrentTimer = (state: AppState) => state.currentTimer;
 
-export default allTimerSlice;
+export default currentTimerSlice;

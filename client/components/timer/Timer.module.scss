@@ -2,6 +2,10 @@ $shadow: rgb(214, 205, 205);
 $blue: #34495e;
 $light_blue: #628ab2;
 
+.container {
+    width: 100%;
+}
+
 .title {
     font-size: 18px;
     font-weight: 700;
@@ -72,15 +76,6 @@ $light_blue: #628ab2;
     margin-top: 8px;
 }
 
-.edge {
-    width: 100%;
-    height: 3px;
-    opacity: 0.3;
-    background-color: black;
-    margin: 16px 0;
-    border-radius: 50%;
-}
-
 .edit_form {
     display: flex;
     flex-flow: column;
@@ -97,9 +92,8 @@ $light_blue: #628ab2;
 
     &_label {
         align-self: flex-start;
-        margin-top: 28px;
         font-size: 16px;
-        margin-bottom: 0;
+        margin: 0;
         text-align: center;
         background-color: $blue;
         width: 100%;

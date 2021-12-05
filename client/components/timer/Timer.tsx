@@ -83,6 +83,10 @@ const Timer: React.FC<TimerPropsI> = ({
             const { label, hour, minute, second } = values;
             const total = convertToMilliSeconds(hour, minute, second);
             total && changeTimer(_id, label, total);
+
+            setTimeout(() => {
+                setEditing(false);
+            }, 500);
         },
     });
 
@@ -104,7 +108,7 @@ const Timer: React.FC<TimerPropsI> = ({
     }, [total, restTime, timeToEnd]);
 
     return (
-        <div>
+        <div className={Styles.container}>
             {isEditing ? (
                 <form
                     onSubmit={formik.handleSubmit}
@@ -282,24 +286,12 @@ const Timer: React.FC<TimerPropsI> = ({
                     >
                         Back
                     </Button>
-                    <div className={Styles.edge} />
-                    <Button
-                        className={Styles.remove_btn}
-                        variant='contained'
-                        color='error'
-                        size='small'
-                        type='button'
-                        onClick={() => {
-                            removeTimer(_id);
-                            setTimeout(() => setEditing(false), 3000);
-                        }}
-                    >
-                        Remove this timer
-                    </Button>
                 </form>
             ) : (
                 <div>
-                    <h3 className={Styles.timer_title}>{formTitle}</h3>
+                    {formTitle && (
+                        <h3 className={Styles.timer_title}>{formTitle}</h3>
+                    )}
                     <p className={Styles.timer_label}>{label}</p>
                     <div className={Styles.timer_time_container}>
                         <span className={Styles.timer_time_count}>{hour}</span>:

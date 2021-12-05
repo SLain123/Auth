@@ -11,7 +11,37 @@ import {
     setLoadingStatus,
     setErrorStatus,
     saveSingleTimer,
-} from '../features/single_timer/singleTimerSlice';
+} from '../features/current_timer/currentTimerSlice';
+
+// Get single timer;
+export const useGetCurrentTimer = () => {
+    const { request } = useHttp();
+    const dispatch = useAppDispatch();
+
+    const getTimer = async (timerId: string) => {
+        try {
+            dispatch(setLoadingStatus(true));
+            request('http://localhost:5000/api/timer', 'POST', {
+                timerId,
+            }).then((data) => {
+                if (!data || !data.timer) {
+                    dispatch(setErrorStatus(true));
+                } else {
+                    dispatch(saveSingleTimer(data.timer));
+                }
+                dispatch(setLoadingStatus(false));
+            });
+        } catch (e) {
+            //@ts-ignore
+            dispatch(setErrorStatus(true));
+            dispatch(setLoadingStatus(false));
+        }
+    };
+
+    return {
+        getTimer,
+    };
+};
 
 // All user timers;
 export const useGetUserTimers = () => {
@@ -105,6 +135,8 @@ export const useControlTimer = () => {
     });
     const [cookies] = useCookies(['authData']);
 
+    const { getUserTimers } = useGetUserTimers();
+
     const controlTimer = async (
         timerId: string,
         actOption: 'play' | 'pause' | 'reset',
@@ -129,6 +161,8 @@ export const useControlTimer = () => {
                     playPause: actOption === 'reset' ? false : loading,
                     reset: actOption === 'reset' ? loading : false,
                 });
+
+                getUserTimers();
                 return data;
             });
         } catch (e) {
@@ -156,6 +190,7 @@ export const useChangeTimer = () => {
     const [cookies] = useCookies(['authData']);
 
     const { getUserTimers } = useGetUserTimers();
+    const { getTimer } = useGetCurrentTimer();
 
     const changeTimer = async (
         timerId: string,
@@ -178,7 +213,9 @@ export const useChangeTimer = () => {
                 data && data.errors && setServerErrors(data.errors);
                 if (data && data.message) {
                     setResultMessage(data.message);
+
                     getUserTimers();
+                    getTimer(timerId);
 
                     setTimeout(() => setResultMessage(''), 3000);
                 }
@@ -252,34 +289,5 @@ export const useRemoveTimer = () => {
         loading,
         serverErrors,
         resultMessage,
-    };
-};
-
-// Get single timer;
-export const useGetSingleTimer = () => {
-    const { loading, request } = useHttp();
-    const dispatch = useAppDispatch();
-
-    const getTimer = async (timerId: string) => {
-        try {
-            request('http://localhost:5000/api/timer', 'POST', {
-                timerId,
-            }).then((data) => {
-                if (!data || !data.timer) {
-                    dispatch(setErrorStatus(true));
-                } else {
-                    dispatch(saveSingleTimer(data.timer));
-                }
-                dispatch(setLoadingStatus(loading));
-            });
-        } catch (e) {
-            //@ts-ignore
-            dispatch(setErrorStatus(true));
-            dispatch(setLoadingStatus(loading));
-        }
-    };
-
-    return {
-        getTimer,
     };
 };
