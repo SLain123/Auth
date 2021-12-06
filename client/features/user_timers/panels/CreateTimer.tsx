@@ -33,7 +33,9 @@ const CreateTimer: React.FC = () => {
             label: Yup.string()
                 .max(40, 'Must be 40 characters or less')
                 .required('Required'),
-            hour: Yup.number(),
+            hour: Yup.number().typeError(''),
+            minute: Yup.number().typeError(''),
+            second: Yup.number().typeError(''),
         }),
         onSubmit: (values) => {
             const { label, hour, minute, second } = values;
@@ -147,8 +149,11 @@ const CreateTimer: React.FC = () => {
                     </p>
                 )}
             {(formik.values.hour > 99 ||
+                formik.values.hour < 0 ||
                 formik.values.minute > 59 ||
-                formik.values.second > 59) && (
+                formik.values.minute < 0 ||
+                formik.values.second > 59 ||
+                formik.values.second < 0) && (
                 <p className={Styles.error_message}>
                     {`You can't type more than 59 secs, 59 mins or 99
                             hours`}
@@ -179,8 +184,11 @@ const CreateTimer: React.FC = () => {
                     Boolean(formik.errors.minute) ||
                     Boolean(formik.errors.second) ||
                     formik.values.hour > 99 ||
+                    formik.values.hour < 0 ||
                     formik.values.minute > 59 ||
+                    formik.values.minute < 0 ||
                     formik.values.second > 59 ||
+                    formik.values.second < 0 ||
                     (!+formik.values.hour &&
                         !+formik.values.minute &&
                         !+formik.values.second) ||

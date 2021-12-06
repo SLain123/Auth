@@ -4,7 +4,6 @@ import Image from 'next/image';
 import {
     useControlTimer,
     useChangeTimer,
-    useRemoveTimer,
 } from '../../service/TimerService';
 import { TimerI } from '../../types/timer';
 import Spinner from '../spinner/Spinner';
@@ -48,14 +47,6 @@ const Timer: React.FC<TimerPropsI> = ({
     const controlTimerService = useControlTimer();
     const { detailLoading, controlTimer } = controlTimerService;
 
-    const removeTimerService = useRemoveTimer();
-    const {
-        removeTimer,
-        loading: loadingRemove,
-        serverErrors: serverErrorsRemove,
-        resultMessage: resultMessageRemove,
-    } = removeTimerService;
-
     const changeTimerService = useChangeTimer();
     const {
         loading: loadingChange,
@@ -77,7 +68,9 @@ const Timer: React.FC<TimerPropsI> = ({
             label: Yup.string()
                 .max(40, 'Must be 40 characters or less')
                 .required('Required'),
-            hour: Yup.number(),
+            hour: Yup.number().typeError(''),
+            minute: Yup.number().typeError(''),
+            second: Yup.number().typeError(''),
         }),
         onSubmit: (values) => {
             const { label, hour, minute, second } = values;
@@ -107,6 +100,12 @@ const Timer: React.FC<TimerPropsI> = ({
         setActive(Boolean(timeToEnd));
     }, [total, restTime, timeToEnd]);
 
+    useEffect(() => {
+        if (isEditing) {
+            formik.setValues({ label, hour, minute, second });
+        }
+    }, [label, hour, minute, second, isEditing]);
+
     return (
         <div className={Styles.container}>
             {isEditing ? (
@@ -128,7 +127,7 @@ const Timer: React.FC<TimerPropsI> = ({
                             formik.touched.label && Boolean(formik.errors.label)
                         }
                         helperText={formik.touched.label && formik.errors.label}
-                        disabled={loadingChange || loadingRemove}
+                        disabled={loadingChange}
                         defaultValue={label}
                     />
                     <h4 className={Styles.subtitle}>
@@ -147,7 +146,7 @@ const Timer: React.FC<TimerPropsI> = ({
                                 formik.touched.hour &&
                                 Boolean(formik.errors.hour)
                             }
-                            disabled={loadingChange || loadingRemove}
+                            disabled={loadingChange}
                             defaultValue={hour}
                         />
                         {formik.touched.hour && formik.errors.hour ? (
@@ -169,7 +168,7 @@ const Timer: React.FC<TimerPropsI> = ({
                             helperText={
                                 formik.touched.minute && formik.errors.minute
                             }
-                            disabled={loadingChange || loadingRemove}
+                            disabled={loadingChange}
                             defaultValue={minute}
                         />
                         <span className={Styles.time_dotted}>:</span>
@@ -188,7 +187,7 @@ const Timer: React.FC<TimerPropsI> = ({
                             helperText={
                                 formik.touched.second && formik.errors.second
                             }
-                            disabled={loadingChange || loadingRemove}
+                            disabled={loadingChange}
                             defaultValue={second}
                         />
                     </div>
@@ -204,8 +203,11 @@ const Timer: React.FC<TimerPropsI> = ({
                             </p>
                         )}
                     {(formik.values.hour > 99 ||
+                        formik.values.hour < 0 ||
                         formik.values.minute > 59 ||
-                        formik.values.second > 59) && (
+                        formik.values.minute < 0 ||
+                        formik.values.second > 59 ||
+                        formik.values.second < 0) && (
                         <p className={Styles.error_message}>
                             {`You can't type more than 59 secs, 59 mins or 99
                             hours`}
@@ -225,27 +227,9 @@ const Timer: React.FC<TimerPropsI> = ({
                         </ul>
                     )}
 
-                    {serverErrorsRemove && (
-                        <ul className={Styles.error_list}>
-                            {serverErrorsRemove.map((err) => (
-                                <li
-                                    key={err.msg}
-                                    className={Styles.error_message}
-                                >
-                                    {err.msg}
-                                </li>
-                            ))}
-                        </ul>
-                    )}
-
                     {resultMessageChange && (
                         <p className={Styles.status_text}>
                             {resultMessageChange}
-                        </p>
-                    )}
-                    {resultMessageRemove && (
-                        <p className={Styles.status_text}>
-                            {resultMessageRemove}
                         </p>
                     )}
 
@@ -261,20 +245,19 @@ const Timer: React.FC<TimerPropsI> = ({
                             Boolean(formik.errors.minute) ||
                             Boolean(formik.errors.second) ||
                             formik.values.hour > 99 ||
+                            formik.values.hour < 0 ||
                             formik.values.minute > 59 ||
+                            formik.values.minute < 0 ||
                             formik.values.second > 59 ||
+                            formik.values.second < 0 ||
                             (!+formik.values.hour &&
                                 !+formik.values.minute &&
                                 !+formik.values.second) ||
                             loadingChange ||
-                            loadingRemove ||
-                            Boolean(serverErrorsChange.length > 0) ||
-                            Boolean(serverErrorsRemove.length > 0)
+                            Boolean(serverErrorsChange.length > 0)
                         }
                     >
-                        {loadingChange || loadingRemove
-                            ? WhiteSpin
-                            : 'Change Timer'}
+                        {loadingChange ? WhiteSpin : 'Change Timer'}
                     </Button>
                     <Button
                         className={Styles.back_btn}
