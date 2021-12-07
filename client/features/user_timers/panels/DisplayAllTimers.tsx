@@ -1,10 +1,12 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAppSelector } from '../../../hooks/useAppSelector';
 import { getAuthSelector } from '../../auth/authSlice';
 import { getTimerListSelector } from '../userTimersSlice';
 import { convertFromMilliSeconds } from '../../../utils/timeConverter';
 import Link from 'next/link';
 import { Spinner } from '../../../components/spinner';
+import Image from 'next/image';
+import { useRemoveTimer } from '../../../service/TimerService';
 
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -16,6 +18,9 @@ import Paper from '@mui/material/Paper';
 import TablePagination from '@mui/material/TablePagination';
 
 import Styles from '../Timers.module.scss';
+import linkIcon from '../../../public/icons/link.svg';
+import binIcon from '../../../public/icons/bin.svg';
+import problemIcon from '../../../public/icons/problem.svg';
 
 const DisplayAllTimers: React.FC = () => {
     const authStatus = useAppSelector(getAuthSelector);
@@ -30,6 +35,12 @@ const DisplayAllTimers: React.FC = () => {
 
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
+
+    const removeTimerService = useRemoveTimer();
+    const { removeTimer, loading, serverErrors } = removeTimerService;
+    const [currentActiveItem, setCurrentActiveItem] = useState<string | null>(
+        null,
+    );
 
     const { curcleSpin } = Spinner();
 
@@ -91,9 +102,53 @@ const DisplayAllTimers: React.FC = () => {
                                 page * rowsPerPage,
                                 page * rowsPerPage + rowsPerPage,
                             )
-                            .map(({ _id, label, total }) => {
+                            .map(({ _id, label, total, timeToEnd }) => {
                                 const { hour, minute, second } =
                                     convertFromMilliSeconds(total);
+
+                                const statusStyle = timeToEnd
+                                    ? Styles.active
+                                    : Styles.unactive;
+
+                                const getBtnContent = () => {
+                                    if (loading && currentActiveItem === _id) {
+                                        return curcleSpin(20, 'black');
+                                    } else if (
+                                        serverErrors &&
+                                        currentActiveItem === _id
+                                    ) {
+                                        return (
+                                            <div
+                                                className={
+                                                    Styles.problem_container
+                                                }
+                                            >
+                                                <Image
+                                                    width={20}
+                                                    height={20}
+                                                    src={problemIcon}
+                                                    alt='some problem'
+                                                />
+                                                <span
+                                                    className={
+                                                        Styles.problem_message
+                                                    }
+                                                >
+                                                    Something was wrong
+                                                </span>
+                                            </div>
+                                        );
+                                    } else {
+                                        return (
+                                            <Image
+                                                width={20}
+                                                height={20}
+                                                src={binIcon}
+                                                alt='bin'
+                                            />
+                                        );
+                                    }
+                                };
 
                                 return (
                                     <TableRow
@@ -118,17 +173,36 @@ const DisplayAllTimers: React.FC = () => {
                                             {second}
                                         </TableCell>
                                         <TableCell align='center'>
-                                            {true ? 'active' : 'unactive'}
+                                            <span className={statusStyle}>
+                                                {' '}
+                                                {timeToEnd
+                                                    ? 'active'
+                                                    : 'unactive'}
+                                            </span>
                                         </TableCell>
                                         <TableCell align='center'>
                                             <Link href={`/timer/${_id}`}>
-                                                <a>Open</a>
+                                                <a className={Styles.open_btn}>
+                                                    <Image
+                                                        width={24}
+                                                        height={24}
+                                                        src={linkIcon}
+                                                        alt='link'
+                                                    />
+                                                </a>
                                             </Link>
                                         </TableCell>
                                         <TableCell align='center'>
-                                            <Link href='#'>
-                                                <a>Remove (bin)</a>
-                                            </Link>
+                                            <button
+                                                type='button'
+                                                className={Styles.remove_btn}
+                                                onClick={() => {
+                                                    setCurrentActiveItem(_id);
+                                                    removeTimer(_id);
+                                                }}
+                                            >
+                                                {getBtnContent()}
+                                            </button>
                                         </TableCell>
                                     </TableRow>
                                 );

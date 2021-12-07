@@ -1,10 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { convertFromMilliSeconds } from '../../utils/timeConverter';
 import Image from 'next/image';
-import {
-    useControlTimer,
-    useChangeTimer,
-} from '../../service/TimerService';
+import { useControlTimer, useChangeTimer } from '../../service/TimerService';
 import { TimerI } from '../../types/timer';
 import Spinner from '../spinner/Spinner';
 import Button from '@mui/material/Button';
@@ -84,7 +81,9 @@ const Timer: React.FC<TimerPropsI> = ({
     });
 
     useEffect(() => {
-        const timer = setInterval(() => isActive && setTime(time - 1000), 1000);
+        const timer = setInterval(() => {
+            isActive && time > 1000 ? setTime(time - 1000) : setActive(false);
+        }, 1000);
 
         return () => clearInterval(timer);
     }, [time, isActive]);
@@ -105,6 +104,10 @@ const Timer: React.FC<TimerPropsI> = ({
             formik.setValues({ label, hour, minute, second });
         }
     }, [label, hour, minute, second, isEditing]);
+
+    useEffect(() => {
+        console.log(time);
+    }, [time]);
 
     return (
         <div className={Styles.container}>
