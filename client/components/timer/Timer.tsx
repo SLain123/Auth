@@ -80,14 +80,34 @@ const Timer: React.FC<TimerPropsI> = ({
         },
     });
 
+    // Запускает счет таймера если есть время и статус активен, в случае достижения нулевого значения отправляет reset на сервер и отключает активный статус, загружает исходное время таймера в стейт;
     useEffect(() => {
+        //Отключение на случай просроченной даты;
+        if (
+            timeToEnd &&
+            new Date(timeToEnd).getTime() - new Date().getTime() <= 0
+        ) {
+            return;
+        }
         const timer = setInterval(() => {
-            isActive && time > 1000 ? setTime(time - 1000) : setActive(false);
+            if (isActive && time > 1000 && !isEditing) {
+                setTime(time - 1000);
+            }
+
+            if (time <= 1000 && isActive) {
+                controlTimer(_id, 'reset').then((data) => {
+                    if (data) {
+                        setActive(false);
+                        setTime(total);
+                    }
+                });
+            }
         }, 1000);
 
         return () => clearInterval(timer);
     }, [time, isActive]);
 
+    // Опеределяет начальное состояние таймера, активен/не активен, на основе полученных данных из props;
     useEffect(() => {
         setTime(
             restTime
@@ -97,17 +117,25 @@ const Timer: React.FC<TimerPropsI> = ({
                 : total,
         );
         setActive(Boolean(timeToEnd));
+
+        // Запрос на reset данных таймера на сервере в случае просроченной даты окончания таймера, отключение активного статуса таймера и добавление общего времени таймера в стейт вместо оставшегося времени;
+        timeToEnd &&
+            new Date(timeToEnd).getTime() - new Date().getTime() <= 0 &&
+            controlTimer(_id, 'reset').then((data) => {
+                if (data) {
+                    setActive(false);
+                    setTime(total);
+                }
+            });
     }, [total, restTime, timeToEnd]);
 
+    // В режиме редактирования записывает текущие значения имени и времени таймера в формик для прохождения валидации;
     useEffect(() => {
         if (isEditing) {
             formik.setValues({ label, hour, minute, second });
+            setActive(false);
         }
     }, [label, hour, minute, second, isEditing]);
-
-    useEffect(() => {
-        console.log(time);
-    }, [time]);
 
     return (
         <div className={Styles.container}>

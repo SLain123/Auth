@@ -25,6 +25,13 @@ router.post(
             }
 
             const { label, total } = req.body;
+            if (total <= 999 || total > 360000000) {
+                return res.status(400).json({
+                    errors: errors.array(),
+                    message: 'Time must be more then 0 and less then 100 hours',
+                });
+            }
+
             const user = await User.findOne({ _id: req.user.userId });
 
             if (!user) {
