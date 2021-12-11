@@ -188,6 +188,7 @@ export const useChangeTimer = () => {
     >([]);
     const [resultMessage, setResultMessage] = useState('');
     const [cookies] = useCookies(['authData']);
+    const dispatch = useAppDispatch();
 
     const { getUserTimers } = useGetUserTimers();
     const { getTimer } = useGetCurrentTimer();
@@ -211,11 +212,10 @@ export const useChangeTimer = () => {
                 },
             ).then((data) => {
                 data && data.errors && setServerErrors(data.errors);
-                if (data && data.message) {
+                if (data && data.message && data.timer) {
                     setResultMessage(data.message);
-
+                    dispatch(saveSingleTimer(data.timer));
                     getUserTimers();
-                    getTimer(timerId);
 
                     setTimeout(() => setResultMessage(''), 3000);
                 }

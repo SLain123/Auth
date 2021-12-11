@@ -319,7 +319,19 @@ router.post(
                 });
             }
 
-            res.status(201).json({ message: 'Timer was change' });
+            res.status(201).json({
+                message: 'Timer was change',
+                timer: {
+                    _id: result._doc._id,
+                    createDate: result._doc.createDate,
+                    ownerId: result._doc.ownerId,
+                    ownerNick: result._doc.ownerNick,
+                    label,
+                    total,
+                    restTime: 0,
+                    timeToEnd: null,
+                },
+            });
         } catch (e) {
             res.status(500).json({ message: 'Something was wrong...' });
         }

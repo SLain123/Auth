@@ -76,7 +76,7 @@ const Timer: React.FC<TimerPropsI> = ({
 
             setTimeout(() => {
                 setEditing(false);
-            }, 500);
+            }, 1000);
         },
     });
 
