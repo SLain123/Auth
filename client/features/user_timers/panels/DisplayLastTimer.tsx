@@ -45,7 +45,7 @@ const DisplayLastTimer: React.FC = () => {
         }
     }, [timerList]);
 
-    if (!isUserAuth || isLoadingAuth || isLoadingTimers) {
+    if (!isUserAuth || isLoadingAuth || isLoadingTimers || isLoading) {
         return null;
     }
 
@@ -69,7 +69,7 @@ const DisplayLastTimer: React.FC = () => {
         );
     }
 
-    if (!timerList.length) {
+    if (!timerList.length || !timer) {
         return (
             <div
                 className={`${Styles.form} ${Styles.form_success_right} ${Styles.no_timers}`}

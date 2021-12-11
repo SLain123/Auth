@@ -9,6 +9,7 @@ import TextField from '@mui/material/TextField';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { convertToMilliSeconds } from '../../utils/timeConverter';
+import { useCookies } from 'react-cookie';
 
 import Styles from './Timer.module.scss';
 import playIcon from '../../public/icons/play.svg';
@@ -29,6 +30,7 @@ const Timer: React.FC<TimerPropsI> = ({
     restTime,
     formTitle,
     extraChildren,
+    ownerId,
 }) => {
     const [isActive, setActive] = useState(Boolean(timeToEnd));
     const [isEditing, setEditing] = useState(false);
@@ -51,6 +53,9 @@ const Timer: React.FC<TimerPropsI> = ({
         resultMessage: resultMessageChange,
         changeTimer,
     } = changeTimerService;
+
+    const [cookies] = useCookies(['authData']);
+    const isOwner = () => cookies.authData.userId === ownerId;
 
     const { curcleSpin, WhiteSpin } = Spinner();
 
@@ -321,7 +326,7 @@ const Timer: React.FC<TimerPropsI> = ({
                         <button
                             type='button'
                             className={Styles.timer_control_btn}
-                            disabled={detailLoading.playPause}
+                            disabled={detailLoading.playPause || !isOwner()}
                             onClick={() => {
                                 controlTimer(
                                     _id,
@@ -345,7 +350,7 @@ const Timer: React.FC<TimerPropsI> = ({
                         <button
                             type='button'
                             className={Styles.timer_control_btn}
-                            disabled={detailLoading.reset}
+                            disabled={detailLoading.reset || !isOwner()}
                             onClick={() => {
                                 controlTimer(_id, 'reset').then((data) => {
                                     if (data) {
@@ -373,6 +378,7 @@ const Timer: React.FC<TimerPropsI> = ({
                                 setEditing(true);
                                 isActive && controlTimer(_id, 'pause');
                             }}
+                            disabled={!isOwner()}
                         >
                             <Image
                                 width={16}
