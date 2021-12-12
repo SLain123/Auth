@@ -8,7 +8,10 @@ import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { convertToMilliSeconds } from '../../utils/timeConverter';
+import {
+    convertToMilliSeconds,
+    addTimeFormat,
+} from '../../utils/timeConverter';
 import { useCookies } from 'react-cookie';
 
 import Styles from './Timer.module.scss';
@@ -92,9 +95,12 @@ const Timer: React.FC<TimerPropsI> = ({
             timeToEnd &&
             new Date(timeToEnd).getTime() - new Date().getTime() <= 0
         ) {
+            console.log('less then null');
+            console.log(timeToEnd);
             return;
         }
         const timer = setInterval(() => {
+            console.log('tik');
             if (isActive && time > 1000 && !isEditing) {
                 setTime(time - 1000);
             }
@@ -183,7 +189,7 @@ const Timer: React.FC<TimerPropsI> = ({
                                 Boolean(formik.errors.hour)
                             }
                             disabled={loadingChange}
-                            defaultValue={hour}
+                            defaultValue={addTimeFormat(hour)}
                         />
                         {formik.touched.hour && formik.errors.hour ? (
                             <div>{formik.errors.hour}</div>
@@ -205,7 +211,7 @@ const Timer: React.FC<TimerPropsI> = ({
                                 formik.touched.minute && formik.errors.minute
                             }
                             disabled={loadingChange}
-                            defaultValue={minute}
+                            defaultValue={addTimeFormat(minute)}
                         />
                         <span className={Styles.time_dotted}>:</span>
                         <TextField
@@ -224,7 +230,7 @@ const Timer: React.FC<TimerPropsI> = ({
                                 formik.touched.second && formik.errors.second
                             }
                             disabled={loadingChange}
-                            defaultValue={second}
+                            defaultValue={addTimeFormat(second)}
                         />
                     </div>
 
@@ -313,13 +319,16 @@ const Timer: React.FC<TimerPropsI> = ({
                     )}
                     <p className={Styles.timer_label}>{label}</p>
                     <div className={Styles.timer_time_container}>
-                        <span className={Styles.timer_time_count}>{hour}</span>:
                         <span className={Styles.timer_time_count}>
-                            {minute}
+                            {addTimeFormat(hour)}
                         </span>
                         :
                         <span className={Styles.timer_time_count}>
-                            {second}
+                            {addTimeFormat(minute)}
+                        </span>
+                        :
+                        <span className={Styles.timer_time_count}>
+                            {addTimeFormat(second)}
                         </span>
                     </div>
                     <div className={Styles.timer_control_panel}>

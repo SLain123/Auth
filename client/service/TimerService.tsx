@@ -135,7 +135,7 @@ export const useControlTimer = () => {
     });
     const [cookies] = useCookies(['authData']);
 
-    const { getUserTimers } = useGetUserTimers();
+    // const { getUserTimers } = useGetUserTimers();
 
     const controlTimer = async (
         timerId: string,
@@ -162,7 +162,7 @@ export const useControlTimer = () => {
                     reset: actOption === 'reset' ? loading : false,
                 });
 
-                getUserTimers();
+                // getUserTimers();
                 return data;
             });
         } catch (e) {

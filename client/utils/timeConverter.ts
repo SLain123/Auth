@@ -13,3 +13,6 @@ export const convertFromMilliSeconds = (msec: number) => {
 
     return { hour, minute, second };
 };
+
+export const addTimeFormat = (num: number): string =>
+    String(num).length < 2 ? `0${num}` : String(num);

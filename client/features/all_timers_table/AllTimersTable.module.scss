@@ -1,0 +1,53 @@
+.center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.all_container {
+    margin: 10px;
+}
+
+.active {
+    color: #2e7d32;
+}
+
+.unactive {
+    color: #d63e3e;
+}
+
+.problem {
+    &_container {
+        display: flex;
+        flex-flow: column;
+    }
+
+    &_message {
+        font-size: 11px;
+        margin-top: 2px;
+    }
+}
+
+.remove_btn {
+    border: none;
+    background: none;
+    cursor: pointer;
+    opacity: 0.9;
+    width: 120px;
+    white-space: nowrap;
+    height: 35px;
+
+    &:hover {
+        opacity: 1;
+    }
+}
+
+.open_btn {
+    cursor: pointer;
+    opacity: 0.9;
+
+    &:hover {
+        opacity: 1;
+    }
+}
