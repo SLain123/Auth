@@ -8,6 +8,7 @@ import Button from '@mui/material/Button';
 import { useGetCurrentTimer } from '../../../service/TimerService';
 import { getCurrentTimer } from '../../../features/current_timer/currentTimerSlice';
 import { TimerI } from '../../../types/timer';
+import findLastActiveTimer from '../../../utils/findLastActiveTimer';
 
 import Styles from '../Timers.module.scss';
 
@@ -41,7 +42,10 @@ const DisplayLastTimer: React.FC = () => {
 
     useEffect(() => {
         if (timerList.length) {
-            getTimer(timerList[timerList.length - 1]._id);
+            const findLastTimer = findLastActiveTimer(
+                timerList,
+            ) as TimerI | null;
+            findLastTimer && getTimer(findLastTimer._id);
         }
     }, [timerList]);
 

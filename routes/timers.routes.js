@@ -47,7 +47,7 @@ router.post(
             const timer = new Timer({
                 label,
                 total,
-                createDate: new Date(),
+                activateDate: new Date(),
                 timeToEnd: null,
                 restTime: 0,
                 ownerId: user._id,
@@ -180,6 +180,7 @@ router.post(
                         actOption === 'pause' && timer.timeToEnd
                             ? timer.timeToEnd.getTime() - new Date().getTime()
                             : 0,
+                    activateDate: new Date(),
                 },
             );
 
@@ -306,7 +307,13 @@ router.post(
 
             const result = await Timer.findOneAndUpdate(
                 { _id: timerId },
-                { label, total, restTime: 0, timeToEnd: null },
+                {
+                    label,
+                    total,
+                    restTime: 0,
+                    timeToEnd: null,
+                    activateDate: new Date(),
+                },
             );
 
             if (!result) {
@@ -323,7 +330,7 @@ router.post(
                 message: 'Timer was change',
                 timer: {
                     _id: result._doc._id,
-                    createDate: result._doc.createDate,
+                    activateDate: new Date(),
                     ownerId: result._doc.ownerId,
                     ownerNick: result._doc.ownerNick,
                     label,
