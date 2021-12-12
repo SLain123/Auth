@@ -1,4 +1,4 @@
-import DisplayAllTimers from '../features/user_timers/panels/DisplayAllTimers';
+import DisplayAllTimers from '../features/all_timers_table/AllTimersTable';
 import { Header } from '../features/header';
 
 export default function AllTimerPage() {
