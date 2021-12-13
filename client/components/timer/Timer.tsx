@@ -90,17 +90,7 @@ const Timer: React.FC<TimerPropsI> = ({
 
     // Запускает счет таймера если есть время и статус активен, в случае достижения нулевого значения отправляет reset на сервер и отключает активный статус, загружает исходное время таймера в стейт;
     useEffect(() => {
-        //Отключение на случай просроченной даты;
-        if (
-            timeToEnd &&
-            new Date(timeToEnd).getTime() - new Date().getTime() <= 0
-        ) {
-            console.log('less then null');
-            console.log(timeToEnd);
-            return;
-        }
         const timer = setInterval(() => {
-            console.log('tik');
             if (isActive && time > 1000 && !isEditing) {
                 setTime(time - 1000);
             }

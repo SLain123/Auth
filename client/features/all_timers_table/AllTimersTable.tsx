@@ -10,6 +10,7 @@ import Link from 'next/link';
 import { Spinner } from '../../components/spinner';
 import Image from 'next/image';
 import { useRemoveTimer } from '../../service/TimerService';
+import { useGetUserTimers } from '../../service/TimerService';
 
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -28,6 +29,9 @@ import problemIcon from '../../public/icons/problem.svg';
 const AllTimersTable: React.FC = () => {
     const authStatus = useAppSelector(getAuthSelector);
     const { isLoading: isLoadingAuth, isUserAuth } = authStatus;
+
+    const getUserTimersService = useGetUserTimers();
+    const { getUserTimers } = getUserTimersService;
 
     const timersState = useAppSelector(getTimerListSelector);
     const {
@@ -63,6 +67,10 @@ const AllTimersTable: React.FC = () => {
             location.href = '/login';
         }
     }, [isUserAuth, isLoadingAuth]);
+
+    useEffect(() => {
+        isUserAuth && getUserTimers();
+    }, [isUserAuth]);
 
     if (isLoadingAuth || isLoadingTimers) {
         return <div className={Styles.center}>{curcleSpin(100, 'green')}</div>;
