@@ -6,9 +6,13 @@ import TextField from '@mui/material/TextField';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useCreateTimer } from '../../../service/TimerService';
-import { convertToMilliSeconds } from '../../../utils/timeConverter';
+import {
+    convertToMilliSeconds,
+    convertFromMilliSeconds,
+} from '../../../utils/timeConverter';
 import Link from 'next/link';
 import { Spinner } from '../../../components/spinner';
+import { TemplatesList } from '../../../components/templates_list';
 
 import Styles from '../Timers.module.scss';
 
@@ -21,6 +25,18 @@ const CreateTimer: React.FC = () => {
         createTimerService;
 
     const { WhiteSpin, GreenSpin } = Spinner();
+
+    const onChangeTemplateSelect = (total: number) => {
+        const { hour, minute, second } = convertFromMilliSeconds(total);
+        formik.setValues({
+            label: `Template ${Boolean(hour) ? `${hour} hour(s)` : ''}${
+                Boolean(minute) ? `${minute} minute(s)` : ''
+            }`,
+            hour,
+            minute,
+            second,
+        });
+    };
 
     const formik = useFormik({
         initialValues: {
@@ -84,6 +100,7 @@ const CreateTimer: React.FC = () => {
                 error={formik.touched.label && Boolean(formik.errors.label)}
                 helperText={formik.touched.label && formik.errors.label}
                 disabled={loading}
+                value={formik.values.label}
             />
             <h4 className={Styles.subtitle}>
                 Specify the required time before completion:
@@ -99,7 +116,7 @@ const CreateTimer: React.FC = () => {
                     onBlur={formik.handleBlur}
                     error={formik.touched.hour && Boolean(formik.errors.hour)}
                     disabled={loading}
-                    defaultValue={0}
+                    value={formik.values.hour}
                 />
                 {formik.touched.hour && formik.errors.hour ? (
                     <div>{formik.errors.hour}</div>
@@ -118,7 +135,7 @@ const CreateTimer: React.FC = () => {
                     }
                     helperText={formik.touched.minute && formik.errors.minute}
                     disabled={loading}
-                    defaultValue={0}
+                    value={formik.values.minute}
                 />
                 <span className={Styles.time_dotted}>:</span>
                 <TextField
@@ -134,9 +151,13 @@ const CreateTimer: React.FC = () => {
                     }
                     helperText={formik.touched.second && formik.errors.second}
                     disabled={loading}
-                    defaultValue={0}
+                    value={formik.values.second}
                 />
             </div>
+
+            <TemplatesList
+                onChangeSelect={(total) => onChangeTemplateSelect(total)}
+            />
 
             {!formik.values.hour &&
                 !formik.values.minute &&
