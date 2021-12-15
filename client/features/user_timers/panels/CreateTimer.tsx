@@ -57,6 +57,18 @@ const CreateTimer: React.FC = () => {
             const { label, hour, minute, second } = values;
             const total = convertToMilliSeconds(hour, minute, second);
             total && createTimer(label, total);
+            formik.setValues({
+                label: '',
+                hour: 0,
+                minute: 0,
+                second: 0,
+            });
+            formik.setTouched({
+                label: false,
+                hour: false,
+                minute: false,
+                second: false,
+            });
         },
     });
 
