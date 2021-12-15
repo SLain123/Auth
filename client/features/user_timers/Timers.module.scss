@@ -8,10 +8,11 @@ $shadow: rgb(214, 205, 205);
 }
 
 .subtitle {
-    font-size: 14px;
+    font-size: 13px;
     text-align: center;
     font-weight: 500;
     margin: 24px 0 16px 0;
+    white-space: nowrap;
 }
 
 .form {
@@ -102,7 +103,7 @@ $shadow: rgb(214, 205, 205);
 }
 
 .info_message {
-    text-align: justify;
+    text-align: center;
     font-size: 16px;
     letter-spacing: 0.7px;
     line-height: 28px;

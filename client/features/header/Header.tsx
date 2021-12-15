@@ -71,7 +71,7 @@ const Header: React.FC = ({ children }) => {
                     )}
                 </ul>
             </header>
-            {children}
+            <main className={Styles.main_container}>{children}</main>
         </>
     );
 };

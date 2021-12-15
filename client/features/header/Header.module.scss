@@ -4,6 +4,7 @@
     top: 0;
     left: 0;
     margin-top: 2px;
+    z-index: 1;
 }
 
 .menu {
@@ -54,4 +55,11 @@
     padding: 1em 2em;
     margin: auto;
     cursor: pointer;
+}
+
+.main_container {
+    max-width: 1600px;
+    height: 100vh;
+    margin: auto;
+    position: relative;
 }
