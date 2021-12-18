@@ -1,20 +1,27 @@
 import React, { useEffect } from 'react';
-import Link from 'next/link';
 import { useCookies } from 'react-cookie';
 import useCheckTokenService from '../../service/TokenCheckService';
 import { useGetUserTimers } from '../../service/TimerService';
 import { useAppSelector } from '../../hooks/useAppSelector';
 import { getAuthSelector } from '../auth/authSlice';
+import useWindowDimensions from '../../hooks/useWindowDimensions';
+import { Navigate } from '../navigate';
+import { Hamburger } from '../hamburger';
 
 import Styles from './Header.module.scss';
 
 const Header: React.FC = ({ children }) => {
-    const [cookies, _setCookie, removeCookie] = useCookies(['authData']);
+    const [cookies] = useCookies(['authData']);
+    const { width } = useWindowDimensions();
+
     const checkTokenService = useCheckTokenService(
         cookies.authData ? cookies.authData.token : null,
     );
     const getUserTimersService = useGetUserTimers();
     const { getUserTimers } = getUserTimersService;
+
+    const authStatus = useAppSelector(getAuthSelector);
+    const { isUserAuth } = authStatus;
 
     const navListAuth = [
         { name: 'Home', link: '/' },
@@ -26,20 +33,17 @@ const Header: React.FC = ({ children }) => {
         { name: 'Login', link: '/login' },
         { name: 'Registration', link: '/reg' },
     ];
-    const authStatus = useAppSelector(getAuthSelector);
-    const { isUserAuth } = authStatus;
 
-    const navList = isUserAuth
-        ? navListAuth.map(({ name, link }) => (
-              <li key={name}>
-                  <Link href={link}>{name}</Link>
-              </li>
-          ))
-        : navListGuest.map(({ name, link }) => (
-              <li key={name}>
-                  <Link href={link}>{name}</Link>
-              </li>
-          ));
+    const navMenu =
+        width && width >= 768 ? (
+            <Navigate
+                isUserAuth={isUserAuth}
+                navListAuth={navListAuth}
+                navListGuest={navListGuest}
+            />
+        ) : (
+            <Hamburger />
+        );
 
     useEffect(() => {
         const { checkToken } = checkTokenService;
@@ -52,25 +56,7 @@ const Header: React.FC = ({ children }) => {
 
     return (
         <>
-            <header className={Styles.header}>
-                <ul className={Styles.menu}>
-                    {navList}
-                    {isUserAuth && (
-                        <li key='logout'>
-                            <button
-                                className={Styles.logout_btn}
-                                type='button'
-                                onClick={() => {
-                                    removeCookie('authData');
-                                    location.href = '/login';
-                                }}
-                            >
-                                Log out
-                            </button>
-                        </li>
-                    )}
-                </ul>
-            </header>
+            <header className={Styles.header}>{navMenu}</header>
             <main className={Styles.main_container}>{children}</main>
         </>
     );
