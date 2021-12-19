@@ -42,7 +42,11 @@ const Header: React.FC = ({ children }) => {
                 navListGuest={navListGuest}
             />
         ) : (
-            <Hamburger />
+            <Hamburger
+                isUserAuth={isUserAuth}
+                navListAuth={navListAuth}
+                navListGuest={navListGuest}
+            />
         );
 
     useEffect(() => {
