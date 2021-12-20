@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { HamburgerIcon } from 'react-hamburger-icon';
 import Link from 'next/link';
 import { useCookies } from 'react-cookie';
+import useScrollBlock from '../../hooks/useScrollBlock';
 
 import Styles from './Hamburger.module.scss';
 
@@ -23,6 +24,7 @@ const Hamburger: React.FC<HamburgerI> = ({
 }) => {
     const [_cookies, _setCookie, removeCookie] = useCookies(['authData']);
     const [isOpen, setOpen] = useState(false);
+    const [blockScroll, allowScroll] = useScrollBlock();
 
     const menuStyle = isOpen ? Styles.hamburger_menu_btn_active : '';
     const navStyle = isOpen ? Styles.hamburger_nav_container_active : '';
@@ -41,6 +43,10 @@ const Hamburger: React.FC<HamburgerI> = ({
                 setOpen(false);
             }
         };
+
+    useEffect(() => {
+        isOpen ? blockScroll() : allowScroll();
+    }, [isOpen]);
 
     return (
         <div className={Styles.hamburger_container}>

@@ -8,6 +8,7 @@ import useRegisterService from '../../service/RegisterService';
 import { useAppSelector } from '../../hooks/useAppSelector';
 import { getAuthSelector } from '../auth/authSlice';
 import { Spinner } from '../../components/spinner';
+import useWindowDimensions from '../../hooks/useWindowDimensions';
 
 import Styles from './Register.module.scss';
 
@@ -15,11 +16,15 @@ const Register = () => {
     const registerService = useRegisterService();
     const { sendRegisterData, loading, serverErrors, resultMessage } =
         registerService;
+    const { width } = useWindowDimensions();
 
     const { WhiteSpin, GreenSpin } = Spinner();
 
     const authStatus = useAppSelector(getAuthSelector);
     const { isLoading, isUserAuth } = authStatus;
+
+    const inputSize = width && width >= 768 ? 'medium' : 'small';
+    const btnSize = width && width >= 768 ? 'large' : 'medium';
 
     const formik = useFormik({
         initialValues: {
@@ -87,6 +92,7 @@ const Register = () => {
                 error={formik.touched.email && Boolean(formik.errors.email)}
                 helperText={formik.touched.email && formik.errors.email}
                 disabled={loading}
+                size={inputSize}
             />
             <TextField
                 name='password'
@@ -103,6 +109,7 @@ const Register = () => {
                 }
                 helperText={formik.touched.password && formik.errors.password}
                 disabled={loading}
+                size={inputSize}
             />
             <TextField
                 name='repeatPassword'
@@ -123,6 +130,7 @@ const Register = () => {
                     formik.errors.repeatPassword
                 }
                 disabled={loading}
+                size={inputSize}
             />
             <TextField
                 name='nickName'
@@ -138,13 +146,13 @@ const Register = () => {
                 }
                 helperText={formik.touched.nickName && formik.errors.nickName}
                 disabled={loading}
+                size={inputSize}
             />
             <p className={Styles.status_text}>{resultMessage}</p>
             <Button
                 className={Styles.login_btn}
                 variant='contained'
                 color='success'
-                size='large'
                 type='submit'
                 disabled={
                     Boolean(formik.errors.email) ||
@@ -153,6 +161,7 @@ const Register = () => {
                     Boolean(formik.errors.nickName) ||
                     loading
                 }
+                size={btnSize}
             >
                 {loading ? WhiteSpin : 'Send register data'}
             </Button>

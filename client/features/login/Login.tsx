@@ -10,6 +10,7 @@ import { useAppSelector } from '../../hooks/useAppSelector';
 import { getAuthSelector } from '../auth/authSlice';
 import { useCookies } from 'react-cookie';
 import useCheckTokenService from '../../service/TokenCheckService';
+import useWindowDimensions from '../../hooks/useWindowDimensions';
 
 import Styles from './Login.module.scss';
 
@@ -18,6 +19,7 @@ const Login = () => {
     const { sendLoginData, loading, serverErrors, resultMessage } =
         loginService;
     const [cookies] = useCookies(['authData']);
+    const { width } = useWindowDimensions();
 
     const authStatus = useAppSelector(getAuthSelector);
     const { isLoading, isUserAuth } = authStatus;
@@ -25,6 +27,9 @@ const Login = () => {
         cookies.authData ? cookies.authData.token : null,
     );
     const { WhiteSpin, GreenSpin } = Spinner();
+
+    const inputSize = width && width >= 768 ? 'medium' : 'small';
+    const btnSize = width && width >= 768 ? 'large' : 'medium';
 
     const formik = useFormik({
         initialValues: {
@@ -84,6 +89,7 @@ const Login = () => {
                 error={formik.touched.email && Boolean(formik.errors.email)}
                 helperText={formik.touched.email && formik.errors.email}
                 disabled={loading}
+                size={inputSize}
             />
             <TextField
                 name='password'
@@ -100,6 +106,7 @@ const Login = () => {
                 }
                 helperText={formik.touched.password && formik.errors.password}
                 disabled={loading}
+                size={inputSize}
             />
             <Link href='/reg'>
                 <a className={Styles.link_reg}>Register now</a>
@@ -109,13 +116,13 @@ const Login = () => {
                 className={Styles.login_btn}
                 variant='contained'
                 color='success'
-                size='large'
                 type='submit'
                 disabled={
                     Boolean(formik.errors.email) ||
                     Boolean(formik.errors.password) ||
                     loading
                 }
+                size={btnSize}
             >
                 {loading ? WhiteSpin : 'Login'}
             </Button>

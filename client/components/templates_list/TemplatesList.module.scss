@@ -1,5 +1,9 @@
 .template {
     &_container {
         min-width: 100%;
+
+        & label {
+            z-index: 0;
+        }
     }
 }

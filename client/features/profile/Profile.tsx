@@ -10,11 +10,12 @@ import stringAvatar from './subFuncs';
 import { useAppSelector } from '../../hooks/useAppSelector';
 import { getAuthSelector } from '../auth/authSlice';
 import { Spinner } from '../../components/spinner';
+import useWindowDimensions from '../../hooks/useWindowDimensions';
 
 import Styles from './Profile.module.scss';
 
 const Profile: React.FC = () => {
-    const avatarSize = 200;
+    const { width } = useWindowDimensions();
     const [nickName, setNickName] = useState('');
     const [userAvatar, setUserAvatar] = useState<File | null>(null);
     const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
@@ -36,6 +37,10 @@ const Profile: React.FC = () => {
     } = profileService;
 
     const { WhiteSpin, GreenSpin } = Spinner();
+
+    const avatarSize = 200;
+    const inputSize = width && width >= 768 ? 'medium' : 'small';
+    const btnSize = width && width >= 768 ? 'large' : 'medium';
 
     const formik = useFormik({
         initialValues: {
@@ -167,13 +172,14 @@ const Profile: React.FC = () => {
                     }
                     disabled={loading}
                     value={nickName}
+                    size={inputSize}
                 />
                 <p className={Styles.status_text}>{resultMessage}</p>
                 <Button
                     className={Styles.btn}
                     variant='contained'
                     color='success'
-                    size='large'
+                    size={btnSize}
                     type='submit'
                     disabled={
                         Boolean(formik.errors.nickName) ||

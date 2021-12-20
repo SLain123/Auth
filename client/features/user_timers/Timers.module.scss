@@ -5,6 +5,11 @@ $shadow: rgb(214, 205, 205);
     font-weight: 700;
     text-align: center;
     margin-top: 0;
+
+    @media screen and (max-width: 767px) {
+        font-size: 16px;
+        margin: 10px 0;
+    }
 }
 
 .subtitle {
@@ -13,6 +18,11 @@ $shadow: rgb(214, 205, 205);
     font-weight: 500;
     margin: 24px 0 16px 0;
     white-space: nowrap;
+
+    @media screen and (max-width: 767px) {
+        font-size: 12px;
+        margin: 12px 0;
+    }
 }
 
 .form {
@@ -28,26 +38,49 @@ $shadow: rgb(214, 205, 205);
     flex-flow: column;
     align-items: center;
 
+    @media screen and (max-width: 767px) {
+        position: static;
+        margin: auto;
+        top: 0;
+        padding: 6px 14px;
+    }
+
     &_success_left {
         left: 10px;
         transform: translate(0, -50%);
         min-height: 400px;
         justify-content: center;
+
+        @media screen and (max-width: 767px) {
+            transform: none;
+            margin-top: 60px;
+        }
     }
 
     &_success_right {
-        position: absolute;
         top: 50%;
         right: 10px;
         min-height: 400px;
         transform: translate(0, -50%);
         min-height: 400px;
         justify-content: center;
+
+        @media screen and (max-width: 767px) {
+            transform: none;
+            margin-top: 12px;
+            margin-bottom: 12px;
+        }
     }
 
     &_not_auth {
         left: 50%;
         transform: translate(-50%, -50%);
+
+        @media screen and (max-width: 767px) {
+            left: 0;
+            transform: none;
+            margin: 70px auto 0 auto;
+        }
     }
 
     &_with_error {
@@ -76,6 +109,10 @@ $shadow: rgb(214, 205, 205);
         align-items: center;
         width: 100%;
         margin-bottom: 24px;
+
+        & label {
+            z-index: 0;
+        }
     }
 
     &_input {
