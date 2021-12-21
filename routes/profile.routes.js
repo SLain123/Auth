@@ -1,5 +1,6 @@
 const { Router } = require('express');
 const User = require('../models/User');
+const Timer = require('../models/Timer');
 const { check, validationResult } = require('express-validator');
 const router = Router();
 const auth = require('../middleware/auth.middleware');
@@ -47,12 +48,12 @@ router.post(
             }
 
             const { nickName } = req.body;
-            const result = await User.findOneAndUpdate(
+            const resultUser = await User.findOneAndUpdate(
                 { _id: req.user.userId },
                 { nickName },
             );
 
-            if (!result) {
+            if (!resultUser) {
                 return res.status(400).json({
                     errors: [
                         {
@@ -61,6 +62,11 @@ router.post(
                     ],
                 });
             }
+
+            await Timer.updateMany(
+                { ownerId: req.user.userId },
+                { ownerNick: nickName },
+            );
 
             return res.json({ message: 'User data has been changed' });
         } catch (e) {
