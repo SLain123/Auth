@@ -3,7 +3,6 @@ const User = require('../models/User');
 const bcrypt = require('bcrypt');
 const { check, validationResult } = require('express-validator');
 const jwt = require('jsonwebtoken');
-const config = require('config');
 const router = Router();
 const auth = require('../middleware/auth.middleware');
 
@@ -121,11 +120,9 @@ router.post(
                 });
             }
 
-            const token = jwt.sign(
-                { userId: user.id },
-                config.get('jwtSecret'),
-                { expiresIn: '1d' },
-            );
+            const token = jwt.sign({ userId: user.id }, process.env.jwtSecret, {
+                expiresIn: '1d',
+            });
 
             res.json({ token, userId: user.id, message: 'Success!' });
         } catch (e) {

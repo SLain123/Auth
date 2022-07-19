@@ -1,11 +1,14 @@
 const express = require('express');
-const config = require('config');
 const mongoose = require('mongoose');
 const formData = require('express-form-data');
+const dotenv = require('dotenv');
 
 const app = express();
-const PORT = 5000;
-const MONGOURI = config.get('mongoURI');
+dotenv.config();
+const PORT = process.env.PORT || 5000;
+const MONGOURI =
+    process.env.MONGO_URI ||
+    'mongodb+srv://Admin:12345s@cluster0.nwqfl.mongodb.net/multiTimer?retryWrites=true&w=majority';
 
 app.use(express.json({ limit: '1mb', extended: true }));
 app.use(
