@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const formData = require('express-form-data');
 
 const app = express();
-const PORT = config.get('port') || 5000;
+const PORT = process.env.PORT || 5000;
 const MONGOURI = config.get('mongoURI');
 
 app.use(express.json({ limit: '1mb', extended: true }));
