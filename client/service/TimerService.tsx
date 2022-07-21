@@ -12,6 +12,7 @@ import {
     setErrorStatus,
     saveSingleTimer,
 } from '../features/current_timer/currentTimerSlice';
+import { baseUrlApi } from './baseEnv';
 
 // Get single timer;
 export const useGetCurrentTimer = () => {
@@ -21,7 +22,7 @@ export const useGetCurrentTimer = () => {
     const getTimer = async (timerId: string) => {
         try {
             dispatch(setLoadingStatus(true));
-            request('http://localhost:5000/api/timer', 'POST', {
+            request(`${baseUrlApi}/timer`, 'POST', {
                 timerId,
             }).then((data) => {
                 if (!data || !data.timer) {
@@ -51,7 +52,7 @@ export const useGetUserTimers = () => {
 
     const getUserTimers = async () => {
         try {
-            request('http://localhost:5000/api/timer/all', 'GET', null, {
+            request(`${baseUrlApi}/timer/all`, 'GET', null, {
                 authorization: cookies.authData.token,
             }).then((data) => {
                 if (!data) {
@@ -87,7 +88,7 @@ export const useCreateTimer = () => {
     const createTimer = async (label: string, total: number) => {
         try {
             request(
-                'http://localhost:5000/api/timer/create',
+                `${baseUrlApi}/timer/create`,
                 'POST',
                 {
                     label,
@@ -147,7 +148,7 @@ export const useControlTimer = () => {
                 reset: actOption === 'reset' ? true : false,
             });
             return request(
-                'http://localhost:5000/api/timer/control',
+                `${baseUrlApi}/timer/control`,
                 'POST',
                 {
                     timerId,
@@ -200,7 +201,7 @@ export const useChangeTimer = () => {
     ) => {
         try {
             request(
-                'http://localhost:5000/api/timer/change',
+                `${baseUrlApi}/timer/change`,
                 'POST',
                 {
                     timerId,
@@ -255,7 +256,7 @@ export const useRemoveTimer = () => {
     const removeTimer = async (timerId: string) => {
         try {
             request(
-                'http://localhost:5000/api/timer',
+                `${baseUrlApi}/timer`,
                 'DELETE',
                 {
                     timerId,

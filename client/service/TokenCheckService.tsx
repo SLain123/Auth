@@ -4,15 +4,17 @@ import {
     setLoadingStatus,
     setUserAuthStatus,
 } from '../features/auth/authSlice';
+import { baseUrlApi } from './baseEnv';
 
 const useCheckTokenService = (token: string | null) => {
     const { loading, request } = useHttp();
     const dispatch = useAppDispatch();
 
     const checkToken = async () => {
+        console.log(`${baseUrlApi}/auth/check`);
         try {
             token
-                ? request('http://localhost:5000/api/auth/check', 'GET', null, {
+                ? request(`${baseUrlApi}/auth/check`, 'GET', null, {
                       authorization: token,
                   }).then((data) => {
                       if (!data) {

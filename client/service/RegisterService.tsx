@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import useHttp from '../hooks/useHttp';
+import { baseUrlApi } from './baseEnv';
 
 const useRegisterService = () => {
     const { loading, request } = useHttp();
@@ -15,7 +16,7 @@ const useRegisterService = () => {
     }) => {
         const { email, password, nickName } = values;
         try {
-            request('http://localhost:5000/api/auth/register', 'POST', {
+            request(`${baseUrlApi}/auth/register`, 'POST', {
                 email,
                 password,
                 nickName,

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import useHttp from '../hooks/useHttp';
 import { useCookies } from 'react-cookie';
+import { baseUrlApi } from './baseEnv';
 
 const useLoginService = () => {
     const { loading, request } = useHttp();
@@ -8,7 +9,7 @@ const useLoginService = () => {
         [] | { msg: string; value: string }[]
     >([]);
     const [resultMessage, setResultMessage] = useState('');
-    const [cookies, setCookie] = useCookies(['authData']);
+    const [_cookies, setCookie] = useCookies(['authData']);
 
     const sendLoginData = async (values: {
         email: string;
@@ -16,7 +17,7 @@ const useLoginService = () => {
     }) => {
         const { email, password } = values;
         try {
-            request('http://localhost:5000/api/auth/login', 'POST', {
+            request(`${baseUrlApi}/auth/login`, 'POST', {
                 email,
                 password,
             }).then((data) => {

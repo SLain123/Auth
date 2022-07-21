@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import useHttp from '../hooks/useHttp';
 import { useCookies } from 'react-cookie';
+import { baseUrlApi } from './baseEnv';
 
 const useProfileService = () => {
     const { loading, request } = useHttp();
@@ -13,7 +14,7 @@ const useProfileService = () => {
 
     const getUserData = async () => {
         try {
-            return request('http://localhost:5000/api/profile', 'GET', null, {
+            return request(`${baseUrlApi}/profile`, 'GET', null, {
                 authorization: cookies.authData.token,
             });
         } catch (e) {
@@ -26,7 +27,7 @@ const useProfileService = () => {
         const { nickName } = values;
         try {
             request(
-                'http://localhost:5000/api/profile',
+                `${baseUrlApi}/profile`,
                 'POST',
                 {
                     nickName,
@@ -54,7 +55,7 @@ const useProfileService = () => {
                 const { result: avatar } = reader;
 
                 request(
-                    'http://localhost:5000/api/profile/avatar',
+                    `${baseUrlApi}/profile/avatar`,
                     'POST',
                     {
                         avatar,
