@@ -11,6 +11,7 @@ import { getAuthSelector } from '../auth/authSlice';
 import { useCookies } from 'react-cookie';
 import useCheckTokenService from '../../service/TokenCheckService';
 import useWindowDimensions from '../../hooks/useWindowDimensions';
+import handler from '../../pages/api/get_page1_data';
 
 import Styles from './Login.module.scss';
 
@@ -45,8 +46,8 @@ const Login = () => {
                 .max(20, 'Must be 20 characters or less')
                 .required('Required'),
         }),
-        onSubmit: (values) => {
-            sendLoginData(values);
+        onSubmit: async (values) => {
+            handler();
         },
     });
 

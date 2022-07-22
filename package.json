@@ -12,6 +12,7 @@
     "author": "Artem Lamzov",
     "license": "ISC",
     "dependencies": {
+        "axios": "^0.27.2",
         "bcrypt": "^5.0.1",
         "config": "^3.3.6",
         "dotenv": "^16.0.1",
