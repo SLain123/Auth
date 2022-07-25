@@ -68,7 +68,7 @@ router.get('/all', auth, async (req, res) => {
     try {
         const timerList = await Timer.find({ ownerId: req.user.userId });
 
-        if (!timerList || !timerList.length) {
+        if (!timerList) {
             return res.status(400).json({
                 errors: [
                     {

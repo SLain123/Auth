@@ -58,7 +58,8 @@ const Timer: React.FC<TimerPropsI> = ({
     } = changeTimerService;
 
     const [cookies] = useCookies(['authData']);
-    const isOwner = () => cookies.authData.userId === ownerId;
+    const isOwner = () =>
+        cookies?.authData ? cookies.authData?.userId === ownerId : false;
 
     const { curcleSpin, WhiteSpin } = Spinner();
 
