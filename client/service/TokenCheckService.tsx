@@ -11,7 +11,6 @@ const useCheckTokenService = (token: string | null) => {
     const dispatch = useAppDispatch();
 
     const checkToken = async () => {
-        console.log(`${baseUrlApi}/auth/check`);
         try {
             token
                 ? request(`${baseUrlApi}/auth/check`, 'GET', null, {
