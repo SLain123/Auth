@@ -6,9 +6,7 @@ const dotenv = require('dotenv');
 const app = express();
 dotenv.config();
 const PORT = process.env.PORT || 5000;
-const MONGOURI =
-    process.env.MONGO_URI ||
-    'mongodb+srv://Admin:12345s@cluster0.nwqfl.mongodb.net/multiTimer?retryWrites=true&w=majority';
+const MONGOURI = process.env.MONGO_URI;
 
 app.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', '*');
