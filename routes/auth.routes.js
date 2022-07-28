@@ -124,7 +124,7 @@ router.post(
                 { userId: user.id },
                 process.env.JWT_SECRET,
                 {
-                    expiresIn: '1d',
+                    expiresIn: '10d',
                 },
             );
 
