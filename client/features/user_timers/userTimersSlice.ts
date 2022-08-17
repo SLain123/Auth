@@ -1,9 +1,9 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import type { AppState } from '../../store/store';
-import { TimerI } from '../../types/timer';
+import { ITimer } from '../../types/timer';
 
 interface InitialStateI {
-    timerList: TimerI[] | [];
+    timerList: ITimer[] | [];
     isLoading: boolean;
     isError: boolean;
 }
@@ -24,7 +24,7 @@ export const userTimersSlice = createSlice({
         setErrorStatus: (state, action: PayloadAction<boolean>) => {
             state.isError = action.payload;
         },
-        saveUserTimerList: (state, action: PayloadAction<TimerI[]>) => {
+        saveUserTimerList: (state, action: PayloadAction<ITimer[]>) => {
             state.timerList = action.payload;
         },
     },

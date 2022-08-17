@@ -52,4 +52,4 @@ const useScrollBlock = () => {
     return [blockScroll, allowScroll];
 };
 
-export default useScrollBlock;
+export { useScrollBlock };

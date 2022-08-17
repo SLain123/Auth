@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useAppSelector } from '../../hooks/useAppSelector';
+import { useAppSelector, useRefreshTimers } from '../../hooks';
 import { getAuthSelector } from '../auth/authSlice';
 import { getTimerListSelector } from '../user_timers/userTimersSlice';
 import {
@@ -9,8 +9,7 @@ import {
 import Link from 'next/link';
 import { Spinner } from '../../components/spinner';
 import Image from 'next/image';
-import { useRemoveTimer } from '../../service/TimerService';
-import { useGetUserTimers } from '../../service/TimerService';
+import { useRemoveTimer } from '../../service/timers/RemoveTimerService';
 
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -20,6 +19,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import TablePagination from '@mui/material/TablePagination';
+import { IServerErrors } from '../../types/serviceType';
 
 import Styles from './AllTimersTable.module.scss';
 import linkIcon from '../../public/icons/link.svg';
@@ -29,22 +29,17 @@ import problemIcon from '../../public/icons/problem.svg';
 const AllTimersTable: React.FC = () => {
     const authStatus = useAppSelector(getAuthSelector);
     const { isLoading: isLoadingAuth, isUserAuth } = authStatus;
-
-    const getUserTimersService = useGetUserTimers();
-    const { getUserTimers } = getUserTimersService;
+    const [serverErrors, setServerErrors] = useState<IServerErrors[]>([]);
+    const [loadingTimers, setLoadingTimers] = useState(false);
+    const { refreshTimers } = useRefreshTimers();
 
     const timersState = useAppSelector(getTimerListSelector);
-    const {
-        isLoading: isLoadingTimers,
-        isError: isErrorTimers,
-        timerList,
-    } = timersState;
+    const { timerList } = timersState;
 
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
-    const removeTimerService = useRemoveTimer();
-    const { removeTimer, loading, serverErrors } = removeTimerService;
+    const { removeTimer } = useRemoveTimer();
     const [currentActiveItem, setCurrentActiveItem] = useState<string | null>(
         null,
     );
@@ -62,21 +57,50 @@ const AllTimersTable: React.FC = () => {
         setPage(0);
     };
 
+    const handleRemoveTimer =
+        (id: string) =>
+        (_event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+            setCurrentActiveItem(id);
+            setLoadingTimers(true);
+            removeTimer(id)
+                .then((result) => {
+                    result && result.errors && setServerErrors(result.errors);
+                    if (result && result.message) {
+                        refreshTimers();
+                    }
+
+                    !result &&
+                        setServerErrors([
+                            {
+                                msg: 'Something was wrong',
+                                value: 'Something was wrong',
+                            },
+                        ]);
+                })
+                .catch(() => {
+                    setServerErrors([
+                        {
+                            msg: 'Something was wrong',
+                            value: 'Something was wrong',
+                        },
+                    ]);
+                })
+                .finally(() => {
+                    setLoadingTimers(false);
+                });
+        };
+
     useEffect(() => {
         if (!isUserAuth && !isLoadingAuth) {
             location.href = '/login';
         }
     }, [isUserAuth, isLoadingAuth]);
 
-    useEffect(() => {
-        isUserAuth && getUserTimers();
-    }, [isUserAuth]);
-
-    if (isLoadingAuth || isLoadingTimers) {
+    if (isLoadingAuth || loadingTimers) {
         return <div className={Styles.center}>{curcleSpin(100, 'green')}</div>;
     }
 
-    if (isErrorTimers || !timerList) {
+    if (serverErrors.length || !timerList) {
         return (
             <div className={Styles.center}>
                 Something was wrong. Please refresh the page.
@@ -125,7 +149,10 @@ const AllTimersTable: React.FC = () => {
                                         : Styles.unactive;
 
                                 const getBtnContent = () => {
-                                    if (loading && currentActiveItem === _id) {
+                                    if (
+                                        loadingTimers &&
+                                        currentActiveItem === _id
+                                    ) {
                                         return curcleSpin(20, 'black');
                                     } else if (
                                         serverErrors &&
@@ -211,10 +238,7 @@ const AllTimersTable: React.FC = () => {
                                             <button
                                                 type='button'
                                                 className={Styles.remove_btn}
-                                                onClick={() => {
-                                                    setCurrentActiveItem(_id);
-                                                    removeTimer(_id);
-                                                }}
+                                                onClick={handleRemoveTimer(_id)}
                                             >
                                                 {getBtnContent()}
                                             </button>

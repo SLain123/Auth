@@ -1,5 +1,10 @@
 import { useState, useCallback } from 'react';
 
+export interface Exception {
+    name: string;
+    message: string;
+}
+
 const useHttp = () => {
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | boolean>(false);
@@ -27,9 +32,10 @@ const useHttp = () => {
                 setLoading(false);
 
                 return data;
-            } catch (e: any) {
+            } catch (err: unknown) {
+                const error = err as Exception;
                 setLoading(false);
-                setError(e.message);
+                setError(error.message);
             }
         },
         [],
@@ -38,4 +44,4 @@ const useHttp = () => {
     return { request, loading, error };
 };
 
-export default useHttp;
+export { useHttp };

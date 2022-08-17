@@ -5,9 +5,9 @@ import { getAuthSelector } from '../../auth/authSlice';
 import { getTimerListSelector } from '../userTimersSlice';
 import Link from 'next/link';
 import Button from '@mui/material/Button';
-import { useGetCurrentTimer } from '../../../service/TimerService';
+import { useGetCurrentTimer } from '../../../service/timers/GetSingleTimerService';
 import { getCurrentTimer } from '../../../features/current_timer/currentTimerSlice';
-import { TimerI } from '../../../types/timer';
+import { ITimer } from '../../../types/timer';
 import findLastActiveTimer from '../../../utils/findLastActiveTimer';
 
 import Styles from '../Timers.module.scss';
@@ -44,7 +44,7 @@ const DisplayLastTimer: React.FC = () => {
         if (timerList.length) {
             const findLastTimer = findLastActiveTimer(
                 timerList,
-            ) as TimerI | null;
+            ) as ITimer | null;
             findLastTimer && getTimer(findLastTimer._id);
         }
     }, [timerList]);
@@ -87,7 +87,7 @@ const DisplayLastTimer: React.FC = () => {
     return (
         <div className={`${Styles.form} ${Styles.form_success_right}`}>
             <Timer
-                {...(timer as TimerI)}
+                {...(timer as ITimer)}
                 formTitle='Your last active timer:'
                 extraChildren={linkBlock}
             />

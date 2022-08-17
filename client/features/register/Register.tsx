@@ -4,18 +4,16 @@ import Button from '@mui/material/Button';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import Router from 'next/router';
-import useRegisterService from '../../service/RegisterService';
-import { useAppSelector } from '../../hooks/useAppSelector';
+import { useRegisterService } from '../../service/RegisterService';
 import { getAuthSelector } from '../auth/authSlice';
 import { Spinner } from '../../components/spinner';
-import useWindowDimensions from '../../hooks/useWindowDimensions';
+import { useWindowDimensions, useAppSelector } from '../../hooks';
 
 import Styles from './Register.module.scss';
 
 const Register = () => {
-    const registerService = useRegisterService();
     const { sendRegisterData, loading, serverErrors, resultMessage } =
-        registerService;
+        useRegisterService();
     const { width } = useWindowDimensions();
 
     const { WhiteSpin, GreenSpin } = Spinner();

@@ -1,42 +1,51 @@
-import { useState } from 'react';
-import useHttp from '../hooks/useHttp';
+import { useState, useCallback } from 'react';
 import { useCookies } from 'react-cookie';
+
+import { IServerErrors } from '../types/serviceType';
+import { useHttp } from '../hooks/useHttp';
 import { baseUrlApi } from './baseEnv';
+
+export interface IRequestAuth {
+    email: string;
+    password: string;
+}
+
+export interface IResponseAuth {
+    token: string;
+    userId: string;
+    message: string;
+    errors?: IServerErrors[];
+}
 
 const useLoginService = () => {
     const { loading, request } = useHttp();
-    const [serverErrors, setServerErrors] = useState<
-        [] | { msg: string; value: string }[]
-    >([]);
-    const [resultMessage, setResultMessage] = useState('');
     const [_cookies, setCookie] = useCookies(['authData']);
 
-    const sendLoginData = async (values: {
-        email: string;
-        password: string;
-    }) => {
-        const { email, password } = values;
-        try {
+    const [serverErrors, setServerErrors] = useState<IServerErrors[]>([]);
+    const [resultMessage, setResultMessage] = useState('');
+
+    const sendLoginData = useCallback(
+        async (values: IRequestAuth): Promise<void> => {
+            const { email, password } = values;
+
             request(`${baseUrlApi}/auth/login`, 'POST', {
                 email,
                 password,
-            }).then((data) => {
-                data && data.errors
-                    ? setServerErrors(data.errors)
+            }).then((result: IResponseAuth) => {
+                result && result.errors
+                    ? setServerErrors(result.errors)
                     : setServerErrors([]);
-                data && setResultMessage(data.message);
-                if (data && data.token) {
-                    const { token, userId } = data;
+                result && setResultMessage(result.message);
+                if (result && result.token) {
+                    const { token, userId } = result;
                     setCookie('authData', { userId, token });
                 } else setResultMessage('Something was wrong...');
             });
-        } catch (e) {
-            //@ts-ignore
-            setServerErrors([e.message]);
-        }
-    };
+        },
+        [],
+    );
 
     return { sendLoginData, loading, serverErrors, resultMessage };
 };
 
-export default useLoginService;
+export { useLoginService };

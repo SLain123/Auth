@@ -1,4 +1,4 @@
-export interface TimerI {
+export interface ITimer {
     _id: string;
     label: string;
     total: number;

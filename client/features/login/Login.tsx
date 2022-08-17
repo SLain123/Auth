@@ -2,28 +2,26 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
-import useLoginService from '../../service/LoginService';
+import { useLoginService } from '../../service/LoginService';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { Spinner } from '../../components/spinner';
-import { useAppSelector } from '../../hooks/useAppSelector';
 import { getAuthSelector } from '../auth/authSlice';
 import { useCookies } from 'react-cookie';
-import useCheckTokenService from '../../service/TokenCheckService';
-import useWindowDimensions from '../../hooks/useWindowDimensions';
+import { useTokenCheck } from '../../hooks/useTokenCheck';
+import { useWindowDimensions, useAppSelector } from '../../hooks';
 
 import Styles from './Login.module.scss';
 
 const Login = () => {
-    const loginService = useLoginService();
     const { sendLoginData, loading, serverErrors, resultMessage } =
-        loginService;
+        useLoginService();
     const [cookies] = useCookies(['authData']);
     const { width } = useWindowDimensions();
 
     const authStatus = useAppSelector(getAuthSelector);
     const { isLoading, isUserAuth } = authStatus;
-    const checkTokenService = useCheckTokenService(
+    const checkTokenService = useTokenCheck(
         cookies.authData ? cookies.authData.token : null,
     );
     const { WhiteSpin, GreenSpin } = Spinner();

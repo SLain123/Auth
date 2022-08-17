@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { HamburgerIcon } from 'react-hamburger-icon';
 import Link from 'next/link';
 import { useCookies } from 'react-cookie';
-import useScrollBlock from '../../hooks/useScrollBlock';
+import { useScrollBlock } from '../../hooks';
 
 import Styles from './Hamburger.module.scss';
 

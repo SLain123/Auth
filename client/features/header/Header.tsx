@@ -1,10 +1,9 @@
 import React, { useEffect } from 'react';
 import { useCookies } from 'react-cookie';
-import useCheckTokenService from '../../service/TokenCheckService';
-import { useGetUserTimers } from '../../service/TimerService';
-import { useAppSelector } from '../../hooks/useAppSelector';
+import { useTokenCheck } from '../../hooks/useTokenCheck';
+import { useAppSelector } from '../../hooks';
 import { getAuthSelector } from '../auth/authSlice';
-import useWindowDimensions from '../../hooks/useWindowDimensions';
+import { useWindowDimensions, useRefreshTimers } from '../../hooks';
 import { Navigate } from '../navigate';
 import { Hamburger } from '../hamburger';
 
@@ -13,12 +12,11 @@ import Styles from './Header.module.scss';
 const Header: React.FC = ({ children }) => {
     const [cookies] = useCookies(['authData']);
     const { width } = useWindowDimensions();
+    const { refreshTimers } = useRefreshTimers();
 
-    const checkTokenService = useCheckTokenService(
-        cookies.authData ? cookies.authData.token : null,
+    const checkTokenService = useTokenCheck(
+        cookies.authData ? cookies.authData?.token : null,
     );
-    const getUserTimersService = useGetUserTimers();
-    const { getUserTimers } = getUserTimersService;
 
     const authStatus = useAppSelector(getAuthSelector);
     const { isUserAuth } = authStatus;
@@ -55,7 +53,9 @@ const Header: React.FC = ({ children }) => {
     }, []);
 
     useEffect(() => {
-        isUserAuth && getUserTimers();
+        if (isUserAuth) {
+            refreshTimers();
+        }
     }, [isUserAuth]);
 
     return (

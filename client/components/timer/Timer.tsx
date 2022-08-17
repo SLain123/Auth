@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { convertFromMilliSeconds } from '../../utils/timeConverter';
 import Image from 'next/image';
-import { useControlTimer, useChangeTimer } from '../../service/TimerService';
-import { TimerI } from '../../types/timer';
+import { useChangeTimer } from '../../service/timers/EditTimerService';
+import { useControlTimer } from '../../service/timers/ControlTimerService';
+import { ITimer } from '../../types/timer';
 import Spinner from '../spinner/Spinner';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
@@ -13,6 +14,9 @@ import {
     addTimeFormat,
 } from '../../utils/timeConverter';
 import { useCookies } from 'react-cookie';
+import { IServerErrors } from '../../types/serviceType';
+import { saveSingleTimer } from '../../features/current_timer/currentTimerSlice';
+import { useAppDispatch, useRefreshTimers } from '../../hooks';
 
 import Styles from './Timer.module.scss';
 import playIcon from '../../public/icons/play.svg';
@@ -20,7 +24,7 @@ import pauseIcon from '../../public/icons/pause.svg';
 import stopIcon from '../../public/icons/stop.svg';
 import editIcon from '../../public/icons/edit.svg';
 
-export interface TimerPropsI extends TimerI {
+export interface TimerPropsI extends ITimer {
     formTitle?: string;
     extraChildren?: string | React.ReactElement | React.ReactNode;
 }
@@ -44,18 +48,16 @@ const Timer: React.FC<TimerPropsI> = ({
             ? new Date(timeToEnd).getTime() - new Date().getTime()
             : total,
     );
+    const [loadingChange, setLoadingChange] = useState(false);
+    const [serverErrors, setServerErrors] = useState<IServerErrors[]>([]);
+    const [resultMessage, setResultMessage] = useState('');
     const { hour, minute, second } = convertFromMilliSeconds(time);
+    const { refreshTimers } = useRefreshTimers();
 
-    const controlTimerService = useControlTimer();
-    const { detailLoading, controlTimer } = controlTimerService;
+    const { detailLoading, controlTimer } = useControlTimer();
+    const dispatch = useAppDispatch();
 
-    const changeTimerService = useChangeTimer();
-    const {
-        loading: loadingChange,
-        serverErrors: serverErrorsChange,
-        resultMessage: resultMessageChange,
-        changeTimer,
-    } = changeTimerService;
+    const { changeTimer } = useChangeTimer();
 
     const [cookies] = useCookies(['authData']);
     const isOwner = () =>
@@ -81,7 +83,40 @@ const Timer: React.FC<TimerPropsI> = ({
         onSubmit: (values) => {
             const { label, hour, minute, second } = values;
             const total = convertToMilliSeconds(hour, minute, second);
-            total && changeTimer(_id, label, total);
+            if (total) {
+                setLoadingChange(true);
+                changeTimer(_id, label, total)
+                    .then((result) => {
+                        result &&
+                            result.errors &&
+                            setServerErrors(result.errors);
+                        if (result && result.message && result.timer) {
+                            setResultMessage(result.message);
+                            dispatch(saveSingleTimer(result.timer));
+                            refreshTimers();
+
+                            setTimeout(() => setResultMessage(''), 3000);
+                        }
+                        !result &&
+                            setServerErrors([
+                                {
+                                    msg: 'Something was wrong',
+                                    value: 'Something was wrong',
+                                },
+                            ]);
+                    })
+                    .catch(() => {
+                        setServerErrors([
+                            {
+                                msg: 'Something was wrong',
+                                value: 'Something was wrong',
+                            },
+                        ]);
+                    })
+                    .finally(() => {
+                        setLoadingChange(false);
+                    });
+            }
 
             setTimeout(() => {
                 setEditing(false);
@@ -97,8 +132,8 @@ const Timer: React.FC<TimerPropsI> = ({
             }
 
             if (time <= 1000 && isActive) {
-                controlTimer(_id, 'reset').then((data) => {
-                    if (data) {
+                controlTimer(_id, 'reset').then((result) => {
+                    if (result.message) {
                         setActive(false);
                         setTime(total);
                     }
@@ -123,8 +158,8 @@ const Timer: React.FC<TimerPropsI> = ({
         // Запрос на reset данных таймера на сервере в случае просроченной даты окончания таймера, отключение активного статуса таймера и добавление общего времени таймера в стейт вместо оставшегося времени;
         timeToEnd &&
             new Date(timeToEnd).getTime() - new Date().getTime() <= 0 &&
-            controlTimer(_id, 'reset').then((data) => {
-                if (data) {
+            controlTimer(_id, 'reset').then((result) => {
+                if (result.message) {
                     setActive(false);
                     setTime(total);
                 }
@@ -247,9 +282,9 @@ const Timer: React.FC<TimerPropsI> = ({
                         </p>
                     )}
 
-                    {serverErrorsChange && (
+                    {serverErrors && (
                         <ul className={Styles.error_list}>
-                            {serverErrorsChange.map((err) => (
+                            {serverErrors.map((err) => (
                                 <li
                                     key={err.msg}
                                     className={Styles.error_message}
@@ -260,10 +295,8 @@ const Timer: React.FC<TimerPropsI> = ({
                         </ul>
                     )}
 
-                    {resultMessageChange && (
-                        <p className={Styles.status_text}>
-                            {resultMessageChange}
-                        </p>
+                    {resultMessage && (
+                        <p className={Styles.status_text}>{resultMessage}</p>
                     )}
 
                     <Button
@@ -287,7 +320,7 @@ const Timer: React.FC<TimerPropsI> = ({
                                 !+formik.values.minute &&
                                 !+formik.values.second) ||
                             loadingChange ||
-                            Boolean(serverErrorsChange.length > 0)
+                            Boolean(serverErrors.length > 0)
                         }
                     >
                         {loadingChange ? WhiteSpin : 'Change Timer'}

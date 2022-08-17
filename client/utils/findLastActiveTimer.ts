@@ -1,7 +1,7 @@
-import { TimerI } from '../types/timer';
+import { ITimer } from '../types/timer';
 
-const findLastActiveTimer = (timerList: TimerI[]) => {
-    let result: null | TimerI = null;
+const findLastActiveTimer = (timerList: ITimer[]) => {
+    let result: null | ITimer = null;
 
     timerList.forEach((timer) => {
         const { activateDate } = timer;

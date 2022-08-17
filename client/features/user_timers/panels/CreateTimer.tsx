@@ -5,7 +5,7 @@ import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { useCreateTimer } from '../../../service/TimerService';
+import { useCreateTimer } from '../../../service/timers/CreateTimerService';
 import {
     convertToMilliSeconds,
     convertFromMilliSeconds,
@@ -13,16 +13,17 @@ import {
 import Link from 'next/link';
 import { Spinner } from '../../../components/spinner';
 import { TemplatesList } from '../../../components/templates_list';
+import { useRefreshTimers } from '../../../hooks';
 
 import Styles from '../Timers.module.scss';
 
 const CreateTimer: React.FC = () => {
     const authStatus = useAppSelector(getAuthSelector);
     const { isLoading, isUserAuth } = authStatus;
+    const { refreshTimers } = useRefreshTimers();
 
-    const createTimerService = useCreateTimer();
     const { createTimer, loading, serverErrors, resultMessage } =
-        createTimerService;
+        useCreateTimer();
 
     const { WhiteSpin, GreenSpin } = Spinner();
 
@@ -56,7 +57,10 @@ const CreateTimer: React.FC = () => {
         onSubmit: (values) => {
             const { label, hour, minute, second } = values;
             const total = convertToMilliSeconds(hour, minute, second);
-            total && createTimer(label, total);
+            total &&
+                createTimer(label, total).then((message) => {
+                    message && refreshTimers();
+                });
             formik.setValues({
                 label: '',
                 hour: 0,

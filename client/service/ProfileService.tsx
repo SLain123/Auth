@@ -1,31 +1,32 @@
-import { useState } from 'react';
-import useHttp from '../hooks/useHttp';
+import { useState, useCallback } from 'react';
 import { useCookies } from 'react-cookie';
+
+import { useHttp } from '../hooks/useHttp';
 import { baseUrlApi } from './baseEnv';
+import { IServerErrors } from '../types/serviceType';
+
+export interface IUserData {
+    nickName: string;
+    avatar: null | string;
+    errors?: IServerErrors[];
+}
 
 const useProfileService = () => {
     const { loading, request } = useHttp();
-
-    const [serverErrors, setServerErrors] = useState<
-        [] | { msg: string; value: string }[]
-    >([]);
-    const [resultMessage, setResultMessage] = useState('');
     const [cookies] = useCookies(['authData']);
 
-    const getUserData = async () => {
-        try {
-            return request(`${baseUrlApi}/profile`, 'GET', null, {
-                authorization: cookies.authData.token,
-            });
-        } catch (e) {
-            //@ts-ignore
-            setServerErrors([e.message]);
-        }
-    };
+    const [serverErrors, setServerErrors] = useState<IServerErrors[]>([]);
+    const [resultMessage, setResultMessage] = useState('');
+    const authorization = cookies.authData?.token;
 
-    const sendUserData = async (values: { nickName: string }) => {
-        const { nickName } = values;
-        try {
+    const getUserData = useCallback(async (): Promise<IUserData> => {
+        return request(`${baseUrlApi}/profile`, 'GET', null, {
+            authorization,
+        });
+    }, []);
+
+    const sendUserData = useCallback(
+        async (nickName: string): Promise<void> => {
             request(
                 `${baseUrlApi}/profile`,
                 'POST',
@@ -33,43 +34,36 @@ const useProfileService = () => {
                     nickName,
                 },
                 {
-                    authorization: cookies.authData.token,
+                    authorization,
                 },
-            ).then((data) => {
-                data.errors
-                    ? setServerErrors(data.errors)
+            ).then((result) => {
+                result.errors
+                    ? setServerErrors(result.errors)
                     : setServerErrors([]);
-                setResultMessage(data.message);
+                setResultMessage(result.message);
             });
-        } catch (e) {
-            //@ts-ignore
-            setServerErrors([e.message]);
-        }
-    };
+        },
+        [],
+    );
 
-    const sendUserAvatar = async (avatar: File) => {
-        try {
-            const reader = new FileReader();
-            reader.readAsDataURL(avatar);
-            reader.onload = () => {
-                const { result: avatar } = reader;
+    const sendUserAvatar = useCallback(async (avatar: File): Promise<void> => {
+        const reader = new FileReader();
+        reader.readAsDataURL(avatar);
+        reader.onload = () => {
+            const { result: avatar } = reader;
 
-                request(
-                    `${baseUrlApi}/profile/avatar`,
-                    'POST',
-                    {
-                        avatar,
-                    },
-                    {
-                        authorization: cookies.authData.token,
-                    },
-                );
-            };
-        } catch (e) {
-            //@ts-ignore
-            setServerErrors([e.message]);
-        }
-    };
+            request(
+                `${baseUrlApi}/profile/avatar`,
+                'POST',
+                {
+                    avatar,
+                },
+                {
+                    authorization,
+                },
+            );
+        };
+    }, []);
 
     return {
         getUserData,
@@ -82,4 +76,4 @@ const useProfileService = () => {
     };
 };
 
-export default useProfileService;
+export { useProfileService };

@@ -1,12 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { useAppSelector } from '../../hooks/useAppSelector';
+import { useAppDispatch, useAppSelector } from '../../hooks';
 import { getCurrentTimer } from '../../features/current_timer/currentTimerSlice';
 import { Timer } from '../../components/timer';
-import { TimerI } from '../../types/timer';
-import { useGetCurrentTimer } from '../../service/TimerService';
+import { ITimer } from '../../types/timer';
+import { useGetCurrentTimer } from '../../service/timers/GetSingleTimerService';
 import { Spinner } from '../../components/spinner';
 import Button from '@mui/material/Button';
 import { useRouter } from 'next/router';
+import {
+    setLoadingStatus,
+    setErrorStatus,
+    saveSingleTimer,
+} from '../../features/current_timer/currentTimerSlice';
 
 import Styles from './CurrentTimer.module.scss';
 
@@ -16,13 +21,13 @@ export interface CurrentTimerI {
 
 const CurrentTimer: React.FC<CurrentTimerI> = ({ routeId }) => {
     const router = useRouter();
+    const dispatch = useAppDispatch();
 
     const [loadingId, setLoadingId] = useState(true);
     const currentTimer = useAppSelector(getCurrentTimer);
     const { timer, isLoading, isError } = currentTimer;
 
-    const getCurrentTimerService = useGetCurrentTimer();
-    const { getTimer } = getCurrentTimerService;
+    const { getTimer } = useGetCurrentTimer();
 
     const { curcleSpin } = Spinner();
 
@@ -30,9 +35,17 @@ const CurrentTimer: React.FC<CurrentTimerI> = ({ routeId }) => {
         if (!routeId) {
             return setLoadingId(true);
         }
-        
+
         setLoadingId(false);
-        getTimer(routeId);
+        dispatch(setLoadingStatus(true));
+        getTimer(routeId).then((result) => {
+            if (!result || !result.timer) {
+                dispatch(setErrorStatus(true));
+            } else {
+                dispatch(saveSingleTimer(result.timer));
+            }
+            dispatch(setLoadingStatus(false));
+        });
     }, [routeId]);
 
     if (isLoading || loadingId) {
@@ -71,7 +84,7 @@ const CurrentTimer: React.FC<CurrentTimerI> = ({ routeId }) => {
         <div
             className={`${Styles.single_container} ${Styles.single_container_timer}`}
         >
-            <Timer {...(timer as TimerI)} />
+            <Timer {...(timer as ITimer)} />
         </div>
     );
 };

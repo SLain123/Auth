@@ -5,12 +5,11 @@ import Button from '@mui/material/Button';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import Avatar from '@mui/material/Avatar';
-import useProfileService from '../../service/ProfileService';
+import { useProfileService } from '../../service/ProfileService';
 import stringAvatar from './subFuncs';
-import { useAppSelector } from '../../hooks/useAppSelector';
 import { getAuthSelector } from '../auth/authSlice';
 import { Spinner } from '../../components/spinner';
-import useWindowDimensions from '../../hooks/useWindowDimensions';
+import { useWindowDimensions, useAppSelector } from '../../hooks';
 
 import Styles from './Profile.module.scss';
 
@@ -25,7 +24,6 @@ const Profile: React.FC = () => {
     const authStatus = useAppSelector(getAuthSelector);
     const { isLoading, isUserAuth } = authStatus;
 
-    const profileService = useProfileService();
     const {
         getUserData,
         sendUserData,
@@ -34,7 +32,7 @@ const Profile: React.FC = () => {
         setServerErrors,
         loading,
         resultMessage,
-    } = profileService;
+    } = useProfileService();
 
     const { WhiteSpin, GreenSpin } = Spinner();
 
@@ -53,7 +51,7 @@ const Profile: React.FC = () => {
                 .required('Required'),
         }),
         onSubmit: (values) => {
-            sendUserData(values);
+            sendUserData(values.nickName);
             userAvatar && sendUserAvatar(userAvatar);
         },
     });
