@@ -1,9 +1,9 @@
 import { useState, useCallback } from 'react';
 import { useCookies } from 'react-cookie';
 
-import { useHttp } from '../../hooks';
+import { useHttp } from 'hooks';
 import { baseUrlApi } from '../baseEnv';
-import { IServerErrors, IMessageResponse } from '../../types/serviceType';
+import { IServerErrors, IMessageResponse } from 'types/serviceType';
 
 const useCreateTimer = () => {
     const { loading, request } = useHttp();

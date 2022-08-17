@@ -1,5 +1,5 @@
-import { Login } from '../features/login';
-import { Header } from '../features/header';
+import { Login } from 'features/login';
+import { Header } from 'features/header';
 
 export default function LoginPage() {
     return <Login />;

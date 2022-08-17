@@ -1,9 +1,9 @@
 import { useCallback } from 'react';
 import { useCookies } from 'react-cookie';
 
-import { useHttp } from '../../hooks';
+import { useHttp } from 'hooks';
 import { baseUrlApi } from '../baseEnv';
-import { IMessageResponse } from '../../types/serviceType';
+import { IMessageResponse } from 'types/serviceType';
 
 const useRemoveTimer = () => {
     const { request } = useHttp();

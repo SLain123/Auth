@@ -1,8 +1,8 @@
 import { useState, useCallback } from 'react';
 import { useCookies } from 'react-cookie';
 
-import { IServerErrors } from '../types/serviceType';
-import { useHttp } from '../hooks/useHttp';
+import { IServerErrors } from 'types/serviceType';
+import { useHttp } from 'hooks';
 import { baseUrlApi } from './baseEnv';
 
 export interface IRequestAuth {

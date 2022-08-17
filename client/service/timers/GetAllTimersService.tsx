@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { useCookies } from 'react-cookie';
 
-import { useHttp } from '../../hooks/useHttp';
+import { useHttp } from 'hooks';
 import { baseUrlApi } from '../baseEnv';
 
 const useGetUserTimers = () => {

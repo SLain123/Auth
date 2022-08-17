@@ -15,4 +15,4 @@ const Spinner = () => {
     return { WhiteSpin, GreenSpin, curcleSpin };
 };
 
-export default Spinner;
+export { Spinner };

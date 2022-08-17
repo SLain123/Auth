@@ -1,9 +1,9 @@
 import { useCallback } from 'react';
 import { useCookies } from 'react-cookie';
 
-import { useHttp } from '../../hooks';
+import { useHttp } from 'hooks';
 import { baseUrlApi } from '../baseEnv';
-import { IResponseTimer } from '../../types/serviceType';
+import { IResponseTimer } from 'types/serviceType';
 
 const useChangeTimer = () => {
     const { request } = useHttp();

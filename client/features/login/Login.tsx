@@ -1,33 +1,39 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import Link from 'next/link';
+import { useFormik, FormikProvider } from 'formik';
+import * as Yup from 'yup';
+import { useCookies } from 'react-cookie';
+
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
-import { useLoginService } from '../../service/LoginService';
-import { useFormik } from 'formik';
-import * as Yup from 'yup';
-import { Spinner } from '../../components/spinner';
+
+import { useLoginService } from 'service/LoginService';
+import { Spinner } from 'components/spinner';
 import { getAuthSelector } from '../auth/authSlice';
-import { useCookies } from 'react-cookie';
-import { useTokenCheck } from '../../hooks/useTokenCheck';
-import { useWindowDimensions, useAppSelector } from '../../hooks';
+import { useWindowDimensions, useAppSelector, useTokenCheck } from 'hooks';
 
 import Styles from './Login.module.scss';
 
 const Login = () => {
-    const { sendLoginData, loading, serverErrors, resultMessage } =
-        useLoginService();
     const [cookies] = useCookies(['authData']);
     const { width } = useWindowDimensions();
+    const checkTokenService = useTokenCheck();
+
+    const { sendLoginData, loading, serverErrors, resultMessage } =
+        useLoginService();
 
     const authStatus = useAppSelector(getAuthSelector);
     const { isLoading, isUserAuth } = authStatus;
-    const checkTokenService = useTokenCheck(
-        cookies.authData ? cookies.authData.token : null,
-    );
+
     const { WhiteSpin, GreenSpin } = Spinner();
 
     const inputSize = width && width >= 768 ? 'medium' : 'small';
     const btnSize = width && width >= 768 ? 'large' : 'medium';
+    const errorList = serverErrors.map((err) => (
+        <li key={err.msg} className={Styles.error_text}>
+            {err.msg}
+        </li>
+    ));
 
     const formik = useFormik({
         initialValues: {
@@ -55,11 +61,11 @@ const Login = () => {
     }, [isUserAuth]);
 
     useEffect(() => {
-        if (cookies.authData) {
+        if (cookies.authData?.token) {
             const { checkToken } = checkTokenService;
-            checkToken();
+            checkToken(cookies.authData.token);
         }
-    }, [cookies]);
+    }, [cookies.authData]);
 
     if (isLoading) {
         return <div className={Styles.container}>{GreenSpin}</div>;
@@ -68,13 +74,7 @@ const Login = () => {
     return (
         <form className={Styles.container} onSubmit={formik.handleSubmit}>
             <h3 className={Styles.title}>Login</h3>
-            <ul className={Styles.error_list}>
-                {serverErrors.map((err) => (
-                    <li key={err.msg} className={Styles.error_text}>
-                        {err.msg}
-                    </li>
-                ))}
-            </ul>
+            <ul className={Styles.error_list}>{errorList}</ul>
             <TextField
                 name='email'
                 id='email'
@@ -128,4 +128,4 @@ const Login = () => {
     );
 };
 
-export default Login;
+export { Login };

@@ -14,9 +14,7 @@ const Header: React.FC = ({ children }) => {
     const { width } = useWindowDimensions();
     const { refreshTimers } = useRefreshTimers();
 
-    const checkTokenService = useTokenCheck(
-        cookies.authData ? cookies.authData?.token : null,
-    );
+    const checkTokenService = useTokenCheck();
 
     const authStatus = useAppSelector(getAuthSelector);
     const { isUserAuth } = authStatus;
@@ -49,7 +47,7 @@ const Header: React.FC = ({ children }) => {
 
     useEffect(() => {
         const { checkToken } = checkTokenService;
-        checkToken();
+        checkToken(cookies.authData ? cookies.authData?.token : null);
     }, []);
 
     useEffect(() => {

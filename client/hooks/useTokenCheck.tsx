@@ -1,17 +1,15 @@
-import { useCheckTokenService } from '../service/TokenCheckService';
+import { useCallback } from 'react';
+import { useCheckTokenService } from 'service/TokenCheckService';
 import { useAppDispatch } from './useAppDispatch';
-import {
-    setLoadingStatus,
-    setUserAuthStatus,
-} from '../features/auth/authSlice';
+import { setLoadingStatus, setUserAuthStatus } from 'features/auth/authSlice';
 
-const useTokenCheck = (token: string | null) => {
-    const { sendCheckRequest, error } = useCheckTokenService(token);
+const useTokenCheck = () => {
     const dispatch = useAppDispatch();
+    const { sendCheckRequest, error } = useCheckTokenService();
 
-    const checkToken = async () => {
+    const checkToken = useCallback(async (token: string | null) => {
         dispatch(setLoadingStatus(true));
-        sendCheckRequest()
+        await sendCheckRequest(token)
             .then((result) => {
                 if (!result || result.errors || error) {
                     dispatch(setUserAuthStatus(false));
@@ -25,7 +23,7 @@ const useTokenCheck = (token: string | null) => {
             .finally(() => {
                 dispatch(setLoadingStatus(false));
             });
-    };
+    }, []);
 
     return { checkToken };
 };

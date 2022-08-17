@@ -4,8 +4,8 @@ import {
     setLoadingStatus as setUserLoadingStatus,
     setErrorStatus as setUserErrorStatus,
     saveUserTimerList,
-} from '../features/user_timers/userTimersSlice';
-import { useGetUserTimers } from '../service/timers/GetAllTimersService';
+} from 'features/user_timers/userTimersSlice';
+import { useGetUserTimers } from 'service/timers/GetAllTimersService';
 
 const useRefreshTimers = () => {
     const dispatch = useAppDispatch();

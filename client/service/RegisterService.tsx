@@ -1,8 +1,8 @@
 import { useState, useCallback } from 'react';
 
-import { useHttp } from '../hooks/useHttp';
+import { useHttp } from 'hooks';
 import { baseUrlApi } from './baseEnv';
-import { IServerErrors } from '../types/serviceType';
+import { IServerErrors } from 'types/serviceType';
 
 export interface IRequestReg {
     email: string;
