@@ -1,8 +1,7 @@
-const stringToColor = (string: string) => {
+export const stringToColor = (string: string) => {
     let hash = 0;
     let i;
 
-    /* eslint-disable no-bitwise */
     for (i = 0; i < string.length; i += 1) {
         hash = string.charCodeAt(i) + ((hash << 5) - hash);
     }
@@ -13,12 +12,11 @@ const stringToColor = (string: string) => {
         const value = (hash >> (i * 8)) & 0xff;
         color += `00${value.toString(16)}`.substr(-2);
     }
-    /* eslint-enable no-bitwise */
 
     return color;
 };
 
-const stringAvatar = (name: string) => {
+export const stringAvatar = (name: string) => {
     return {
         sx: {
             bgcolor: stringToColor(name),
@@ -28,5 +26,3 @@ const stringAvatar = (name: string) => {
         children: `${name.split(' ')[0][0]}`,
     };
 };
-
-export default stringAvatar;

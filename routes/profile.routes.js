@@ -48,6 +48,18 @@ router.post(
             }
 
             const { nickName } = req.body;
+
+            const nickExists = await User.findOne({ nickName });
+            if (nickExists) {
+                return res.status(400).json({
+                    errors: [
+                        {
+                            msg: 'Nickname is already taken',
+                        },
+                    ],
+                });
+            }
+
             const resultUser = await User.findOneAndUpdate(
                 { _id: req.user.userId },
                 { nickName },

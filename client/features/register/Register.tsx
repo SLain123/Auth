@@ -1,13 +1,15 @@
 import React, { useEffect } from 'react';
-import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import Router from 'next/router';
-import { useRegisterService } from '../../service/RegisterService';
+
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
+
+import { useRegisterService } from 'service/RegisterService';
 import { getAuthSelector } from '../auth/authSlice';
-import { Spinner } from '../../components/spinner';
-import { useWindowDimensions, useAppSelector } from '../../hooks';
+import { Spinner } from 'components/spinner';
+import { useWindowDimensions, useAppSelector } from 'hooks';
 
 import Styles from './Register.module.scss';
 
@@ -15,14 +17,18 @@ const Register = () => {
     const { sendRegisterData, loading, serverErrors, resultMessage } =
         useRegisterService();
     const { width } = useWindowDimensions();
-
-    const { WhiteSpin, GreenSpin } = Spinner();
-
     const authStatus = useAppSelector(getAuthSelector);
     const { isLoading, isUserAuth } = authStatus;
 
+    const { WhiteSpin, GreenSpin } = Spinner();
+
     const inputSize = width && width >= 768 ? 'medium' : 'small';
     const btnSize = width && width >= 768 ? 'large' : 'medium';
+    const errorList = serverErrors.map((err) => (
+        <li key={err.msg} className={Styles.error_text}>
+            {err.msg}
+        </li>
+    ));
 
     const formik = useFormik({
         initialValues: {
@@ -71,13 +77,7 @@ const Register = () => {
     return (
         <form className={Styles.container} onSubmit={formik.handleSubmit}>
             <h3 className={Styles.title}>Registration</h3>
-            <ul className={Styles.error_list}>
-                {serverErrors.map((err) => (
-                    <li key={err.msg} className={Styles.error_text}>
-                        {err.msg}
-                    </li>
-                ))}
-            </ul>
+            <ul className={Styles.error_list}>{errorList}</ul>
             <TextField
                 name='email'
                 id='email'
@@ -167,4 +167,4 @@ const Register = () => {
     );
 };
 
-export default Register;
+export { Register };

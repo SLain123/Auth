@@ -1,28 +1,26 @@
-import React, { useState, useEffect } from 'react';
-import Image from 'next/image';
-import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import Avatar from '@mui/material/Avatar';
-import { useProfileService } from '../../service/ProfileService';
-import stringAvatar from './subFuncs';
-import { getAuthSelector } from '../auth/authSlice';
-import { Spinner } from '../../components/spinner';
-import { useWindowDimensions, useAppSelector } from '../../hooks';
+
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
+
+import { useProfileService } from 'service/ProfileService';
+import { getAuthSelector } from 'features/auth/authSlice';
+import { Spinner } from 'components/spinner';
+import { useWindowDimensions, useAppSelector } from 'hooks';
+import { UserAvatar } from './UserAvatar';
 
 import Styles from './Profile.module.scss';
 
 const Profile: React.FC = () => {
     const { width } = useWindowDimensions();
-    const [nickName, setNickName] = useState('');
-    const [userAvatar, setUserAvatar] = useState<File | null>(null);
-    const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
-    const [uploadError, setUploadError] = useState(false);
-    const [userDataLoading, setUserDataLoading] = useState(true);
-
     const authStatus = useAppSelector(getAuthSelector);
     const { isLoading, isUserAuth } = authStatus;
+
+    const [userAvatar, setUserAvatar] = useState<File | null>(null);
+    const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
+    const [userDataLoading, setUserDataLoading] = useState(true);
 
     const {
         getUserData,
@@ -36,9 +34,13 @@ const Profile: React.FC = () => {
 
     const { WhiteSpin, GreenSpin } = Spinner();
 
-    const avatarSize = 200;
     const inputSize = width && width >= 768 ? 'medium' : 'small';
     const btnSize = width && width >= 768 ? 'large' : 'medium';
+    const errorList = serverErrors.map((err) => (
+        <li key={err.msg} className={Styles.error_text}>
+            {err.msg}
+        </li>
+    ));
 
     const formik = useFormik({
         initialValues: {
@@ -56,6 +58,14 @@ const Profile: React.FC = () => {
         },
     });
 
+    const saveAvatarPrewiev = useCallback((avatar: string | null) => {
+        setAvatarPreview(avatar);
+    }, []);
+
+    const saveAvatar = useCallback((avatar: File) => {
+        setUserAvatar(avatar);
+    }, []);
+
     useEffect(() => {
         if (!isUserAuth && !isLoading) {
             location.href = '/login';
@@ -70,9 +80,7 @@ const Profile: React.FC = () => {
                     setServerErrors(errors);
                 } else {
                     setServerErrors([]);
-                    setNickName(nickName);
-                    setAvatarPreview(avatar);
-
+                    saveAvatarPrewiev(avatar);
                     formik.setValues({ nickName });
                 }
             })
@@ -85,70 +93,15 @@ const Profile: React.FC = () => {
 
     return (
         <div className={Styles.container}>
-            <h3 className={Styles.title}>Change user profile:</h3>
-            {avatarPreview ? (
-                <div className={Styles.avatar_photo}>
-                    <Image
-                        src={avatarPreview}
-                        alt='user_photo'
-                        width={94}
-                        height={94}
-                    />
-                </div>
-            ) : (
-                <Avatar
-                    {...stringAvatar(
-                        !nickName
-                            ? 'No Avatar'
-                            : `${nickName[0].toUpperCase()}}`,
-                    )}
-                    className={Styles.avatar_text}
-                />
-            )}
-
-            <input
-                accept='image/*'
-                className={Styles.uploader}
-                style={{ display: 'none' }}
-                id='raised-button-file'
-                type='file'
-                onChange={(evt: React.ChangeEvent<HTMLInputElement>) => {
-                    if (evt.target.files && evt.target.files[0]) {
-                        const photo = evt.target.files[0];
-                        if (Math.ceil(photo.size / 1024) > avatarSize) {
-                            setUploadError(true);
-                        } else {
-                            setUserAvatar(photo);
-                            setUploadError(false);
-
-                            const reader = new FileReader();
-                            reader.readAsDataURL(photo);
-                            reader.onload = () => {
-                                setAvatarPreview(URL.createObjectURL(photo));
-                            };
-                        }
-                    }
-                }}
+            <UserAvatar
+                avatarPreview={avatarPreview}
+                saveAvatar={saveAvatar}
+                saveAvatarPrewiev={saveAvatarPrewiev}
+                nickName={formik.values.nickName}
             />
-            <label htmlFor='raised-button-file'>
-                <Button component='span' className={Styles.upload_btn}>
-                    Upload Avatar
-                </Button>
-            </label>
-            {uploadError && (
-                <span className={Styles.upload_error}>
-                    {`Max file size was exceeded (${avatarSize} kb)`}
-                </span>
-            )}
 
             <form className={Styles.form} onSubmit={formik.handleSubmit}>
-                <ul className={Styles.error_list}>
-                    {serverErrors.map((err) => (
-                        <li key={err.msg} className={Styles.error_text}>
-                            {err.msg}
-                        </li>
-                    ))}
-                </ul>
+                <ul className={Styles.error_list}>{errorList}</ul>
                 <TextField
                     name='nickName'
                     id='nickName'
@@ -156,10 +109,7 @@ const Profile: React.FC = () => {
                     variant='outlined'
                     fullWidth
                     margin='dense'
-                    onChange={(evt) => {
-                        formik.handleChange(evt);
-                        setNickName(evt.target.value);
-                    }}
+                    onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                     error={
                         formik.touched.nickName &&
@@ -169,7 +119,7 @@ const Profile: React.FC = () => {
                         formik.touched.nickName && formik.errors.nickName
                     }
                     disabled={loading}
-                    value={nickName}
+                    value={formik.values.nickName}
                     size={inputSize}
                 />
                 <p className={Styles.status_text}>{resultMessage}</p>
@@ -179,11 +129,7 @@ const Profile: React.FC = () => {
                     color='success'
                     size={btnSize}
                     type='submit'
-                    disabled={
-                        Boolean(formik.errors.nickName) ||
-                        loading ||
-                        Boolean(serverErrors.length > 0)
-                    }
+                    disabled={Boolean(formik.errors.nickName) || loading}
                 >
                     {loading ? WhiteSpin : 'Change profile'}
                 </Button>
@@ -192,4 +138,4 @@ const Profile: React.FC = () => {
     );
 };
 
-export default Profile;
+export { Profile };
