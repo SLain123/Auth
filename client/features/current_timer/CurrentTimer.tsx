@@ -1,17 +1,18 @@
-import React, { useState, useEffect } from 'react';
-import { useAppDispatch, useAppSelector } from '../../hooks';
-import { getCurrentTimer } from '../../features/current_timer/currentTimerSlice';
-import { Timer } from '../../components/timer';
-import { ITimer } from '../../types/timer';
-import { useGetCurrentTimer } from '../../service/timers/GetSingleTimerService';
-import { Spinner } from '../../components/spinner';
-import Button from '@mui/material/Button';
+import React, { useState, useEffect, FC } from 'react';
 import { useRouter } from 'next/router';
+import Button from '@mui/material/Button';
+
+import { useAppDispatch, useAppSelector } from 'hooks';
+import { getCurrentTimer } from 'features/current_timer/currentTimerSlice';
+import { Timer } from 'components/timer';
+import { ITimer } from 'types/timer';
+import { useGetCurrentTimer } from 'service/timers/GetSingleTimerService';
+import { Spinner } from 'components/spinner';
 import {
     setLoadingStatus,
     setErrorStatus,
     saveSingleTimer,
-} from '../../features/current_timer/currentTimerSlice';
+} from 'features/current_timer/currentTimerSlice';
 
 import Styles from './CurrentTimer.module.scss';
 
@@ -19,15 +20,14 @@ export interface CurrentTimerI {
     routeId?: string;
 }
 
-const CurrentTimer: React.FC<CurrentTimerI> = ({ routeId }) => {
+const CurrentTimer: FC<CurrentTimerI> = ({ routeId }) => {
     const router = useRouter();
     const dispatch = useAppDispatch();
+    const { getTimer } = useGetCurrentTimer();
 
     const [loadingId, setLoadingId] = useState(true);
     const currentTimer = useAppSelector(getCurrentTimer);
     const { timer, isLoading, isError } = currentTimer;
-
-    const { getTimer } = useGetCurrentTimer();
 
     const { curcleSpin } = Spinner();
 
@@ -89,4 +89,4 @@ const CurrentTimer: React.FC<CurrentTimerI> = ({ routeId }) => {
     );
 };
 
-export default CurrentTimer;
+export { CurrentTimer };

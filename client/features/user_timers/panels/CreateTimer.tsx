@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FC } from 'react';
 import { useAppSelector } from '../../../hooks/useAppSelector';
 import { getAuthSelector } from '../../auth/authSlice';
 import Button from '@mui/material/Button';
@@ -17,7 +17,7 @@ import { useRefreshTimers } from '../../../hooks';
 
 import Styles from '../Timers.module.scss';
 
-const CreateTimer: React.FC = () => {
+const CreateTimer: FC = () => {
     const authStatus = useAppSelector(getAuthSelector);
     const { isLoading, isUserAuth } = authStatus;
     const { refreshTimers } = useRefreshTimers();

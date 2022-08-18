@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, FC } from 'react';
 import { useAppSelector, useRefreshTimers } from '../../hooks';
 import { getAuthSelector } from '../auth/authSlice';
 import { getTimerListSelector } from '../user_timers/userTimersSlice';
@@ -26,7 +26,7 @@ import linkIcon from '../../public/icons/link.svg';
 import binIcon from '../../public/icons/bin.svg';
 import problemIcon from '../../public/icons/problem.svg';
 
-const AllTimersTable: React.FC = () => {
+const AllTimersTable: FC = () => {
     const authStatus = useAppSelector(getAuthSelector);
     const { isLoading: isLoadingAuth, isUserAuth } = authStatus;
     const [serverErrors, setServerErrors] = useState<IServerErrors[]>([]);

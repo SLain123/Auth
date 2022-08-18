@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FC } from 'react';
 import Link from 'next/link';
 import { useCookies } from 'react-cookie';
 
@@ -15,11 +15,7 @@ interface NavigateI {
     navListGuest: NavListI[];
 }
 
-const Navigate: React.FC<NavigateI> = ({
-    isUserAuth,
-    navListAuth,
-    navListGuest,
-}) => {
+const Navigate: FC<NavigateI> = ({ isUserAuth, navListAuth, navListGuest }) => {
     const [_cookies, _setCookie, removeCookie] = useCookies(['authData']);
 
     const setLogout = () => () => {
@@ -55,4 +51,4 @@ const Navigate: React.FC<NavigateI> = ({
     );
 };
 
-export default Navigate;
+export { Navigate };

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, FC } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 
@@ -13,7 +13,7 @@ import { UserAvatar } from './UserAvatar';
 
 import Styles from './Profile.module.scss';
 
-const Profile: React.FC = () => {
+const Profile: FC = () => {
     const { width } = useWindowDimensions();
     const authStatus = useAppSelector(getAuthSelector);
     const { isLoading, isUserAuth } = authStatus;

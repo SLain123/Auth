@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { FC } from 'react';
 import CreateTimer from './panels/CreateTimer';
-import DisplayLastTimer from './panels/DisplayLastTimer';
+import { DisplayLastTimer } from './panels/DisplayLastTimer';
 
-const TimersContainer: React.FC = () => {
+const TimersContainer: FC = () => {
     return (
         <>
             <CreateTimer />

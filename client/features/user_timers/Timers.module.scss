@@ -82,20 +82,6 @@ $shadow: rgb(214, 205, 205);
             margin: 30vh auto 0 auto;
         }
     }
-
-    &_with_error {
-        right: 10px;
-        transform: translate(0, -50%);
-        color: red;
-        font-size: 18px;
-        min-height: 400px;
-        justify-content: center;
-
-        & button {
-            margin-top: auto;
-            margin-bottom: 12px;
-        }
-    }
 }
 
 .create_btn {

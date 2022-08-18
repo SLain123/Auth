@@ -1,19 +1,22 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, FC } from 'react';
 import { useCookies } from 'react-cookie';
-import { useTokenCheck } from '../../hooks/useTokenCheck';
-import { useAppSelector } from '../../hooks';
+
+import {
+    useTokenCheck,
+    useAppSelector,
+    useWindowDimensions,
+    useRefreshTimers,
+} from 'hooks';
 import { getAuthSelector } from '../auth/authSlice';
-import { useWindowDimensions, useRefreshTimers } from '../../hooks';
 import { Navigate } from '../navigate';
 import { Hamburger } from '../hamburger';
 
 import Styles from './Header.module.scss';
 
-const Header: React.FC = ({ children }) => {
+const Header: FC = ({ children }) => {
     const [cookies] = useCookies(['authData']);
     const { width } = useWindowDimensions();
     const { refreshTimers } = useRefreshTimers();
-
     const checkTokenService = useTokenCheck();
 
     const authStatus = useAppSelector(getAuthSelector);
@@ -64,4 +67,4 @@ const Header: React.FC = ({ children }) => {
     );
 };
 
-export default Header;
+export { Header };

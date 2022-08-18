@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, FC } from 'react';
 import { HamburgerIcon } from 'react-hamburger-icon';
 import Link from 'next/link';
 import { useCookies } from 'react-cookie';
-import { useScrollBlock } from '../../hooks';
+import { useScrollBlock } from 'hooks';
 
 import Styles from './Hamburger.module.scss';
 
@@ -17,7 +17,7 @@ interface HamburgerI {
     navListGuest: NavListI[];
 }
 
-const Hamburger: React.FC<HamburgerI> = ({
+const Hamburger: FC<HamburgerI> = ({
     isUserAuth,
     navListAuth,
     navListGuest,
@@ -86,4 +86,4 @@ const Hamburger: React.FC<HamburgerI> = ({
     );
 };
 
-export default Hamburger;
+export { Hamburger };

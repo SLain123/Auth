@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, FC } from 'react';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 import InputLabel from '@mui/material/InputLabel';
@@ -11,7 +11,7 @@ export interface TemplatesListI {
     onChangeSelect: (total: number) => void;
 }
 
-const TemplatesList: React.FC<TemplatesListI> = ({ onChangeSelect }) => {
+const TemplatesList: FC<TemplatesListI> = ({ onChangeSelect }) => {
     const [total, setTotal] = useState(0);
 
     const handleChange = () => (evt: SelectChangeEvent) => {

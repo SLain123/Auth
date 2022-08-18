@@ -1,21 +1,26 @@
-import React, { useEffect } from 'react';
-import { Timer } from '../../../components/timer';
-import { useAppSelector } from '../../../hooks/useAppSelector';
-import { getAuthSelector } from '../../auth/authSlice';
-import { getTimerListSelector } from '../userTimersSlice';
+import React, { useEffect, FC } from 'react';
 import Link from 'next/link';
-import Button from '@mui/material/Button';
-import { useGetCurrentTimer } from '../../../service/timers/GetSingleTimerService';
-import { getCurrentTimer } from '../../../features/current_timer/currentTimerSlice';
-import { ITimer } from '../../../types/timer';
-import findLastActiveTimer from '../../../utils/findLastActiveTimer';
+
+import { Timer } from 'components/timer';
+import { useAppSelector, useAppDispatch } from 'hooks';
+import { getAuthSelector } from 'features/auth/authSlice';
+import { getTimerListSelector } from '../userTimersSlice';
+import { useGetCurrentTimer } from 'service/timers/GetSingleTimerService';
+import { ITimer } from 'types/timer';
+import findLastActiveTimer from 'utils/findLastActiveTimer';
+import {
+    setLoadingStatus,
+    setErrorStatus,
+    saveSingleTimer,
+} from 'features/current_timer/currentTimerSlice';
+import { ErrorPanel } from 'components/ErrorPanel';
 
 import Styles from '../Timers.module.scss';
 
-const DisplayLastTimer: React.FC = () => {
+const DisplayLastTimer: FC = () => {
+    const dispatch = useAppDispatch();
     const authStatus = useAppSelector(getAuthSelector);
     const { isLoading: isLoadingAuth, isUserAuth } = authStatus;
-
     const timersState = useAppSelector(getTimerListSelector);
     const {
         isLoading: isLoadingTimers,
@@ -23,11 +28,7 @@ const DisplayLastTimer: React.FC = () => {
         timerList,
     } = timersState;
 
-    const getCurrentTimerService = useGetCurrentTimer();
-    const { getTimer } = getCurrentTimerService;
-
-    const currentTimer = useAppSelector(getCurrentTimer);
-    const { timer, isLoading, isError } = currentTimer;
+    const { getTimer } = useGetCurrentTimer();
 
     const linkBlock = (
         <div className={Styles.link_block}>
@@ -45,35 +46,28 @@ const DisplayLastTimer: React.FC = () => {
             const findLastTimer = findLastActiveTimer(
                 timerList,
             ) as ITimer | null;
-            findLastTimer && getTimer(findLastTimer._id);
+
+            findLastTimer &&
+                getTimer(findLastTimer._id).then((result) => {
+                    if (!result || !result.timer) {
+                        dispatch(setErrorStatus(true));
+                    } else {
+                        dispatch(saveSingleTimer(result.timer));
+                    }
+                    dispatch(setLoadingStatus(false));
+                });
         }
     }, [timerList]);
 
-    if (!isUserAuth || isLoadingAuth || isLoadingTimers || isLoading) {
+    if (!isUserAuth || isLoadingAuth || isLoadingTimers) {
         return null;
     }
 
-    if (isErrorTimers || isError) {
-        return (
-            <div className={`${Styles.form} ${Styles.form_with_error}`}>
-                <p>{`Timers wasn't dowload`}</p>
-                <p>Something was wrong</p>
-
-                <Button
-                    className={Styles.create_btn}
-                    variant='contained'
-                    color='success'
-                    size='large'
-                    type='button'
-                    onClick={() => location.reload()}
-                >
-                    Refresh page
-                </Button>
-            </div>
-        );
+    if (isErrorTimers) {
+        return <ErrorPanel message="Timers wasn't dowload" />;
     }
 
-    if (!timerList.length || !timer) {
+    if (!timerList.length) {
         return (
             <div
                 className={`${Styles.form} ${Styles.form_success_right} ${Styles.no_timers}`}
@@ -87,7 +81,6 @@ const DisplayLastTimer: React.FC = () => {
     return (
         <div className={`${Styles.form} ${Styles.form_success_right}`}>
             <Timer
-                {...(timer as ITimer)}
                 formTitle='Your last active timer:'
                 extraChildren={linkBlock}
             />
@@ -95,4 +88,4 @@ const DisplayLastTimer: React.FC = () => {
     );
 };
 
-export default DisplayLastTimer;
+export { DisplayLastTimer };

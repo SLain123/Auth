@@ -3,13 +3,22 @@ import type { AppState } from '../../store/store';
 import { ITimer } from '../../types/timer';
 
 interface InitialStateI {
-    timer: ITimer | null;
+    timer: ITimer;
     isLoading: boolean;
     isError: boolean;
 }
 
 const initialState: InitialStateI = {
-    timer: null,
+    timer: {
+        _id: '0',
+        label: '',
+        total: 0,
+        activateDate: new Date(0),
+        timeToEnd: null,
+        ownerNick: '',
+        restTime: 0,
+        ownerId: '',
+    },
     isLoading: false,
     isError: false,
 };
