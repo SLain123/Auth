@@ -5,7 +5,6 @@ import Button from '@mui/material/Button';
 import { useAppDispatch, useAppSelector } from 'hooks';
 import { getCurrentTimer } from 'features/current_timer/currentTimerSlice';
 import { Timer } from 'components/timer';
-import { ITimer } from 'types/timer';
 import { useGetCurrentTimer } from 'service/timers/GetSingleTimerService';
 import { Spinner } from 'components/spinner';
 import {
@@ -84,7 +83,7 @@ const CurrentTimer: FC<CurrentTimerI> = ({ routeId }) => {
         <div
             className={`${Styles.single_container} ${Styles.single_container_timer}`}
         >
-            <Timer {...(timer as ITimer)} />
+            <Timer />
         </div>
     );
 };
