@@ -1,1 +1,1 @@
-export { default as TemplatesList } from './TemplatesList';
+export { TemplatesList } from './TemplatesList';

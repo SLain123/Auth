@@ -1,8 +1,8 @@
-import DisplayAllTimers from '../features/all_timers_table/AllTimersTable';
+import { AllTimersTable } from '../features/all_timers_table/AllTimersTable';
 import { Header } from '../features/header';
 
 export default function AllTimerPage() {
-    return <DisplayAllTimers />;
+    return <AllTimersTable />;
 }
 
 AllTimerPage.getLayout = function getLayout(page: React.ReactElement) {

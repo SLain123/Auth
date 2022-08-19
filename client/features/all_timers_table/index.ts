@@ -1,1 +1,1 @@
-export { default as AllTimersTable } from './AllTimersTable';
+export { AllTimersTable } from './AllTimersTable';

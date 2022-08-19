@@ -50,4 +50,4 @@ const TemplatesList: FC<TemplatesListI> = ({ onChangeSelect }) => {
     );
 };
 
-export default TemplatesList;
+export { TemplatesList };

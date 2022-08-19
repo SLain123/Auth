@@ -1,36 +1,35 @@
 $shadow: rgb(214, 205, 205);
 
-.form {
+.error_panel {
     width: 30%;
     border-radius: 8px;
     box-shadow: 1px 1px 10px $shadow, -1px 1px 10px $shadow,
         1px -1px 10px $shadow, -1px -1px 10px $shadow;
     position: absolute;
     top: 50%;
+    left: 50%;
     min-width: 300px;
     padding: 24px;
     display: flex;
     flex-flow: column;
     align-items: center;
+    transform: translate(-50%, -50%);
+    right: 10px;
+    color: red;
+    font-size: 18px;
+    display: block;
+    justify-content: center;
+    text-align: center;
+
+    & button {
+        margin-top: auto;
+        margin-bottom: 16px;
+    }
 
     @media screen and (max-width: 767px) {
         position: static;
         margin: auto;
         top: 0;
         padding: 6px 14px;
-    }
-
-    &_with_error {
-        right: 10px;
-        transform: translate(0, -50%);
-        color: red;
-        font-size: 18px;
-        min-height: 400px;
-        justify-content: center;
-
-        & button {
-            margin-top: auto;
-            margin-bottom: 12px;
-        }
     }
 }

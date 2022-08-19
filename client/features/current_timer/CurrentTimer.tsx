@@ -1,6 +1,4 @@
 import React, { useState, useEffect, FC } from 'react';
-import { useRouter } from 'next/router';
-import Button from '@mui/material/Button';
 
 import { useAppDispatch, useAppSelector } from 'hooks';
 import { getCurrentTimer } from 'features/current_timer/currentTimerSlice';
@@ -12,6 +10,7 @@ import {
     setErrorStatus,
     saveSingleTimer,
 } from 'features/current_timer/currentTimerSlice';
+import { ErrorPanel } from 'components/ErrorPanel';
 
 import Styles from './CurrentTimer.module.scss';
 
@@ -20,7 +19,6 @@ export interface CurrentTimerI {
 }
 
 const CurrentTimer: FC<CurrentTimerI> = ({ routeId }) => {
-    const router = useRouter();
     const dispatch = useAppDispatch();
     const { getTimer } = useGetCurrentTimer();
 
@@ -56,27 +54,7 @@ const CurrentTimer: FC<CurrentTimerI> = ({ routeId }) => {
     }
 
     if (isError || !timer) {
-        return (
-            <div
-                className={`${Styles.single_container} ${Styles.single_container_error}`}
-            >
-                <p className={Styles.single_error_text}>
-                    Something was wrong. Please refresh the page.
-                </p>
-                <Button
-                    className={Styles.single_refresh_btn}
-                    variant='contained'
-                    color='success'
-                    size='medium'
-                    type='button'
-                    onClick={() => {
-                        router.reload();
-                    }}
-                >
-                    Refresh page
-                </Button>
-            </div>
-        );
+        return <ErrorPanel />;
     }
 
     return (

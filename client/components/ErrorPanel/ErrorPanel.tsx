@@ -4,17 +4,16 @@ import Button from '@mui/material/Button';
 import Styles from './ErrorPanel.module.scss';
 
 export interface IErrorPanel {
-    message: string;
+    message?: string;
 }
 
-const ErrorPanel: FC<IErrorPanel> = ({ message }) => {
+const ErrorPanel: FC<IErrorPanel> = ({ message = 'Error!' }) => {
     return (
-        <div className={`${Styles.form} ${Styles.form_with_error}`}>
-            <p>{message}=</p>
-            <p>Something was wrong</p>
+        <div className={`${Styles.error_panel}`}>
+            <p>{message}</p>
+            <p>Something was wrong. Please refresh the page.</p>
 
             <Button
-                className={Styles.create_btn}
                 variant='contained'
                 color='success'
                 size='large'

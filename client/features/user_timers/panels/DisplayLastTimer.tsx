@@ -64,7 +64,7 @@ const DisplayLastTimer: FC = () => {
     }
 
     if (isErrorTimers) {
-        return <ErrorPanel message="Timers wasn't dowload" />;
+        return <ErrorPanel message="Timer wasn't dowloaded" />;
     }
 
     if (!timerList.length) {

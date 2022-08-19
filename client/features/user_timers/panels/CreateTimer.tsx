@@ -1,43 +1,32 @@
 import React, { FC } from 'react';
-import { useAppSelector } from '../../../hooks/useAppSelector';
-import { getAuthSelector } from '../../auth/authSlice';
-import Button from '@mui/material/Button';
-import TextField from '@mui/material/TextField';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { useCreateTimer } from '../../../service/timers/CreateTimerService';
+
+import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
+
+import { useAppSelector, useRefreshTimers } from 'hooks';
+import { getAuthSelector } from 'features/auth/authSlice';
+import { useCreateTimer } from 'service/timers/CreateTimerService';
 import {
     convertToMilliSeconds,
     convertFromMilliSeconds,
-} from '../../../utils/timeConverter';
-import Link from 'next/link';
-import { Spinner } from '../../../components/spinner';
-import { TemplatesList } from '../../../components/templates_list';
-import { useRefreshTimers } from '../../../hooks';
+} from 'utils/timeConverter';
+import { Spinner } from 'components/spinner';
+import { TemplatesList } from 'components/templates_list';
+import { NoAuthWarning } from './NoAuthWarning';
 
 import Styles from '../Timers.module.scss';
 
 const CreateTimer: FC = () => {
     const authStatus = useAppSelector(getAuthSelector);
     const { isLoading, isUserAuth } = authStatus;
-    const { refreshTimers } = useRefreshTimers();
 
+    const { refreshTimers } = useRefreshTimers();
     const { createTimer, loading, serverErrors, resultMessage } =
         useCreateTimer();
 
     const { WhiteSpin, GreenSpin } = Spinner();
-
-    const onChangeTemplateSelect = (total: number) => {
-        const { hour, minute, second } = convertFromMilliSeconds(total);
-        formik.setValues({
-            label: `Template ${Boolean(hour) ? `${hour} hour(s)` : ''}${
-                Boolean(minute) ? `${minute} minute(s)` : ''
-            }`,
-            hour,
-            minute,
-            second,
-        });
-    };
 
     const formik = useFormik({
         initialValues: {
@@ -76,6 +65,64 @@ const CreateTimer: FC = () => {
         },
     });
 
+    const errorList = (
+        <ul className={Styles.error_list}>
+            {serverErrors.map((err) => (
+                <li key={err.msg} className={Styles.error_message}>
+                    {err.msg}
+                </li>
+            ))}
+        </ul>
+    );
+
+    const isLessThenOneSecond = Boolean(
+        !formik.values.hour &&
+            !formik.values.minute &&
+            !formik.values.second &&
+            (formik.touched.hour ||
+                formik.touched.minute ||
+                formik.touched.second),
+    );
+
+    const isWrongTimeFormat = Boolean(
+        formik.values.hour > 99 ||
+            formik.values.hour < 0 ||
+            formik.values.minute > 59 ||
+            formik.values.minute < 0 ||
+            formik.values.second > 59 ||
+            formik.values.second < 0,
+    );
+
+    const isDisabledCreateBtn = Boolean(
+        Boolean(formik.errors.label) ||
+            Boolean(formik.errors.hour) ||
+            Boolean(formik.errors.minute) ||
+            Boolean(formik.errors.second) ||
+            formik.values.hour > 99 ||
+            formik.values.hour < 0 ||
+            formik.values.minute > 59 ||
+            formik.values.minute < 0 ||
+            formik.values.second > 59 ||
+            formik.values.second < 0 ||
+            (!+formik.values.hour &&
+                !+formik.values.minute &&
+                !+formik.values.second) ||
+            loading ||
+            Boolean(serverErrors.length > 0),
+    );
+
+    const onChangeTemplateSelect = (total: number) => {
+        const { hour, minute, second } = convertFromMilliSeconds(total);
+        formik.setValues({
+            label: `Template ${Boolean(hour) ? `${hour} hour(s)` : ''}${
+                Boolean(minute) ? `${minute} minute(s)` : ''
+            }`,
+            hour,
+            minute,
+            second,
+        });
+    };
+
     if (isLoading) {
         return (
             <div className={`${Styles.form} ${Styles.form_not_auth}`}>
@@ -85,17 +132,7 @@ const CreateTimer: FC = () => {
     }
 
     if (!isUserAuth) {
-        return (
-            <div className={`${Styles.form} ${Styles.form_not_auth}`}>
-                <span className={Styles.info_message}>
-                    If you want to create a new personal timer, you need to
-                    register or log in.
-                </span>
-                <Link href='/login'>
-                    <a className={Styles.login_btn}>Log in</a>
-                </Link>
-            </div>
-        );
+        return <NoAuthWarning />;
     }
 
     return (
@@ -175,37 +212,17 @@ const CreateTimer: FC = () => {
                 onChangeSelect={(total) => onChangeTemplateSelect(total)}
             />
 
-            {!formik.values.hour &&
-                !formik.values.minute &&
-                !formik.values.second &&
-                (formik.touched.hour ||
-                    formik.touched.minute ||
-                    formik.touched.second) && (
-                    <p className={Styles.error_message}>
-                        You need to specify at least 1 second or more
-                    </p>
-                )}
-            {(formik.values.hour > 99 ||
-                formik.values.hour < 0 ||
-                formik.values.minute > 59 ||
-                formik.values.minute < 0 ||
-                formik.values.second > 59 ||
-                formik.values.second < 0) && (
+            {isLessThenOneSecond && (
                 <p className={Styles.error_message}>
-                    {`You can't type more than 59 secs, 59 mins or 99
-                            hours`}
+                    You need to specify at least 1 second or more
                 </p>
             )}
-
-            {serverErrors && (
-                <ul className={Styles.error_list}>
-                    {serverErrors.map((err) => (
-                        <li key={err.msg} className={Styles.error_message}>
-                            {err.msg}
-                        </li>
-                    ))}
-                </ul>
+            {isWrongTimeFormat && (
+                <p className={Styles.error_message}>
+                    You can't type more than 59 secs, 59 mins or 99 Hours
+                </p>
             )}
+            {serverErrors && errorList}
 
             <p className={Styles.status_text}>{resultMessage}</p>
 
@@ -215,23 +232,7 @@ const CreateTimer: FC = () => {
                 color='success'
                 size='large'
                 type='submit'
-                disabled={
-                    Boolean(formik.errors.label) ||
-                    Boolean(formik.errors.hour) ||
-                    Boolean(formik.errors.minute) ||
-                    Boolean(formik.errors.second) ||
-                    formik.values.hour > 99 ||
-                    formik.values.hour < 0 ||
-                    formik.values.minute > 59 ||
-                    formik.values.minute < 0 ||
-                    formik.values.second > 59 ||
-                    formik.values.second < 0 ||
-                    (!+formik.values.hour &&
-                        !+formik.values.minute &&
-                        !+formik.values.second) ||
-                    loading ||
-                    Boolean(serverErrors.length > 0)
-                }
+                disabled={isDisabledCreateBtn}
             >
                 {loading ? WhiteSpin : 'Create timer'}
             </Button>
@@ -239,4 +240,4 @@ const CreateTimer: FC = () => {
     );
 };
 
-export default CreateTimer;
+export { CreateTimer };

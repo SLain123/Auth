@@ -1,7 +1,6 @@
 import React, { useState, useEffect, FC, useCallback } from 'react';
 
 import { useControlTimer } from 'service/timers/ControlTimerService';
-import { Spinner } from '../spinner/Spinner';
 import { getCurrentTimer } from 'features/current_timer/currentTimerSlice';
 import { useAppSelector } from 'hooks';
 import { EditPanel } from './panels/EditPanel';
@@ -9,7 +8,6 @@ import { TimePanel } from './panels/TimePanel';
 import { PlayBtn } from './btns/PlayBtn';
 import { StopBtn } from './btns/StopBtn';
 import { EditBtn } from './btns/EditBtn';
-import { ErrorPanel } from 'components/ErrorPanel';
 
 import Styles from './Timer.module.scss';
 
@@ -20,7 +18,7 @@ export interface ITimerProps {
 
 const Timer: FC<ITimerProps> = ({ formTitle, extraChildren }) => {
     const currentTimer = useAppSelector(getCurrentTimer);
-    const { timer, isLoading, isError } = currentTimer;
+    const { timer } = currentTimer;
     const { _id, label, timeToEnd, restTime, total } = timer;
     const [isActive, setActive] = useState(Boolean(timeToEnd));
     const [isEditing, setEditing] = useState(false);
@@ -33,7 +31,6 @@ const Timer: FC<ITimerProps> = ({ formTitle, extraChildren }) => {
     );
 
     const { controlTimer } = useControlTimer();
-    const { GreenSpin } = Spinner();
 
     const changeEditStatus = useCallback((status: boolean) => {
         setEditing(status);
@@ -88,14 +85,6 @@ const Timer: FC<ITimerProps> = ({ formTitle, extraChildren }) => {
                 }
             });
     }, [total, restTime, timeToEnd]);
-
-    if (isLoading) {
-        return <div className={Styles.container}>{GreenSpin}</div>;
-    }
-
-    if (isError) {
-        return <ErrorPanel message="Timers wasn't dowload" />;
-    }
 
     return (
         <div className={Styles.container}>

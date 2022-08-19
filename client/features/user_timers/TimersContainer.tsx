@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import CreateTimer from './panels/CreateTimer';
+import { CreateTimer } from './panels/CreateTimer';
 import { DisplayLastTimer } from './panels/DisplayLastTimer';
 
 const TimersContainer: FC = () => {
@@ -11,4 +11,4 @@ const TimersContainer: FC = () => {
     );
 };
 
-export default TimersContainer;
+export { TimersContainer };
