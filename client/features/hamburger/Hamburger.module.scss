@@ -1,9 +1,10 @@
+@import '/styles/variables.scss';
+
 .hamburger {
     &_menu_btn {
         position: fixed;
         top: 6px;
         right: 6px;
-        padding: 10px;
         z-index: 3;
 
         & div {
@@ -51,7 +52,7 @@
         margin: 0;
         width: 200px;
         height: 100vh;
-        background: #34495e;
+        background: $mainColor;
         box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.08);
         z-index: 2;
         opacity: 1;

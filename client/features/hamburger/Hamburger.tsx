@@ -1,5 +1,5 @@
 import React, { useState, useEffect, FC } from 'react';
-import { HamburgerIcon } from 'react-hamburger-icon';
+import { Turn as HamburgerIcon } from 'hamburger-react';
 import Link from 'next/link';
 import { useCookies } from 'react-cookie';
 import { useScrollBlock } from 'hooks';
@@ -16,6 +16,9 @@ interface HamburgerI {
     navListAuth: NavListI[];
     navListGuest: NavListI[];
 }
+
+const OPEN_COLOR = 'white';
+const CLOSE_COLOR = 'rgba(82, 0, 255, 0.9)';
 
 const Hamburger: FC<HamburgerI> = ({
     isUserAuth,
@@ -34,8 +37,6 @@ const Hamburger: FC<HamburgerI> = ({
         location.href = '/login';
     };
 
-    const toggleMenu = () => () => setOpen(!isOpen);
-
     const closeMenu =
         () => (evt: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
             const elem = evt.target as HTMLDivElement;
@@ -51,7 +52,12 @@ const Hamburger: FC<HamburgerI> = ({
     return (
         <div className={Styles.hamburger_container}>
             <div className={`${Styles.hamburger_menu_btn} ${menuStyle}`}>
-                <HamburgerIcon open={isOpen} onClick={toggleMenu()} />
+                <HamburgerIcon
+                    toggled={isOpen}
+                    toggle={setOpen}
+                    color={isOpen ? OPEN_COLOR : CLOSE_COLOR}
+                    size={32}
+                />
             </div>
             <div
                 className={`${Styles.hamburger_nav_container} ${navStyle}`}

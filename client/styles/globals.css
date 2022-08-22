@@ -2,8 +2,16 @@ html,
 body {
   padding: 0;
   margin: 0;
-  font-family: Roboto, Oxygen,
-    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+  
+}
+
+@media screen and (min-width: 768px) {
+  body {
+    background: url("public/images/background.svg");
+    background-repeat: no-repeat;
+    background-position-y: 100%;
+    background-size: 22%;
+  }
 }
 
 a {
@@ -13,4 +21,23 @@ a {
 
 * {
   box-sizing: border-box;
+  font-family: 'Titillium Web', Arial, sans-serif;
+}
+
+@font-face {
+	font-family: 'Titillium Web';
+	font-style: normal;
+	font-weight: normal;
+	src: local('Titillium Web'),
+		url('public/fonts/TitilliumWeb-Regular.woff2') format('woff2'), 
+		url('public/fonts/TitilliumWeb-Regular.woff') format('woff'),
+}
+
+@font-face {
+	font-family: 'Titillium Web';
+	font-style: bold;
+	font-weight: bold;
+	src: local('Titillium Web'),
+		url('public/fonts/TitilliumWeb-Bold.woff2') format('woff2'), 
+		url('public/fonts/TitilliumWeb-Bold.woff') format('woff'),
 }
