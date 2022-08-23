@@ -15,10 +15,10 @@ const ErrorPanel: FC<IErrorPanel> = ({ message = 'Error!' }) => {
 
             <Button
                 variant='contained'
-                color='success'
                 size='large'
                 type='button'
                 onClick={() => location.reload()}
+                className={Styles.refresh_btn}
             >
                 Refresh page
             </Button>

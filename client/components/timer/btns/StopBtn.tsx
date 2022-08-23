@@ -44,7 +44,7 @@ const StopBtn: FC<IPlayBtn> = ({ changeTime, changeActiveStatus }) => {
             {detailLoading.reset ? (
                 curcleSpin(21, 'white')
             ) : (
-                <Image width={30} height={30} src={stopIcon} alt='stop' />
+                <Image width={35} height={35} src={stopIcon} alt='stop' />
             )}
         </button>
     );

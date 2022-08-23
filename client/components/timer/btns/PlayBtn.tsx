@@ -43,8 +43,8 @@ const PlayBtn: FC<IPlayBtn> = ({ isActive, changeActiveStatus }) => {
                 curcleSpin(21, 'white')
             ) : (
                 <Image
-                    width={isActive ? 16 : 26}
-                    height={26}
+                    width={isActive ? 32 : 36}
+                    height={isActive ? 36 : 40}
                     src={isActive ? pauseIcon : playIcon}
                     alt='play'
                 />

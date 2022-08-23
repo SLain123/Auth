@@ -12,11 +12,10 @@ import { EditBtn } from './btns/EditBtn';
 import Styles from './Timer.module.scss';
 
 export interface ITimerProps {
-    formTitle?: string;
     extraChildren?: string | React.ReactElement | React.ReactNode;
 }
 
-const Timer: FC<ITimerProps> = ({ formTitle, extraChildren }) => {
+const Timer: FC<ITimerProps> = ({ extraChildren }) => {
     const currentTimer = useAppSelector(getCurrentTimer);
     const { timer } = currentTimer;
     const { _id, label, timeToEnd, restTime, total } = timer;
@@ -96,11 +95,7 @@ const Timer: FC<ITimerProps> = ({ formTitle, extraChildren }) => {
                     time={time}
                 />
             ) : (
-                <div>
-                    {formTitle && (
-                        <h3 className={Styles.timer_title}>{formTitle}</h3>
-                    )}
-                    <p className={Styles.timer_label}>{label}</p>
+                <div className={Styles.content}>
                     <TimePanel time={time} />
 
                     <div className={Styles.timer_control_panel}>

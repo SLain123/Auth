@@ -35,7 +35,7 @@ const EditBtn: FC<IEditBtn> = ({ changeEditStatus, isActive }) => {
             }}
             disabled={!isOwner()}
         >
-            <Image width={16} height={16} src={editIcon} alt='edit' />
+            <Image width={45} height={45} src={editIcon} alt='edit' />
         </button>
     );
 };

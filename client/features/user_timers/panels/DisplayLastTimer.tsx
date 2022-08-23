@@ -1,4 +1,4 @@
-import React, { useEffect, FC } from 'react';
+import React, { useEffect, FC, useState } from 'react';
 import Link from 'next/link';
 
 import { Timer } from 'components/timer';
@@ -27,6 +27,7 @@ const DisplayLastTimer: FC = () => {
         isError: isErrorTimers,
         timerList,
     } = timersState;
+    const [label, setLabel] = useState('');
 
     const { getTimer } = useGetCurrentTimer();
 
@@ -53,6 +54,7 @@ const DisplayLastTimer: FC = () => {
                         dispatch(setErrorStatus(true));
                     } else {
                         dispatch(saveSingleTimer(result.timer));
+                        setLabel(result.timer.label);
                     }
                     dispatch(setLoadingStatus(false));
                 });
@@ -70,20 +72,29 @@ const DisplayLastTimer: FC = () => {
     if (!timerList.length) {
         return (
             <div
-                className={`${Styles.form} ${Styles.form_success_right} ${Styles.no_timers}`}
+                className={`${Styles.container} ${Styles.container_success_right} ${Styles.no_timers}`}
             >
-                <p> {`You don't have any timers.`}</p>
-                <p>Create a new timer using the left panel.</p>
+                <div className={Styles.form_wrapper}>
+                    <div
+                        className={`${Styles.form_content} ${Styles.no_timers_text_wrapper}`}
+                    >
+                        <p> You don't have any timers.</p>
+                        <p>Create a new timer using the left panel.</p>
+                    </div>
+                </div>
             </div>
         );
     }
 
     return (
-        <div className={`${Styles.form} ${Styles.form_success_right}`}>
-            <Timer
-                formTitle='Your last active timer:'
-                extraChildren={linkBlock}
-            />
+        <div
+            className={`${Styles.container} ${Styles.container_success_right}`}
+        >
+            <h3 className={Styles.title}>Your last active timer:</h3>
+            <div className={Styles.form_wrapper}>
+                {label && <h4 className={Styles.form_label}>{label}</h4>}
+                <Timer extraChildren={linkBlock} />
+            </div>
         </div>
     );
 };

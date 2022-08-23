@@ -1,9 +1,33 @@
+@import '/styles/variables.scss';
+
 .template {
     &_container {
         min-width: 100%;
+    }
 
-        & label {
-            z-index: 0;
-        }
+    &_title {
+        color: $mainColor;
+        font-size: 16px;
+        line-height: 24px;
+    }
+
+    &_list {
+        display: flex;
+        justify-content: space-between;
+        flex-flow: wrap;
+    }
+
+    &_btn {
+        padding: 9px 6px;
+        font-weight: 400;
+        font-size: 16px;
+        line-height: 24px;
+        background: $mainColor;
+        border-radius: 10px;
+        border: none;
+        color: $white;
+        min-width: 78px;
+        flex-basis: 20.5%;
+        margin-bottom: 8px;
     }
 }

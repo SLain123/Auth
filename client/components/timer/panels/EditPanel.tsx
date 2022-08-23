@@ -141,20 +141,21 @@ const EditPanel: FC<IEditPanel> = ({ _id, label, time, changeEditStatus }) => {
                 label='Timer name'
                 variant='outlined'
                 fullWidth
-                margin='dense'
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 error={formik.touched.label && Boolean(formik.errors.label)}
                 helperText={formik.touched.label && formik.errors.label}
                 disabled={loadingChange}
                 defaultValue={label}
+                className={Styles.input_title}
+                size='small'
             />
             <h4 className={Styles.subtitle}>
                 Specify the required time before completion:
             </h4>
             <div className={Styles.time_container}>
                 <TextField
-                    className={Styles.time_input}
+                    className={Styles.input_num}
                     name='hour'
                     id='hour'
                     label='Hours'
@@ -170,7 +171,7 @@ const EditPanel: FC<IEditPanel> = ({ _id, label, time, changeEditStatus }) => {
                 ) : null}
                 <span className={Styles.time_dotted}>:</span>
                 <TextField
-                    className={Styles.time_input}
+                    className={Styles.input_num}
                     name='minute'
                     id='minute'
                     label='Minutes'
@@ -186,7 +187,7 @@ const EditPanel: FC<IEditPanel> = ({ _id, label, time, changeEditStatus }) => {
                 />
                 <span className={Styles.time_dotted}>:</span>
                 <TextField
-                    className={Styles.time_input}
+                    className={Styles.input_num}
                     name='second'
                     id='second'
                     label='Seconds'
@@ -230,7 +231,6 @@ const EditPanel: FC<IEditPanel> = ({ _id, label, time, changeEditStatus }) => {
             <Button
                 className={Styles.change_btn}
                 variant='contained'
-                color='success'
                 size='large'
                 type='submit'
                 disabled={isDisabledSaveBtn}
@@ -240,8 +240,6 @@ const EditPanel: FC<IEditPanel> = ({ _id, label, time, changeEditStatus }) => {
             <Button
                 className={Styles.back_btn}
                 variant='contained'
-                color='info'
-                size='small'
                 type='button'
                 onClick={() => changeEditStatus(false)}
             >

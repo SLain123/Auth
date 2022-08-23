@@ -1,9 +1,13 @@
-$shadow: rgb(214, 205, 205);
-$blue: #34495e;
-$light_blue: #628ab2;
+@import '/styles/variables.scss';
 
 .container {
     width: 100%;
+}
+
+.content {
+    display: flex;
+    flex-flow: column;
+    padding: 60px 24px;
 }
 
 .title {
@@ -11,13 +15,18 @@ $light_blue: #628ab2;
     font-weight: 700;
     text-align: center;
     margin-top: 0;
+    color: $mainColor;
 }
 
 .subtitle {
-    font-size: 14px;
-    text-align: center;
-    font-weight: 500;
-    margin: 24px 0 16px 0;
+    font-size: 16px;
+    line-height: 24px;
+    color: $mainColor;
+
+    @media screen and (max-width: 767px) {
+        font-size: 12px;
+        margin: 12px 0;
+    }
 }
 
 .time {
@@ -27,15 +36,16 @@ $light_blue: #628ab2;
         align-items: center;
         width: 100%;
         margin-bottom: 24px;
-    }
 
-    &_input {
-        max-width: 66px;
+        & label {
+            z-index: 0;
+        }
     }
 
     &_dotted {
-        font-size: 24px;
+        font-size: 32px;
         font-weight: 700;
+        color: $mainColor;
     }
 }
 
@@ -69,17 +79,33 @@ $light_blue: #628ab2;
 }
 
 .change_btn {
-    margin-top: 20px;
+    margin-top: 40px;
+    background: $mainColor;
+    border-radius: 10px;
+
+    &:hover {
+        background: $mainColor;
+        opacity: 0.9;
+    }
 }
 
 .back_btn {
-    margin-top: 8px;
+    margin-top: 16px;
+    background: $mainColor;
+    opacity: 0.7;
+    border-radius: 10px;
+
+    &:hover {
+        background: $mainColor;
+        opacity: 0.6;
+    }
 }
 
 .edit_form {
     display: flex;
     flex-flow: column;
     justify-content: center;
+    padding: 60px 24px;
 }
 
 .timer {
@@ -90,64 +116,92 @@ $light_blue: #628ab2;
         margin-top: 0;
     }
 
-    &_label {
-        align-self: flex-start;
-        font-size: 16px;
-        margin: 0;
-        text-align: center;
-        background-color: $blue;
-        width: 100%;
-        border-top-left-radius: 4px;
-        border-top-right-radius: 4px;
-        padding: 4px 8px;
-        color: white;
-        user-select: none;
-    }
-
     &_time_container {
-        border: 1px solid $blue;
-        padding: 12px 16px;
         border-bottom-left-radius: 4px;
         border-bottom-right-radius: 4px;
         display: flex;
-        justify-content: space-evenly;
+        justify-content: center;
+        font-weight: 400;
+        font-size: 52px;
+        line-height: 79px;
+        color: $mainColor;
     }
 
     &_time_count {
-        font-size: 18px;
-        font-weight: 700;
         user-select: none;
     }
 
     &_control {
         &_panel {
-            width: 100%;
-            margin-top: 24px;
+            width: 85%;
+            height: 60px;
+            margin: 40px auto;
             display: flex;
-            justify-content: space-between;
+            justify-content: space-evenly;
+            align-items: center;
+            background: $mainColor;
+            border-radius: 10px;
         }
 
         &_btn {
-            width: 24%;
-            background: $light_blue;
+            width: 32%;
+            background: none;
             height: 36px;
             border-radius: 4px;
             border: none;
             cursor: pointer;
-            opacity: 0.9;
             display: flex;
             justify-content: center;
             align-items: center;
 
             &:hover {
-                opacity: 1;
+                opacity: 0.8;
             }
 
             &:disabled {
-                background-color: gray;
-                opacity: 0.4;
                 cursor: not-allowed;
             }
+        }
+    }
+}
+
+.input {
+    &_title {
+        & label {
+            font-size: 16px;
+            line-height: 24px;
+            color: $mainColor;
+            opacity: 0.4;
+        }
+
+        & fieldset {
+            border-color: $mainColor;
+            border-radius: 10px;
+        }
+
+        & input {
+            color: $mainColor;
+        }
+    }
+
+    &_num {
+        max-width: 80px;
+
+        & label {
+            color: $mainColor;
+            opacity: 0.4;
+        }
+
+        & fieldset {
+            border-color: $mainColor;
+            border-radius: 10px;
+        }
+
+        & input {
+            color: $mainColor;
+            font-size: 32px;
+            line-height: 49px;
+            padding-left: 20px;
         }
     }
 }
