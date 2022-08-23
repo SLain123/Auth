@@ -10,6 +10,7 @@ import { getAuthSelector } from 'features/auth/authSlice';
 import { Spinner } from 'components/spinner';
 import { useWindowDimensions, useAppSelector } from 'hooks';
 import { UserAvatar } from './UserAvatar';
+import { FormWrapper } from 'components/form_wrapper';
 
 import Styles from './Profile.module.scss';
 
@@ -93,47 +94,58 @@ const Profile: FC = () => {
 
     return (
         <div className={Styles.container}>
-            <UserAvatar
-                avatarPreview={avatarPreview}
-                saveAvatar={saveAvatar}
-                saveAvatarPrewiev={saveAvatarPrewiev}
-                nickName={formik.values.nickName}
-            />
+            <FormWrapper title='Change user profile:'>
+                <div className={Styles.content}>
+                    <UserAvatar
+                        avatarPreview={avatarPreview}
+                        saveAvatar={saveAvatar}
+                        saveAvatarPrewiev={saveAvatarPrewiev}
+                        nickName={formik.values.nickName}
+                    />
 
-            <form className={Styles.form} onSubmit={formik.handleSubmit}>
-                <ul className={Styles.error_list}>{errorList}</ul>
-                <TextField
-                    name='nickName'
-                    id='nickName'
-                    label='Nick name'
-                    variant='outlined'
-                    fullWidth
-                    margin='dense'
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    error={
-                        formik.touched.nickName &&
-                        Boolean(formik.errors.nickName)
-                    }
-                    helperText={
-                        formik.touched.nickName && formik.errors.nickName
-                    }
-                    disabled={loading}
-                    value={formik.values.nickName}
-                    size={inputSize}
-                />
-                <p className={Styles.status_text}>{resultMessage}</p>
-                <Button
-                    className={Styles.btn}
-                    variant='contained'
-                    color='success'
-                    size={btnSize}
-                    type='submit'
-                    disabled={Boolean(formik.errors.nickName) || loading}
-                >
-                    {loading ? WhiteSpin : 'Change profile'}
-                </Button>
-            </form>
+                    <form
+                        className={Styles.form}
+                        onSubmit={formik.handleSubmit}
+                    >
+                        <ul className={Styles.error_list}>{errorList}</ul>
+                        <TextField
+                            name='nickName'
+                            id='nickName'
+                            label='Nick name'
+                            variant='outlined'
+                            fullWidth
+                            margin='dense'
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            error={
+                                formik.touched.nickName &&
+                                Boolean(formik.errors.nickName)
+                            }
+                            helperText={
+                                formik.touched.nickName &&
+                                formik.errors.nickName
+                            }
+                            disabled={loading}
+                            value={formik.values.nickName}
+                            size={inputSize}
+                            className={Styles.input_title}
+                        />
+                        <p className={Styles.status_text}>{resultMessage}</p>
+                        <Button
+                            className={Styles.btn}
+                            variant='contained'
+                            color='success'
+                            size={btnSize}
+                            type='submit'
+                            disabled={
+                                Boolean(formik.errors.nickName) || loading
+                            }
+                        >
+                            {loading ? WhiteSpin : 'Change profile'}
+                        </Button>
+                    </form>
+                </div>
+            </FormWrapper>
         </div>
     );
 };

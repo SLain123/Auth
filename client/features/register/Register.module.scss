@@ -1,10 +1,8 @@
-$shadow: rgb(214, 205, 205);
+@import '/styles/variables.scss';
 
 .container {
     width: 30%;
     border-radius: 8px;
-    box-shadow: 1px 1px 10px $shadow, -1px 1px 10px $shadow,
-        1px -1px 10px $shadow, -1px -1px 10px $shadow;
     position: absolute;
     top: 50%;
     left: 50%;
@@ -18,6 +16,12 @@ $shadow: rgb(214, 205, 205);
     @media screen and (max-width: 767px) {
         padding: 6px 14px;
     }
+}
+
+.content {
+    display: flex;
+    flex-flow: column;
+    width: 100%;
 }
 
 .title {
@@ -34,6 +38,17 @@ $shadow: rgb(214, 205, 205);
 
 .login_btn {
     margin-top: 20px;
+    background: $mainColor;
+    width: 100%;
+    border-radius: 10px;
+    font-size: 16px;
+    line-height: 18px;
+    padding: 13px 0;
+
+    &:hover {
+        background: $mainColor;
+        opacity: 0.9;
+    }
 
     @media screen and (max-width: 767px) {
         margin-top: 10px;
@@ -44,12 +59,14 @@ $shadow: rgb(214, 205, 205);
     &_list {
         padding: 0;
         margin: 0;
+        list-style: none;
     }
 
     &_text {
         color: rgb(172, 41, 41);
         margin-bottom: 5px;
         align-self: flex-start;
+        text-align: center;
     }
 }
 
@@ -57,4 +74,25 @@ $shadow: rgb(214, 205, 205);
     color: #2e7d32;
     margin: 0;
     margin-top: 15px;
+    text-align: center;
+}
+
+.input {
+    &_title {
+        & label {
+            font-size: 16px;
+            line-height: 24px;
+            color: $mainColor;
+            opacity: 0.4;
+        }
+
+        & fieldset {
+            border-color: $mainColor;
+            border-radius: 10px;
+        }
+
+        & input {
+            color: $mainColor !important;
+        }
+    }
 }

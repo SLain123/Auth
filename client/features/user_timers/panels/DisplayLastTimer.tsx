@@ -14,6 +14,7 @@ import {
     saveSingleTimer,
 } from 'features/current_timer/currentTimerSlice';
 import { ErrorPanel } from 'components/error_panel';
+import { FormWrapper } from 'components/form_wrapper';
 
 import Styles from '../Timers.module.scss';
 
@@ -74,14 +75,12 @@ const DisplayLastTimer: FC = () => {
             <div
                 className={`${Styles.container} ${Styles.container_success_right} ${Styles.no_timers}`}
             >
-                <div className={Styles.form_wrapper}>
-                    <div
-                        className={`${Styles.form_content} ${Styles.no_timers_text_wrapper}`}
-                    >
+                <FormWrapper height={642}>
+                    <div className={Styles.no_timers_text_wrapper}>
                         <p> You don't have any timers.</p>
                         <p>Create a new timer using the left panel.</p>
                     </div>
-                </div>
+                </FormWrapper>
             </div>
         );
     }
@@ -91,10 +90,9 @@ const DisplayLastTimer: FC = () => {
             className={`${Styles.container} ${Styles.container_success_right}`}
         >
             <h3 className={Styles.title}>Your last active timer:</h3>
-            <div className={Styles.form_wrapper}>
-                {label && <h4 className={Styles.form_label}>{label}</h4>}
+            <FormWrapper height={642} title={label}>
                 <Timer extraChildren={linkBlock} />
-            </div>
+            </FormWrapper>
         </div>
     );
 };

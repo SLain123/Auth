@@ -15,6 +15,7 @@ import {
 import { Spinner } from 'components/spinner';
 import { TemplatesList } from 'components/templates_list';
 import { NoAuthWarning } from './NoAuthWarning';
+import { FormWrapper } from 'components/form_wrapper';
 
 import Styles from '../Timers.module.scss';
 
@@ -138,11 +139,8 @@ const CreateTimer: FC = () => {
     return (
         <div className={`${Styles.container} ${Styles.container_success_left}`}>
             <h3 className={Styles.title}>Create new timer:</h3>
-            <div className={Styles.form_wrapper}>
-                <form
-                    onSubmit={formik.handleSubmit}
-                    className={Styles.form_content}
-                >
+            <FormWrapper height={642}>
+                <form onSubmit={formik.handleSubmit}>
                     <TextField
                         name='label'
                         id='label'
@@ -251,7 +249,7 @@ const CreateTimer: FC = () => {
                         {loading ? WhiteSpin : 'Create timer'}
                     </Button>
                 </form>
-            </div>
+            </FormWrapper>
         </div>
     );
 };

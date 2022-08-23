@@ -52,65 +52,6 @@
     }
 }
 
-.form {
-    &_wrapper {
-        border-radius: 10px;
-        border: 1px solid $mainColor;
-        border-top: none;
-        display: flex;
-        flex-flow: column;
-        align-items: center;
-        background: $white;
-        min-height: 642px;
-        position: relative;
-
-        &:before {
-            content: '';
-            width: 100%;
-            height: 42px;
-            background: $mainColor;
-            border-top-left-radius: 10px;
-            border-top-right-radius: 10px;
-            padding: 0;
-            margin: 0;
-            border-left: 1px solid $mainColor;
-            border-right: 1px solid $mainColor;
-        }
-
-        &_mini {
-            @extend .form_wrapper;
-            min-height: 0;
-        }
-    }
-
-    &_content {
-        padding: 24px;
-
-        &_mini {
-            padding: 16px;
-            display: flex;
-            flex-flow: column;
-            color: $mainColor;
-        }
-
-        @media screen and (max-width: 767px) {
-            left: 0;
-            padding: 12px;
-        }
-    }
-
-    &_label {
-        position: absolute;
-        top: 10px;
-        left: 18px;
-        font-weight: 400;
-        font-size: 16px;
-        line-height: 24px;
-        color: $white;
-        margin: 0;
-    }
-}
-
 .title {
     font-size: 29px;
     line-height: 49px;
@@ -221,12 +162,19 @@
     }
 }
 
-.info_message {
-    text-align: center;
-    font-size: 16px;
-    letter-spacing: 0.7px;
-    line-height: 28px;
-    margin-bottom: 24px;
+.info {
+    &_container {
+        display: flex;
+        flex-flow: column;
+    }
+
+    &_message {
+        text-align: center;
+        font-size: 16px;
+        letter-spacing: 0.7px;
+        line-height: 28px;
+        margin-bottom: 24px;
+    }
 }
 
 .login_btn {

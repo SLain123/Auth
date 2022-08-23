@@ -24,10 +24,10 @@ const useRegisterService = () => {
                 password,
                 nickName,
             }).then((data) => {
-                data.errors
+                data?.errors
                     ? setServerErrors(data.errors)
                     : setServerErrors([]);
-                setResultMessage(data.message);
+                data?.message && setResultMessage(data.message);
             });
         },
         [],

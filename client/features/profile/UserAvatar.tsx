@@ -44,12 +44,7 @@ const UserAvatar: FC<IUserAvatar> = ({
 
     const avatarIcon = avatarPreview ? (
         <div className={Styles.avatar_photo}>
-            <Image
-                src={avatarPreview}
-                alt='user_photo'
-                width={94}
-                height={94}
-            />
+            <Image src={avatarPreview} alt='user_photo' layout='fill' />
         </div>
     ) : (
         <Avatar
@@ -62,7 +57,6 @@ const UserAvatar: FC<IUserAvatar> = ({
 
     return (
         <>
-            <h3 className={Styles.title}>Change user profile:</h3>
             {avatarIcon}
             <input
                 accept='image/*'

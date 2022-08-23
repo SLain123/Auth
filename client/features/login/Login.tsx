@@ -11,6 +11,7 @@ import { useLoginService } from 'service/LoginService';
 import { Spinner } from 'components/spinner';
 import { getAuthSelector } from '../auth/authSlice';
 import { useWindowDimensions, useAppSelector, useTokenCheck } from 'hooks';
+import { FormWrapper } from 'components/form_wrapper';
 
 import Styles from './Login.module.scss';
 
@@ -72,59 +73,68 @@ const Login = () => {
     }
 
     return (
-        <form className={Styles.container} onSubmit={formik.handleSubmit}>
-            <h3 className={Styles.title}>Login</h3>
-            <ul className={Styles.error_list}>{errorList}</ul>
-            <TextField
-                name='email'
-                id='email'
-                label='Email'
-                variant='outlined'
-                fullWidth
-                margin='dense'
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                error={formik.touched.email && Boolean(formik.errors.email)}
-                helperText={formik.touched.email && formik.errors.email}
-                disabled={loading}
-                size={inputSize}
-            />
-            <TextField
-                name='password'
-                id='password'
-                label='Password'
-                variant='outlined'
-                fullWidth
-                type='password'
-                margin='dense'
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                error={
-                    formik.touched.password && Boolean(formik.errors.password)
-                }
-                helperText={formik.touched.password && formik.errors.password}
-                disabled={loading}
-                size={inputSize}
-            />
-            <Link href='/reg'>
-                <a className={Styles.link_reg}>Register now</a>
-            </Link>
-            <p className={Styles.status_text}>{resultMessage}</p>
-            <Button
-                className={Styles.login_btn}
-                variant='contained'
-                color='success'
-                type='submit'
-                disabled={
-                    Boolean(formik.errors.email) ||
-                    Boolean(formik.errors.password) ||
-                    loading
-                }
-                size={btnSize}
-            >
-                {loading ? WhiteSpin : 'Login'}
-            </Button>
-        </form>
+        <div className={Styles.container}>
+            <FormWrapper title='Login'>
+                <form onSubmit={formik.handleSubmit} className={Styles.content}>
+                    <ul className={Styles.error_list}>{errorList}</ul>
+                    <TextField
+                        name='email'
+                        id='email'
+                        label='Email'
+                        variant='outlined'
+                        fullWidth
+                        margin='dense'
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        error={
+                            formik.touched.email && Boolean(formik.errors.email)
+                        }
+                        helperText={formik.touched.email && formik.errors.email}
+                        disabled={loading}
+                        size={inputSize}
+                        className={Styles.input_title}
+                    />
+                    <TextField
+                        name='password'
+                        id='password'
+                        label='Password'
+                        variant='outlined'
+                        fullWidth
+                        type='password'
+                        margin='dense'
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        error={
+                            formik.touched.password &&
+                            Boolean(formik.errors.password)
+                        }
+                        helperText={
+                            formik.touched.password && formik.errors.password
+                        }
+                        disabled={loading}
+                        size={inputSize}
+                        className={Styles.input_title}
+                    />
+                    <Link href='/reg'>
+                        <a className={Styles.link_reg}>Registration</a>
+                    </Link>
+                    <p className={Styles.status_text}>{resultMessage}</p>
+                    <Button
+                        className={Styles.login_btn}
+                        variant='contained'
+                        type='submit'
+                        disabled={
+                            Boolean(formik.errors.email) ||
+                            Boolean(formik.errors.password) ||
+                            loading
+                        }
+                        size={btnSize}
+                    >
+                        {loading ? WhiteSpin : 'Login'}
+                    </Button>
+                </form>
+            </FormWrapper>
+        </div>
     );
 };
 

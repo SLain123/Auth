@@ -10,6 +10,7 @@ import { useRegisterService } from 'service/RegisterService';
 import { getAuthSelector } from '../auth/authSlice';
 import { Spinner } from 'components/spinner';
 import { useWindowDimensions, useAppSelector } from 'hooks';
+import { FormWrapper } from 'components/form_wrapper';
 
 import Styles from './Register.module.scss';
 
@@ -75,95 +76,109 @@ const Register = () => {
     }
 
     return (
-        <form className={Styles.container} onSubmit={formik.handleSubmit}>
-            <h3 className={Styles.title}>Registration</h3>
-            <ul className={Styles.error_list}>{errorList}</ul>
-            <TextField
-                name='email'
-                id='email'
-                label='Email'
-                variant='outlined'
-                fullWidth
-                margin='dense'
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                error={formik.touched.email && Boolean(formik.errors.email)}
-                helperText={formik.touched.email && formik.errors.email}
-                disabled={loading}
-                size={inputSize}
-            />
-            <TextField
-                name='password'
-                id='password'
-                label='Password'
-                variant='outlined'
-                fullWidth
-                type='password'
-                margin='dense'
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                error={
-                    formik.touched.password && Boolean(formik.errors.password)
-                }
-                helperText={formik.touched.password && formik.errors.password}
-                disabled={loading}
-                size={inputSize}
-            />
-            <TextField
-                name='repeatPassword'
-                id='outlined-basic'
-                label='Repeat password'
-                variant='outlined'
-                fullWidth
-                type='password'
-                margin='dense'
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                error={
-                    formik.touched.repeatPassword &&
-                    Boolean(formik.errors.repeatPassword)
-                }
-                helperText={
-                    formik.touched.repeatPassword &&
-                    formik.errors.repeatPassword
-                }
-                disabled={loading}
-                size={inputSize}
-            />
-            <TextField
-                name='nickName'
-                id='nickName'
-                label='Nick name'
-                variant='outlined'
-                fullWidth
-                margin='dense'
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                error={
-                    formik.touched.nickName && Boolean(formik.errors.nickName)
-                }
-                helperText={formik.touched.nickName && formik.errors.nickName}
-                disabled={loading}
-                size={inputSize}
-            />
-            <p className={Styles.status_text}>{resultMessage}</p>
-            <Button
-                className={Styles.login_btn}
-                variant='contained'
-                color='success'
-                type='submit'
-                disabled={
-                    Boolean(formik.errors.email) ||
-                    Boolean(formik.errors.password) ||
-                    Boolean(formik.errors.repeatPassword) ||
-                    Boolean(formik.errors.nickName) ||
-                    loading
-                }
-                size={btnSize}
-            >
-                {loading ? WhiteSpin : 'Send register data'}
-            </Button>
-        </form>
+        <div className={Styles.container}>
+            <FormWrapper title='Registration'>
+                <form onSubmit={formik.handleSubmit} className={Styles.content}>
+                    <ul className={Styles.error_list}>{errorList}</ul>
+                    <TextField
+                        name='email'
+                        id='email'
+                        label='Email'
+                        variant='outlined'
+                        fullWidth
+                        margin='dense'
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        error={
+                            formik.touched.email && Boolean(formik.errors.email)
+                        }
+                        helperText={formik.touched.email && formik.errors.email}
+                        disabled={loading}
+                        size={inputSize}
+                        className={Styles.input_title}
+                    />
+                    <TextField
+                        name='password'
+                        id='password'
+                        label='Password'
+                        variant='outlined'
+                        fullWidth
+                        type='password'
+                        margin='dense'
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        error={
+                            formik.touched.password &&
+                            Boolean(formik.errors.password)
+                        }
+                        helperText={
+                            formik.touched.password && formik.errors.password
+                        }
+                        disabled={loading}
+                        size={inputSize}
+                        className={Styles.input_title}
+                    />
+                    <TextField
+                        name='repeatPassword'
+                        id='outlined-basic'
+                        label='Repeat password'
+                        variant='outlined'
+                        fullWidth
+                        type='password'
+                        margin='dense'
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        error={
+                            formik.touched.repeatPassword &&
+                            Boolean(formik.errors.repeatPassword)
+                        }
+                        helperText={
+                            formik.touched.repeatPassword &&
+                            formik.errors.repeatPassword
+                        }
+                        disabled={loading}
+                        size={inputSize}
+                        className={Styles.input_title}
+                    />
+                    <TextField
+                        name='nickName'
+                        id='nickName'
+                        label='Nick name'
+                        variant='outlined'
+                        fullWidth
+                        margin='dense'
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        error={
+                            formik.touched.nickName &&
+                            Boolean(formik.errors.nickName)
+                        }
+                        helperText={
+                            formik.touched.nickName && formik.errors.nickName
+                        }
+                        disabled={loading}
+                        size={inputSize}
+                        className={Styles.input_title}
+                    />
+                    <p className={Styles.status_text}>{resultMessage}</p>
+                    <Button
+                        className={Styles.login_btn}
+                        variant='contained'
+                        type='submit'
+                        disabled={
+                            Boolean(formik.errors.email) ||
+                            Boolean(formik.errors.password) ||
+                            Boolean(formik.errors.repeatPassword) ||
+                            Boolean(formik.errors.nickName) ||
+                            loading
+                        }
+                        size={btnSize}
+                    >
+                        {loading ? WhiteSpin : 'Send register data'}
+                    </Button>
+                </form>
+            </FormWrapper>
+        </div>
     );
 };
 
