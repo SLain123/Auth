@@ -1,3 +1,5 @@
+@import '/styles/variables.scss';
+
 .center {
     position: absolute;
     top: 50%;
@@ -7,7 +9,6 @@
 
 .all_container {
     margin: 60px 10px 10px 10px;
-    z-index: 2;
     position: relative;
 
     @media screen and (max-width: 767px) {
@@ -17,11 +18,11 @@
 }
 
 .active {
-    color: #2e7d32;
+    color: $mainColor;
 }
 
 .unactive {
-    color: #d63e3e;
+    opacity: 0.4;
 }
 
 .problem {
@@ -56,5 +57,36 @@
 
     &:hover {
         opacity: 1;
+    }
+}
+
+.table {
+    box-shadow: none;
+    border-bottom: 1px solid $mainColor;
+    border-radius: 0;
+    color: $mainColor;
+
+    &_head th {
+        background: $tableHead;
+        border-bottom: 1px solid $mainColor;
+        color: $mainColor;
+
+        &:first-child {
+            border-top-left-radius: 10px;
+        }
+
+        &:last-child {
+            border-top-right-radius: 10px;
+        }
+    }
+
+    &_body td,
+    &_body th {
+        color: $mainColor;
+        border-bottom: 1px solid $mainColor;
+    }
+
+    &_pagination {
+        color: $mainColor;
     }
 }

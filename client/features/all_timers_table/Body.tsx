@@ -67,7 +67,7 @@ const Body: FC<IBody> = ({ page, rowsPerPage, handleLoadingStatus }) => {
         };
 
     return (
-        <TableBody>
+        <TableBody className={Styles.table_body}>
             {timerList
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map(({ _id, label, total, timeToEnd }) => {
@@ -87,8 +87,8 @@ const Body: FC<IBody> = ({ page, rowsPerPage, handleLoadingStatus }) => {
                             return (
                                 <div className={Styles.problem_container}>
                                     <Image
-                                        width={20}
-                                        height={20}
+                                        width={28}
+                                        height={40}
                                         src={problemIcon}
                                         alt='some problem'
                                     />
@@ -100,8 +100,8 @@ const Body: FC<IBody> = ({ page, rowsPerPage, handleLoadingStatus }) => {
                         } else {
                             return (
                                 <Image
-                                    width={20}
-                                    height={20}
+                                    width={28}
+                                    height={40}
                                     src={binIcon}
                                     alt='bin'
                                 />
@@ -143,8 +143,8 @@ const Body: FC<IBody> = ({ page, rowsPerPage, handleLoadingStatus }) => {
                                 <Link href={`/timer/${_id}`}>
                                     <a className={Styles.open_btn}>
                                         <Image
-                                            width={24}
-                                            height={24}
+                                            width={18}
+                                            height={18}
                                             src={linkIcon}
                                             alt='link'
                                         />

@@ -54,7 +54,7 @@ const AllTimersTable: FC = () => {
 
     return (
         <div className={Styles.all_container}>
-            <TableContainer component={Paper}>
+            <TableContainer component={Paper} className={Styles.table}>
                 <Table
                     stickyHeader
                     sx={{ minWidth: 450 }}
@@ -76,6 +76,7 @@ const AllTimersTable: FC = () => {
                 page={page}
                 onPageChange={handleChangePage}
                 onRowsPerPageChange={handleChangeRowsPerPage}
+                className={Styles.table_pagination}
             />
         </div>
     );
