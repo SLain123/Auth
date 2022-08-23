@@ -1,4 +1,4 @@
-$shadow: rgb(214, 205, 205);
+@import '/styles/variables.scss';
 
 .single {
     &_container {
@@ -15,16 +15,10 @@ $shadow: rgb(214, 205, 205);
             width: 310px;
             padding: 20px;
             border-radius: 8px;
-            box-shadow: 1px 1px 10px $shadow, -1px 1px 10px $shadow,
-                1px -1px 10px $shadow, -1px -1px 10px $shadow;
         }
 
         &_timer {
-            width: 310px;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 1px 1px 10px $shadow, -1px 1px 10px $shadow,
-                1px -1px 10px $shadow, -1px -1px 10px $shadow;
+            width: 340px;
         }
     }
 

@@ -13,7 +13,7 @@ import {
     setErrorStatus,
     saveSingleTimer,
 } from 'features/current_timer/currentTimerSlice';
-import { ErrorPanel } from 'components/ErrorPanel';
+import { ErrorPanel } from 'components/error_panel';
 
 import Styles from '../Timers.module.scss';
 
