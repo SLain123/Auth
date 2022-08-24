@@ -26,7 +26,7 @@ const PlayBtn: FC<IPlayBtn> = ({ isActive, changeActiveStatus }) => {
     const [cookies] = useCookies(['authData']);
     const isOwner = () =>
         cookies?.authData ? cookies.authData?.userId === ownerId : false;
-    const { curcleSpin } = Spinner();
+    const { CurcleSpin } = Spinner();
 
     return (
         <button
@@ -40,7 +40,7 @@ const PlayBtn: FC<IPlayBtn> = ({ isActive, changeActiveStatus }) => {
             }}
         >
             {detailLoading.playPause || detailLoading.reset ? (
-                curcleSpin(21, 'white')
+                CurcleSpin(21, 'white')
             ) : (
                 <Image
                     width={isActive ? 32 : 36}

@@ -36,7 +36,7 @@ const Body: FC<IBody> = ({ page, rowsPerPage, handleLoadingStatus }) => {
     const { refreshTimers } = useRefreshTimers();
     const { removeTimer } = useRemoveTimer();
 
-    const { curcleSpin } = Spinner();
+    const { CurcleSpin } = Spinner();
 
     const displayDefaultError = () => {
         setServerErrors([
@@ -82,7 +82,7 @@ const Body: FC<IBody> = ({ page, rowsPerPage, handleLoadingStatus }) => {
 
                     const getBtnContent = () => {
                         if (currentActiveItem === _id) {
-                            return curcleSpin(20, 'black');
+                            return CurcleSpin(20, 'black');
                         } else if (serverErrors && currentActiveItem === _id) {
                             return (
                                 <div className={Styles.problem_container}>

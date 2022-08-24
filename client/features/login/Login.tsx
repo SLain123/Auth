@@ -26,7 +26,7 @@ const Login = () => {
     const authStatus = useAppSelector(getAuthSelector);
     const { isLoading, isUserAuth } = authStatus;
 
-    const { WhiteSpin, GreenSpin } = Spinner();
+    const { WhiteSpin, PurpleSpin } = Spinner();
 
     const inputSize = width && width >= 768 ? 'medium' : 'small';
     const btnSize = width && width >= 768 ? 'large' : 'medium';
@@ -69,7 +69,7 @@ const Login = () => {
     }, [cookies.authData]);
 
     if (isLoading) {
-        return <div className={Styles.container}>{GreenSpin}</div>;
+        return <div className={Styles.container}>{PurpleSpin}</div>;
     }
 
     return (

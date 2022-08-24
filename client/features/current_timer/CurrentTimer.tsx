@@ -26,7 +26,7 @@ const CurrentTimer: FC<CurrentTimerI> = ({ routeId }) => {
     const currentTimer = useAppSelector(getCurrentTimer);
     const { timer, isLoading, isError } = currentTimer;
 
-    const { curcleSpin } = Spinner();
+    const { CurcleSpin } = Spinner();
 
     useEffect(() => {
         if (!routeId) {
@@ -48,7 +48,7 @@ const CurrentTimer: FC<CurrentTimerI> = ({ routeId }) => {
     if (isLoading || loadingId) {
         return (
             <div className={Styles.single_container}>
-                {curcleSpin(100, 'green')}
+                {CurcleSpin(100, 'rgba(82, 0, 255, 0.9)')}
             </div>
         );
     }

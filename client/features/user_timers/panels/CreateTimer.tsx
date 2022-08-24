@@ -27,7 +27,7 @@ const CreateTimer: FC = () => {
     const { createTimer, loading, serverErrors, resultMessage } =
         useCreateTimer();
 
-    const { WhiteSpin, GreenSpin } = Spinner();
+    const { WhiteSpin, PurpleSpin } = Spinner();
 
     const formik = useFormik({
         initialValues: {
@@ -127,7 +127,7 @@ const CreateTimer: FC = () => {
     if (isLoading) {
         return (
             <div className={`${Styles.main} ${Styles.form_not_auth}`}>
-                {GreenSpin}
+                {PurpleSpin}
             </div>
         );
     }

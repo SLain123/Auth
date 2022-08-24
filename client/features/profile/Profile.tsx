@@ -33,7 +33,7 @@ const Profile: FC = () => {
         resultMessage,
     } = useProfileService();
 
-    const { WhiteSpin, GreenSpin } = Spinner();
+    const { WhiteSpin, PurpleSpin } = Spinner();
 
     const inputSize = width && width >= 768 ? 'medium' : 'small';
     const btnSize = width && width >= 768 ? 'large' : 'medium';
@@ -89,7 +89,7 @@ const Profile: FC = () => {
     }, []);
 
     if (isLoading || userDataLoading) {
-        return <div className={Styles.container}>{GreenSpin}</div>;
+        return <div className={Styles.container}>{PurpleSpin}</div>;
     }
 
     return (

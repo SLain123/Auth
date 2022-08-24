@@ -24,7 +24,7 @@ const AllTimersTable: FC = () => {
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
-    const { curcleSpin } = Spinner();
+    const { CurcleSpin } = Spinner();
 
     const handleChangePage = useCallback((_event: unknown, newPage: number) => {
         setPage(newPage);
@@ -49,7 +49,11 @@ const AllTimersTable: FC = () => {
     }, [isUserAuth, isLoadingAuth]);
 
     if (isLoadingAuth || loadingTimers) {
-        return <div className={Styles.center}>{curcleSpin(100, 'green')}</div>;
+        return (
+            <div className={Styles.center}>
+                {CurcleSpin(100, 'rgba(82, 0, 255, 0.9)')}
+            </div>
+        );
     }
 
     return (
