@@ -32,8 +32,8 @@ router.post(
             const candidateByNick = await User.findOne({ nickName });
 
             if (candidateByMail || candidateByNick) {
-                candidateByMail &&
-                    res.status(400).json({
+                if (candidateByMail) {
+                    return res.status(400).json({
                         errors: [
                             {
                                 msg: 'User email already exists!',
@@ -42,9 +42,9 @@ router.post(
                             },
                         ],
                     });
-
-                candidateByNick &&
-                    res.status(400).json({
+                }
+                if (candidateByNick) {
+                    return res.status(400).json({
                         errors: [
                             {
                                 msg: 'User nick already exists!',
@@ -53,6 +53,7 @@ router.post(
                             },
                         ],
                     });
+                }
             }
 
             const hashedPassword = await bcrypt.hash(password, 11);

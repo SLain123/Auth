@@ -1,6 +1,6 @@
 import React, { useEffect, useState, FC, useCallback } from 'react';
 
-import { useAppSelector } from 'hooks';
+import { useAppSelector, useRefreshTimers } from 'hooks';
 import { getAuthSelector } from 'features/auth/authSlice';
 import { getTimerListSelector } from 'features/user_timers/userTimersSlice';
 import { Spinner } from 'components/spinner';
@@ -25,6 +25,7 @@ const AllTimersTable: FC = () => {
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
     const { CurcleSpin } = Spinner();
+    const { refreshTimers } = useRefreshTimers();
 
     const handleChangePage = useCallback((_event: unknown, newPage: number) => {
         setPage(newPage);
@@ -47,6 +48,10 @@ const AllTimersTable: FC = () => {
             location.href = '/login';
         }
     }, [isUserAuth, isLoadingAuth]);
+
+    useEffect(() => {
+        refreshTimers();
+    }, []);
 
     if (isLoadingAuth || loadingTimers) {
         return (
