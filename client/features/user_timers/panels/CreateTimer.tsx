@@ -5,8 +5,7 @@ import * as Yup from 'yup';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 
-import { useAppSelector, useRefreshTimers } from 'hooks';
-import { getAuthSelector } from 'features/auth/authSlice';
+import { useRefreshTimers } from 'hooks';
 import { useCreateTimer } from 'service/timers/CreateTimerService';
 import {
     convertToMilliSeconds,
@@ -14,15 +13,11 @@ import {
 } from 'utils/timeConverter';
 import { Spinner } from 'components/spinner';
 import { TemplatesList } from 'components/templates_list';
-import { NoAuthWarning } from './NoAuthWarning';
 import { FormWrapper } from 'components/form_wrapper';
 
 import Styles from '../Timers.module.scss';
 
 const CreateTimer: FC = () => {
-    const authStatus = useAppSelector(getAuthSelector);
-    const {isUserAuth } = authStatus;
-
     const { refreshTimers } = useRefreshTimers();
     const { createTimer, loading, serverErrors, resultMessage } =
         useCreateTimer();
@@ -123,10 +118,6 @@ const CreateTimer: FC = () => {
             second,
         });
     };
-
-    if (!isUserAuth) {
-        return <NoAuthWarning />;
-    }
 
     return (
         <div className={`${Styles.container} ${Styles.container_success_left}`}>

@@ -25,17 +25,21 @@
 }
 
 .login_btn {
-    margin-top: 20px;
-    background: $mainColor;
+    margin-top: 20px !important;
+    background: $mainColor !important;
     width: 100%;
-    border-radius: 10px;
+    border-radius: 10px !important;
     font-size: 16px;
     line-height: 18px;
     padding: 13px 0;
 
     &:hover {
-        background: $mainColor;
+        background: $mainColor !important;
         opacity: 0.9;
+    }
+
+    &:disabled {
+        background: #e0e0e0 !important;
     }
 
     @media screen and (max-width: 767px) {
