@@ -61,10 +61,10 @@
 }
 
 .table {
-    box-shadow: none;
-    border-bottom: 1px solid $mainColor;
-    border-radius: 0;
-    color: $mainColor;
+    box-shadow: none !important;
+    border-bottom: 1px solid $mainColor !important;
+    border-radius: 0 !important;
+    color: $mainColor !important;
 
     &_head th {
         background: $tableHead;

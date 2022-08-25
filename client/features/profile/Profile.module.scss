@@ -72,14 +72,18 @@
 }
 
 .btn {
-    margin-top: 25px;
-    background: $mainColor;
+    margin-top: 25px !important;
+    background: $mainColor !important;
     width: 100%;
-    border-radius: 10px;
+    border-radius: 10px !important;
 
     &:hover {
-        background: $mainColor;
+        background: $mainColor !important;
         opacity: 0.9;
+    }
+
+    &:disabled {
+        background: #e0e0e0 !important;
     }
 }
 

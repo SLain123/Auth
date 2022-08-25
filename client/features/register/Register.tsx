@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import Router from 'next/router';
+import Link from 'next/link';
 
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
@@ -160,6 +161,9 @@ const Register = () => {
                         size={inputSize}
                         className={Styles.input_title}
                     />
+                    <Link href='/login'>
+                        <a className={Styles.link_reg}>Login</a>
+                    </Link>
                     <p className={Styles.status_text}>{resultMessage}</p>
                     <Button
                         className={Styles.login_btn}
@@ -174,7 +178,7 @@ const Register = () => {
                         }
                         size={btnSize}
                     >
-                        {loading ? WhiteSpin : 'Send register data'}
+                        {loading ? WhiteSpin : 'Register'}
                     </Button>
                 </form>
             </FormWrapper>

@@ -21,13 +21,13 @@ import Styles from '../Timers.module.scss';
 
 const CreateTimer: FC = () => {
     const authStatus = useAppSelector(getAuthSelector);
-    const { isLoading, isUserAuth } = authStatus;
+    const {isUserAuth } = authStatus;
 
     const { refreshTimers } = useRefreshTimers();
     const { createTimer, loading, serverErrors, resultMessage } =
         useCreateTimer();
 
-    const { WhiteSpin, PurpleSpin } = Spinner();
+    const { WhiteSpin } = Spinner();
 
     const formik = useFormik({
         initialValues: {
@@ -123,14 +123,6 @@ const CreateTimer: FC = () => {
             second,
         });
     };
-
-    if (isLoading) {
-        return (
-            <div className={`${Styles.main} ${Styles.form_not_auth}`}>
-                {PurpleSpin}
-            </div>
-        );
-    }
 
     if (!isUserAuth) {
         return <NoAuthWarning />;
